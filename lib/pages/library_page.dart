@@ -91,6 +91,7 @@ class _LibraryPageState extends State<LibraryPage>
                 color: Colors.black,
                 thickness: 1,
               ),
+              SizedBox(height: MARGIN_MEDIUM_2,),
               Row(
                 children: [
                   SortingSectionView(
