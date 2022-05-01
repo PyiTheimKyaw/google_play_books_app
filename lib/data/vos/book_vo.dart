@@ -1,6 +1,6 @@
 class BookVO {
   final String title;
-  final String imageUrl;
+  final String? imageUrl;
 
-  BookVO(this.title, this.imageUrl);
+  BookVO(this.title, {this.imageUrl});
 }

@@ -23,10 +23,13 @@ class MoreViewPage extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.black),
-        title: Text("Top selling books",style: TextStyle(color: Colors.black),),
+        title: Text(
+          "Top selling books",
+          style: TextStyle(color: Colors.black),
+        ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.only(left: 18.0),
         child: YourBooksByGridSectionView(
           books: books,
         ),

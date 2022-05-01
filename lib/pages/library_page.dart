@@ -27,7 +27,7 @@ class _LibraryPageState extends State<LibraryPage>
   bool isGrid = false;
   List<BookVO> bookList = dummyBooks;
   String byType = "Author";
-  String byView="List";
+  String byView = "List";
   int bookCount = 1;
   List<String> dummyShelf = [];
   TextEditingController shelfName = TextEditingController();
@@ -91,7 +91,9 @@ class _LibraryPageState extends State<LibraryPage>
                 color: Colors.black,
                 thickness: 1,
               ),
-              SizedBox(height: MARGIN_MEDIUM_2,),
+              SizedBox(
+                height: MARGIN_MEDIUM_2,
+              ),
               Row(
                 children: [
                   SortingSectionView(
@@ -113,14 +115,19 @@ class _LibraryPageState extends State<LibraryPage>
                 height: MARGIN_MEDIUM,
               ),
               Expanded(
-                child: (byView=="List")
+                child: (byView == "List")
                     ? YourBooksByListSectionView()
-                    : (byView=="Small Grid") ?YourBooksByGridSectionView(
-                        books: bookList,
-                      ): (byView=="Large Grid")? YourBooksByLargeGridSectionView(books: bookList):Container(),
+                    : (byView == "Small Grid")
+                        ? YourBooksByGridSectionView(
+                            books: bookList,
+                          )
+                        : (byView == "Large Grid")
+                            ? YourBooksByLargeGridSectionView(books: bookList)
+                            : Container(),
               ),
             ],
           ),
+          // YourBooksSectionView(),
 
           ///Shelves
           ShelvesSectionView(
@@ -191,7 +198,9 @@ class _LibraryPageState extends State<LibraryPage>
           );
         });
   }
-  Future<dynamic> buildShowModalBottomSheetForSortingView(BuildContext context) {
+
+  Future<dynamic> buildShowModalBottomSheetForSortingView(
+      BuildContext context) {
     return showModalBottomSheet(
         context: context,
         builder: (context) {
@@ -246,6 +255,15 @@ class _LibraryPageState extends State<LibraryPage>
   }
 }
 
+class YourBooksSectionView extends StatelessWidget {
+  const YourBooksSectionView({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+
 class RadioWithText extends StatelessWidget {
   String value;
   String val;
@@ -283,7 +301,9 @@ class SortingViewListSectionView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      child: ViewListView(view: view,),
+      child: ViewListView(
+        view: view,
+      ),
       onTap: () {
         opTap();
       },

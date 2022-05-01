@@ -3,8 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_play_books_app/pages/home_page.dart';
 import 'package:google_play_books_app/pages/library_page.dart';
+import 'package:google_play_books_app/pages/search_page.dart';
 import 'package:google_play_books_app/resources//dimens.dart';
 import 'package:google_play_books_app/resources//strings.dart';
+import 'package:google_play_books_app/widgets/debounce.dart';
 
 NavigationDestination navigationDestination(
     {required Icon selectedIcon,
@@ -31,6 +33,7 @@ class _StartPageState extends State<StartPage> {
     LibraryPage(),
   ];
   int _currentIndex = 0;
+  final _debouncer = DebouncerClass(milliseconds: 500);
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +41,9 @@ class _StartPageState extends State<StartPage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: SearchAndProfileSectionView(),
+        title: SearchAndProfileSectionView(
+          debouncer: _debouncer,
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: MARGIN_MEDIUM_2),
@@ -98,9 +103,11 @@ class _BottomNavigationBarSectionViewState
 }
 
 class SearchAndProfileSectionView extends StatelessWidget {
-  const SearchAndProfileSectionView({
+  SearchAndProfileSectionView({
     Key? key,
+    required this.debouncer,
   }) : super(key: key);
+  final DebouncerClass debouncer;
 
   @override
   Widget build(BuildContext context) {
@@ -138,6 +145,7 @@ class SearchAndProfileSectionView extends StatelessWidget {
               ),
               Expanded(
                 child: TextField(
+                  autofocus: true,
                   decoration: InputDecoration(
                     hintText: SEARCH_PLAY_BOOKS,
                     hintStyle: TextStyle(
@@ -145,7 +153,15 @@ class SearchAndProfileSectionView extends StatelessWidget {
                     ),
                     border: InputBorder.none,
                   ),
-                  onChanged: (String keyword) {},
+                  onChanged: (String text) {
+                    debouncer.run(() {
+                      print(text);
+                    });
+                  },
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Home()));
+                  },
                 ),
               ),
               ProfileView(),

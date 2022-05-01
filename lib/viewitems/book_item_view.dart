@@ -21,8 +21,6 @@ import 'package:google_play_books_app/viewitems/more_button_view.dart';
 //   );
 // }
 
-
-
 class BookItemView extends StatelessWidget {
   const BookItemView({
     Key? key,
@@ -89,8 +87,6 @@ class DownloadOrReadButtonView extends StatelessWidget {
   }
 }
 
-
-
 class BookImageView extends StatelessWidget {
   const BookImageView({
     Key? key,
@@ -103,9 +99,9 @@ class BookImageView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(5),
           image: DecorationImage(
-            image: NetworkImage(booksList.imageUrl),
+            image: NetworkImage(booksList.imageUrl ?? ""),
             fit: BoxFit.cover,
           )),
     );

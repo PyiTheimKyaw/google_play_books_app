@@ -41,13 +41,6 @@ class _HomePageState extends State<HomePage>
                 )));
   }
 
-  _buildTabContext(IndexedWidgetBuilder itemBuilder) => ListView.builder(
-        // padding: EdgeInsets.only(left: MARGIN_MEDIUM_2),
-        physics: const ClampingScrollPhysics(),
-        itemCount: 10,
-        itemBuilder: itemBuilder,
-      );
-
   @override
   void dispose() {
     _tabController.dispose();
