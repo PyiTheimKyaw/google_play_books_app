@@ -1,7 +1,9 @@
 // ignore_for_file: prefer_const_constructors,prefer_const_literals_to_create_immutables, sized_box_for_whitespace, prefer_final_fields
 
 import 'package:flutter/material.dart';
+import 'package:google_play_books_app/data/vos/book_vo.dart';
 import 'package:google_play_books_app/data/vos/book_vo_test.dart';
+import 'package:google_play_books_app/data/vos/category_vo.dart';
 import 'package:google_play_books_app/pages/more_view_page.dart';
 import 'package:google_play_books_app/resources/dimens.dart';
 
@@ -10,8 +12,10 @@ class CategoriesLabelAndMoreView extends StatelessWidget {
     Key? key,
     required this.booksCategoriesLabel,
     required this.books,
+     required this.category,
   }) : super(key: key);
-  List<BookVOTest> books;
+  List<BookVO>? books;
+  CategoryVO? category;
   final String booksCategoriesLabel;
 
   @override
@@ -29,7 +33,7 @@ class CategoriesLabelAndMoreView extends StatelessWidget {
         IconButton(
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => MoreViewPage(books: books,)));
+                  MaterialPageRoute(builder: (context) => MoreViewPage(books: books,category: category,)));
             },
             icon: Icon(
               Icons.arrow_forward_outlined,

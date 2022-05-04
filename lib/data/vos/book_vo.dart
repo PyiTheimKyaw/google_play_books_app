@@ -30,7 +30,7 @@ class BookVO {
   @JsonKey(name: 'first_chapter_link')
   String? firstChapterLink;
   @JsonKey(name: 'price')
-  double? price;
+  String? price;
   @JsonKey(name: 'primary_isbn10')
   String? primaryIsbn10;
   @JsonKey(name: 'primary_isbn13')

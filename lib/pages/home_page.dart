@@ -2,7 +2,11 @@
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:google_play_books_app/data/model/book_model.dart';
+import 'package:google_play_books_app/data/model/book_model_impl.dart';
+import 'package:google_play_books_app/data/vos/book_vo.dart';
 import 'package:google_play_books_app/data/vos/book_vo_test.dart';
+import 'package:google_play_books_app/data/vos/category_vo.dart';
 import 'package:google_play_books_app/dummy/dummy_data.dart';
 import 'package:google_play_books_app/pages/book_details.dart';
 import 'package:google_play_books_app/resources/dimens.dart';
@@ -19,25 +23,39 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-  List<BookVOTest> booksList = dummyBooks;
+  List<BookVO>? booksList;
   late TabController _tabController;
   late ScrollController _scrollController;
+
+  BookModel mBookModel = BookModelImpl();
+  List<CategoryVO>? categoriesList;
 
   @override
   void initState() {
     // TODO: implement initState
     _scrollController = ScrollController();
     _tabController = TabController(length: 2, vsync: this);
+
+    ///Api call
+    mBookModel.getCategories().then((overview) {
+      setState(() {
+        categoriesList = overview?.lists;
+      });
+      print("Category list length => ${categoriesList?.length}");
+    });
+
     super.initState();
   }
 
-  navigateToBookDetails(BuildContext context, int i) {
+  navigateToBookDetails(BuildContext context, int? categoryIndex,int? title) {
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => BookDetails(
-                  booksList[i],
-                  books: booksList,
+                  categoriesList?[categoryIndex?? 0].books?[title ?? 0],
+                  books: booksList ?? [],
+                  bookTitle: "title",
+                  category: categoriesList?[1],
                 )));
   }
 
@@ -58,7 +76,7 @@ class _HomePageState extends State<HomePage>
             headerSliverBuilder:
                 (BuildContext context, bool innerBoxIsScrolled) {
               return [
-                RecentBooksListSectionView(booksList: booksList),
+                // RecentBooksListSectionView(booksList: categoriesList),
                 TabsSectionView(tabController: _tabController),
                 DividerSectionView(),
               ];
@@ -67,14 +85,20 @@ class _HomePageState extends State<HomePage>
               controller: _tabController,
               children: [
                 EbooksSectionView(
+                    category: categoriesList,
                     booksList: booksList,
-                    navigatePage: (index) {
-                      navigateToBookDetails(context, index);
+                    navigatePage: (categoryIndex,index) {
+                      navigateToBookDetails(
+                        context,
+                        categoryIndex,
+                        index,
+                      );
                     }),
                 AudioBooksSectionView(
+                    category: categoriesList,
                     booksList: booksList,
-                    navigatePage: (index) {
-                      navigateToBookDetails(context, index);
+                    navigatePage: (categoryIndex,index) {
+                      navigateToBookDetails(context,categoryIndex, index);
                     }),
               ],
             )),
@@ -84,42 +108,54 @@ class _HomePageState extends State<HomePage>
 }
 
 class EbooksSectionView extends StatelessWidget {
-  final List<BookVOTest> booksList;
-  final Function(int) navigatePage;
+  final List<BookVO>? booksList;
+  final Function(int?,int?) navigatePage;
+  List<CategoryVO>? category;
 
-  EbooksSectionView({required this.booksList, required this.navigatePage});
+  EbooksSectionView(
+      {required this.booksList,
+      required this.navigatePage,
+      required this.category});
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: booksList.length,
+        itemCount: category?.length ?? 0,
         itemBuilder: (context, index) {
           return GoogleBooksHorizontalListSectionView(
-            books: booksList,
-            navigateToDetails: () {
-              navigatePage(index);
+            books: category?[index].books ?? [],
+            category: category?[index],
+            categoryIndex: index,
+            navigateToDetails: (index,title) {
+              navigatePage(index,title);
             },
-            booksCategoriesLabel: "On your wishlist",
+            booksCategoriesLabel: category?[index].listName ?? "",
           );
         });
   }
 }
 
 class AudioBooksSectionView extends StatelessWidget {
-  final List<BookVOTest> booksList;
-  final Function(int) navigatePage;
+  final List<BookVO>? booksList;
+  final Function(int?,int?) navigatePage;
+  List<CategoryVO>? category;
 
-  AudioBooksSectionView({required this.booksList, required this.navigatePage});
+  AudioBooksSectionView(
+      {required this.booksList,
+      required this.navigatePage,
+      required this.category});
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: booksList.length,
+        itemCount: booksList?.length,
         itemBuilder: (context, index) {
           return GoogleBooksHorizontalListSectionView(
+            category: category?[index],
+            categoryIndex: index,
             books: booksList,
-            navigateToDetails: () {
-              navigatePage(index);
+            navigateToDetails: (index,title) {
+              navigatePage(index,title);
             },
             booksCategoriesLabel: "Tales of terror & intrigue",
           );
@@ -182,7 +218,7 @@ class RecentBooksListSectionView extends StatelessWidget {
     required this.booksList,
   }) : super(key: key);
 
-  final List<BookVOTest> booksList;
+  final List<CategoryVO>? booksList;
 
   @override
   Widget build(BuildContext context) {
@@ -193,14 +229,14 @@ class RecentBooksListSectionView extends StatelessWidget {
 }
 
 class RecentViewBooks extends StatelessWidget {
-  List<BookVOTest> booksList;
+  List<CategoryVO>? booksList;
 
   RecentViewBooks({required this.booksList});
 
   @override
   Widget build(BuildContext context) {
     return CarouselSlider.builder(
-      itemCount: booksList.length,
+      itemCount: booksList?[1].books?.length,
       options: CarouselOptions(
         onPageChanged: (index, reason) {},
         height: MediaQuery.of(context).size.height / 3.5,
@@ -219,19 +255,20 @@ class RecentViewBooks extends StatelessWidget {
       ),
       itemBuilder: (BuildContext context, int index, int realIndex) {
         return Container(
-            margin: EdgeInsets.only(bottom: 12),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black54.withOpacity(0.1),
-                  spreadRadius: 2,
-                  blurRadius: 3,
-                  offset: Offset(0, 12),
-                )
-              ],
-            ),
-            child: BookItemView(booksList: booksList[realIndex]));
+          margin: EdgeInsets.only(bottom: 12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black54.withOpacity(0.1),
+                spreadRadius: 2,
+                blurRadius: 3,
+                offset: Offset(0, 12),
+              )
+            ],
+          ),
+          child: Container(),
+        );
       },
     );
   }

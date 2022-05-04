@@ -1,8 +1,10 @@
 import 'package:google_play_books_app/data/vos/category_vo.dart';
 import 'package:json_annotation/json_annotation.dart';
-part 'category_response.g.dart';
+
+part 'overview_vo.g.dart';
+
 @JsonSerializable()
-class CategoryResponse{
+class OverviewVo {
   @JsonKey(name: 'bestsellers_date')
   String? bestSellersDate;
   @JsonKey(name: 'published_date')
@@ -16,7 +18,7 @@ class CategoryResponse{
   @JsonKey(name: 'lists')
   List<CategoryVO>? lists;
 
-  CategoryResponse(
+  OverviewVo(
       this.bestSellersDate,
       this.publishedDate,
       this.publishedDateDescription,
@@ -24,6 +26,13 @@ class CategoryResponse{
       this.nextPublishedDate,
       this.lists);
 
-  factory CategoryResponse.fromJson(Map<String,dynamic> json) =>_$CategoryResponseFromJson(json);
-  Map<String,dynamic> toJson() => _$CategoryResponseToJson(this);
+  factory OverviewVo.fromJson(Map<String, dynamic> json) =>
+      _$OverviewVoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$OverviewVoToJson(this);
+
+  @override
+  String toString() {
+    return 'OverviewVo{bestSellersDate: $bestSellersDate, publishedDate: $publishedDate, publishedDateDescription: $publishedDateDescription, previousPublishedDate: $previousPublishedDate, nextPublishedDate: $nextPublishedDate, lists: $lists}';
+  }
 }

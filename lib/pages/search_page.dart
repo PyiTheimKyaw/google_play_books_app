@@ -1,7 +1,9 @@
 // ignore_for_file: prefer_const_constructors,prefer_const_literals_to_create_immutables, sized_box_for_whitespace, prefer_final_fields
 
 import 'package:flutter/material.dart';
+import 'package:google_play_books_app/data/vos/book_vo.dart';
 import 'package:google_play_books_app/data/vos/book_vo_test.dart';
+import 'package:google_play_books_app/data/vos/category_vo.dart';
 import 'package:google_play_books_app/dummy/dummy_data.dart';
 import 'package:google_play_books_app/pages/book_details.dart';
 import 'package:google_play_books_app/resources/colors.dart';
@@ -17,11 +19,13 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   String query = '';
 
-  List<BookVOTest> allBokks = dummyBooks;
-  List<BookVOTest> searchedBooks = [];
+  List<BookVO>? allBokks;
+
+  List<BookVO>? searchedBooks = [];
   bool isOntapChanged = false;
   bool isOnTapSubmitted = false;
-  List<String> showSuggestion=[];
+  List<String> showSuggestion = [];
+  CategoryVO? category;
 
   @override
   Widget build(BuildContext context) {
@@ -59,30 +63,37 @@ class _SearchPageState extends State<SearchPage> {
               ? Expanded(
                   child: (!isOnTapSubmitted)
                       ? ListView.builder(
-                          itemCount: searchedBooks.length,
+                          itemCount: searchedBooks?.length,
                           itemBuilder: (context, index) {
-                            return buildBook(searchedBooks[index]);
+                            return buildBook(searchedBooks?[index]);
                           },
                         )
                       : GoogleBooksHorizontalListSectionView(
+                          category: category,
                           books: searchedBooks,
                           booksCategoriesLabel: "Shop",
-                          navigateToDetails: () {
+                          categoryIndex: 0,
+                          navigateToDetails: (i,j) {
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => BookDetails(
-                                        searchedBooks[1],
-                                        books: searchedBooks)));
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BookDetails(
+                                  searchedBooks?[1],
+                                  books: searchedBooks,
+                                  bookTitle: "",
+                                  category: category,
+                                ),
+                              ),
+                            );
                           },
                         ),
                 )
               : Row(
-            children: [
-              Icon(Icons.timelapse),
-              Text(showSuggestion.reversed.take(4).toString()),
-            ],
-          ),
+                  children: [
+                    Icon(Icons.timelapse),
+                    Text(showSuggestion.reversed.take(4).toString()),
+                  ],
+                ),
         ],
       ),
     );
@@ -91,12 +102,12 @@ class _SearchPageState extends State<SearchPage> {
   void searchBook(String query) {
     setState(() {
       isOnTapSubmitted = false;
-      searchedBooks = allBokks.where((book) {
-        final titleLower = book.title.toLowerCase();
+      searchedBooks = allBokks?.where((book) {
+        final titleLower = book.title?.toLowerCase();
         // final authorLower = book.author.toLowerCase();
         final searchLower = query.toLowerCase();
 
-        return titleLower.contains(searchLower);
+        return titleLower?.contains(searchLower) ?? false;
         // || authorLower.contains(searchLower);
       }).toList();
       this.query = query;
@@ -108,12 +119,12 @@ class _SearchPageState extends State<SearchPage> {
     setState(() {
       isOnTapSubmitted = true;
       showSuggestion.add(query);
-      searchedBooks = allBokks.where((book) {
-        final titleLower = book.title.toLowerCase();
+      searchedBooks = allBokks?.where((book) {
+        final titleLower = book.title?.toLowerCase();
         // final authorLower = book.author.toLowerCase();
         final searchLower = query.toLowerCase();
 
-        return titleLower.contains(searchLower);
+        return titleLower?.contains(searchLower) ?? false;
         // || authorLower.contains(searchLower);
       }).toList();
       this.query = query;
@@ -121,14 +132,14 @@ class _SearchPageState extends State<SearchPage> {
     });
   }
 
-  Widget buildBook(BookVOTest book) => ListTile(
+  Widget buildBook(BookVO? book) => ListTile(
         leading: Image.network(
-          book.imageUrl ?? "",
+          book?.bookImage ?? "",
           fit: BoxFit.cover,
           width: 50,
           height: 50,
         ),
-        title: Text(book.title),
+        title: Text(book?.title ?? ""),
         // subtitle: Text(book.author),
       );
 }

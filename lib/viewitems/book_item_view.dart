@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors,prefer_const_literals_to_create_immutables, sized_box_for_whitespace, prefer_final_fields
 import 'package:flutter/material.dart';
+import 'package:google_play_books_app/data/vos/book_vo.dart';
 import 'package:google_play_books_app/data/vos/book_vo_test.dart';
 import 'package:google_play_books_app/resources//dimens.dart';
 import 'package:google_play_books_app/resources/colors.dart';
@@ -22,12 +23,14 @@ import 'package:google_play_books_app/viewitems/more_button_view.dart';
 // }
 
 class BookItemView extends StatelessWidget {
-  const BookItemView({
+   BookItemView({
     Key? key,
-    required this.booksList,
+    required this.bookTitle,
+     required this.bookList,
   }) : super(key: key);
 
-  final BookVOTest booksList;
+  String? bookTitle;
+  BookVO? bookList;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +39,7 @@ class BookItemView extends StatelessWidget {
       width: 150,
       child: Stack(
         children: [
-          BookImageView(booksList: booksList),
+          BookImageView(bookTitle: bookList),
           MoreButtonAndDownloadOrReadButtonSectionView(),
         ],
       ),
@@ -88,12 +91,12 @@ class DownloadOrReadButtonView extends StatelessWidget {
 }
 
 class BookImageView extends StatelessWidget {
-  const BookImageView({
+   BookImageView({
     Key? key,
-    required this.booksList,
+    required this.bookTitle,
   }) : super(key: key);
 
-  final BookVOTest booksList;
+  BookVO? bookTitle;
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +104,7 @@ class BookImageView extends StatelessWidget {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5),
           image: DecorationImage(
-            image: NetworkImage(booksList.imageUrl ?? ""),
+            image: NetworkImage(bookTitle?.bookImage ?? ""),
             fit: BoxFit.cover,
           )),
     );

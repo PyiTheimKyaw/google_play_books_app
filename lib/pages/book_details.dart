@@ -1,7 +1,9 @@
 // ignore_for_file: prefer_const_constructors,prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:google_play_books_app/data/vos/book_vo.dart';
 import 'package:google_play_books_app/data/vos/book_vo_test.dart';
+import 'package:google_play_books_app/data/vos/category_vo.dart';
 import 'package:google_play_books_app/resources/colors.dart';
 import 'package:google_play_books_app/resources/dimens.dart';
 import 'package:google_play_books_app/viewitems/book_item_view.dart';
@@ -16,10 +18,12 @@ Icon icon(IconData icon) {
 }
 
 class BookDetails extends StatelessWidget {
-  final List<BookVOTest> books;
-  final BookVOTest book;
+  final List<BookVO>? books;
+  final BookVO? book;
+  CategoryVO? category;
+  String? bookTitle;
 
-  BookDetails(this.book, {required this.books});
+  BookDetails(this.book, {required this.books,required this.category,required this.bookTitle});
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +58,7 @@ class BookDetails extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(
                     horizontal: MARGIN_MEDIUM_2, vertical: MARGIN_MEDIUM_3),
-                child: BookDetailsSectionView(book: book),
+                child: BookDetailsSectionView(bookTitle: bookTitle,book: book,),
               ),
               AboutBookTypeAndReviewSectionView(),
               SizedBox(
@@ -64,18 +68,23 @@ class BookDetails extends StatelessWidget {
               SizedBox(
                 height: MARGIN_LARGE,
               ),
-              AboutEbooksSectionView(books: books),
-              AboutTheAuthorSectionView(books: books),
+              AboutEbooksSectionView(books: books,category: category,),
+              AboutTheAuthorSectionView(books: books,category: category,),
               GoogleBooksHorizontalListSectionView(
+                category: category,
+                categoryIndex: 0,
                 books: books,
                 booksCategoriesLabel: "Similar Ebooks",
-                navigateToDetails: () {
+                navigateToDetails: (i,j) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => BookDetails(
+
                         book,
+                        bookTitle: bookTitle,
                         books: books,
+                        category: category,
                       ),
                     ),
                   );
@@ -155,12 +164,14 @@ class AboutBookTypeAndReviewSectionView extends StatelessWidget {
 }
 
 class AboutTheAuthorSectionView extends StatelessWidget {
-  const AboutTheAuthorSectionView({
+   AboutTheAuthorSectionView({
     Key? key,
     required this.books,
+    required this.category,
   }) : super(key: key);
 
-  final List<BookVOTest> books;
+  final List<BookVO>? books;
+  CategoryVO? category;
 
   @override
   Widget build(BuildContext context) {
@@ -170,7 +181,7 @@ class AboutTheAuthorSectionView extends StatelessWidget {
       child: Column(
         children: [
           CategoriesLabelAndMoreView(
-              books: books, booksCategoriesLabel: "About the author"),
+              books: books, booksCategoriesLabel: "About the author",category: category,),
           Text(
             "Project Hail Mary is a 2021 science fiction novel by American novelist Andy Weir. Set in "
             "the near future, the novel centers on junior high (middle) school-teacher-turned-astronaut "
@@ -185,12 +196,14 @@ class AboutTheAuthorSectionView extends StatelessWidget {
 }
 
 class AboutEbooksSectionView extends StatelessWidget {
-  const AboutEbooksSectionView({
+   AboutEbooksSectionView({
     Key? key,
     required this.books,
+    required this.category,
   }) : super(key: key);
 
-  final List<BookVOTest> books;
+  final List<BookVO>? books;
+  CategoryVO? category;
 
   @override
   Widget build(BuildContext context) {
@@ -200,7 +213,7 @@ class AboutEbooksSectionView extends StatelessWidget {
       child: Column(
         children: [
           CategoriesLabelAndMoreView(
-              books: books, booksCategoriesLabel: "About this eBook"),
+              books: books, booksCategoriesLabel: "About this eBook",category:category ,),
           Text(
             "Project Hail Mary is a 2021 science fiction novel by American novelist Andy Weir. Set in "
             "the near future, the novel centers on junior high (middle) school-teacher-turned-astronaut "
@@ -237,12 +250,14 @@ class ButtonSectionView extends StatelessWidget {
 }
 
 class BookDetailsSectionView extends StatelessWidget {
-  const BookDetailsSectionView({
+   BookDetailsSectionView({
     Key? key,
-    required this.book,
+    required this.bookTitle,
+     required this.book,
   }) : super(key: key);
 
-  final BookVOTest book;
+  String? bookTitle;
+  BookVO? book;
 
   @override
   Widget build(BuildContext context) {
@@ -251,22 +266,24 @@ class BookDetailsSectionView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         BookItemView(
-          booksList: book,
+          bookList:book,
+         bookTitle: bookTitle,
         ),
         SizedBox(
           width: 16,
         ),
-        BookDetailsView(),
+        BookDetailsView(book: book,),
       ],
     );
   }
 }
 
 class BookDetailsView extends StatelessWidget {
-  const BookDetailsView({
+   BookDetailsView({
     Key? key,
+    required this.book,
   }) : super(key: key);
-
+  BookVO? book;
   @override
   Widget build(BuildContext context) {
     return Flexible(
@@ -278,7 +295,7 @@ class BookDetailsView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "The Home Edit: A Guide to Organizing and Realizing Your House Goals",
+              book?.title ?? "",
               style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
             ),
             Spacer(),

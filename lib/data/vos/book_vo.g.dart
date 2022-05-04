@@ -20,7 +20,7 @@ BookVO _$BookVOFromJson(Map<String, dynamic> json) => BookVO(
       json['created_date'] as String?,
       json['description'] as String?,
       json['first_chapter_link'] as String?,
-      (json['price'] as num?)?.toDouble(),
+      json['price'] as String?,
       json['primary_isbn10'] as String?,
       json['primary_isbn13'] as String?,
       json['book_uri'] as String?,

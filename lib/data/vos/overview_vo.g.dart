@@ -1,13 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'category_response.dart';
+part of 'overview_vo.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-CategoryResponse _$CategoryResponseFromJson(Map<String, dynamic> json) =>
-    CategoryResponse(
+OverviewVo _$OverviewVoFromJson(Map<String, dynamic> json) => OverviewVo(
       json['bestsellers_date'] as String?,
       json['published_date'] as String?,
       json['published_date_description'] as String?,
@@ -18,7 +17,7 @@ CategoryResponse _$CategoryResponseFromJson(Map<String, dynamic> json) =>
           .toList(),
     );
 
-Map<String, dynamic> _$CategoryResponseToJson(CategoryResponse instance) =>
+Map<String, dynamic> _$OverviewVoToJson(OverviewVo instance) =>
     <String, dynamic>{
       'bestsellers_date': instance.bestSellersDate,
       'published_date': instance.publishedDate,

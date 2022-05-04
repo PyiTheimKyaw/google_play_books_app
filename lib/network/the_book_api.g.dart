@@ -10,7 +10,7 @@ part of 'the_book_api.dart';
 
 class _TheBookApi implements TheBookApi {
   _TheBookApi(this._dio, {this.baseUrl}) {
-    baseUrl ??= 'https://api.nytimes.com/svc/books';
+    baseUrl ??= 'https://api.nytimes.com/svc/books/v3';
   }
 
   final Dio _dio;
@@ -18,7 +18,7 @@ class _TheBookApi implements TheBookApi {
   String? baseUrl;
 
   @override
-  Future<CategoryResponse> getList(apiKey, publishedDate) async {
+  Future<OverviewResponse> getList(apiKey, publishedDate) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'api-key': apiKey,
@@ -27,12 +27,12 @@ class _TheBookApi implements TheBookApi {
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<CategoryResponse>(
+        _setStreamType<OverviewResponse>(
             Options(method: 'GET', headers: _headers, extra: _extra)
-                .compose(_dio.options, '/v3/lists/overview.json',
+                .compose(_dio.options, '/lists/overview.json',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    final value = CategoryResponse.fromJson(_result.data!);
+    final value = OverviewResponse.fromJson(_result.data!);
     return value;
   }
 

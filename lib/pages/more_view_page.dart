@@ -1,14 +1,16 @@
 // ignore_for_file: prefer_const_constructors,prefer_const_literals_to_create_immutables, sized_box_for_whitespace, prefer_final_fields
 
 import 'package:flutter/material.dart';
+import 'package:google_play_books_app/data/vos/book_vo.dart';
 import 'package:google_play_books_app/data/vos/book_vo_test.dart';
+import 'package:google_play_books_app/data/vos/category_vo.dart';
 import 'package:google_play_books_app/widgets/your_books_by_grid_section_view.dart';
 import 'package:google_play_books_app/widgets/your_books_by_large_grid_section_view.dart';
 
 class MoreViewPage extends StatelessWidget {
-  List<BookVOTest> books;
-
-  MoreViewPage({required this.books});
+  List<BookVO>? books;
+  CategoryVO? category;
+  MoreViewPage({required this.books,required this.category});
 
   _buildTabContext(IndexedWidgetBuilder itemBuilder, int itemCount) =>
       ListView.builder(
@@ -24,7 +26,7 @@ class MoreViewPage extends StatelessWidget {
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.black),
         title: Text(
-          "Top selling books",
+          category?.listName ?? "",
           style: TextStyle(color: Colors.black),
         ),
       ),
