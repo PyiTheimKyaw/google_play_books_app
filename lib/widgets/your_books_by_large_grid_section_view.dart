@@ -1,12 +1,12 @@
 // ignore_for_file: prefer_const_constructors,prefer_const_literals_to_create_immutables, sized_box_for_whitespace, prefer_final_fields
 
 import 'package:flutter/material.dart';
-import 'package:google_play_books_app/data/vos/book_vo.dart';
+import 'package:google_play_books_app/data/vos/book_vo_test.dart';
 import 'package:google_play_books_app/resources/dimens.dart';
 import 'package:google_play_books_app/widgets/book_view_with_book_title_view.dart';
 
 class YourBooksByLargeGridSectionView extends StatelessWidget {
-  List<BookVO> books;
+  List<BookVOTest> books;
 
   YourBooksByLargeGridSectionView({required this.books});
 

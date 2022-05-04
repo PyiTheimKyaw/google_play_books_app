@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors,prefer_const_literals_to_create_immutables, sized_box_for_whitespace, prefer_final_fields
 
 import 'package:flutter/material.dart';
-import 'package:google_play_books_app/data/vos/book_vo.dart';
+import 'package:google_play_books_app/data/vos/book_vo_test.dart';
 import 'package:google_play_books_app/dummy/dummy_data.dart';
 import 'package:google_play_books_app/pages/add_new_shelf_page.dart';
 import 'package:google_play_books_app/pages/book_details.dart';
@@ -26,7 +26,7 @@ class _LibraryPageState extends State<LibraryPage>
     with SingleTickerProviderStateMixin {
   late TabController tabController;
   bool isGrid = false;
-  List<BookVO> bookList = dummyBooks;
+  List<BookVOTest> bookList = dummyBooks;
   String byType = "Author";
   String byView = "List";
   int bookCount = 1;
@@ -124,7 +124,7 @@ class _LibraryPageState extends State<LibraryPage>
 class YourBooksSectionView extends StatelessWidget {
   String byType;
   String byView;
-  List<BookVO> bookList;
+  List<BookVOTest> bookList;
   final Function(String?) onTapType;
   final Function(String?) onTapView;
 
@@ -347,7 +347,7 @@ class ShelvesSectionView extends StatefulWidget {
   final int bookCount;
   final TextEditingController editShelfName;
   final Function onPressedCreate;
-  final List<BookVO> booksList;
+  final List<BookVOTest> booksList;
 
   @override
   State<ShelvesSectionView> createState() => _ShelvesSectionViewState();

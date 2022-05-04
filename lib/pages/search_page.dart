@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors,prefer_const_literals_to_create_immutables, sized_box_for_whitespace, prefer_final_fields
 
 import 'package:flutter/material.dart';
-import 'package:google_play_books_app/data/vos/book_vo.dart';
+import 'package:google_play_books_app/data/vos/book_vo_test.dart';
 import 'package:google_play_books_app/dummy/dummy_data.dart';
 import 'package:google_play_books_app/pages/book_details.dart';
 import 'package:google_play_books_app/resources/colors.dart';
@@ -17,8 +17,8 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   String query = '';
 
-  List<BookVO> allBokks = dummyBooks;
-  List<BookVO> searchedBooks = [];
+  List<BookVOTest> allBokks = dummyBooks;
+  List<BookVOTest> searchedBooks = [];
   bool isOntapChanged = false;
   bool isOnTapSubmitted = false;
   List<String> showSuggestion=[];
@@ -121,7 +121,7 @@ class _SearchPageState extends State<SearchPage> {
     });
   }
 
-  Widget buildBook(BookVO book) => ListTile(
+  Widget buildBook(BookVOTest book) => ListTile(
         leading: Image.network(
           book.imageUrl ?? "",
           fit: BoxFit.cover,

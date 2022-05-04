@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors,prefer_const_literals_to_create_immutables, sized_box_for_whitespace, prefer_final_fields
 
 import 'package:flutter/material.dart';
-import 'package:google_play_books_app/data/vos/book_vo.dart';
+import 'package:google_play_books_app/data/vos/book_vo_test.dart';
 import 'package:google_play_books_app/pages/more_view_page.dart';
 import 'package:google_play_books_app/resources/dimens.dart';
 
@@ -11,7 +11,7 @@ class CategoriesLabelAndMoreView extends StatelessWidget {
     required this.booksCategoriesLabel,
     required this.books,
   }) : super(key: key);
-  List<BookVO> books;
+  List<BookVOTest> books;
   final String booksCategoriesLabel;
 
   @override

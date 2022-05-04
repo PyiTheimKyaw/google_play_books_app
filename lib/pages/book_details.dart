@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors,prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
-import 'package:google_play_books_app/data/vos/book_vo.dart';
+import 'package:google_play_books_app/data/vos/book_vo_test.dart';
 import 'package:google_play_books_app/resources/colors.dart';
 import 'package:google_play_books_app/resources/dimens.dart';
 import 'package:google_play_books_app/viewitems/book_item_view.dart';
@@ -16,8 +16,8 @@ Icon icon(IconData icon) {
 }
 
 class BookDetails extends StatelessWidget {
-  final List<BookVO> books;
-  final BookVO book;
+  final List<BookVOTest> books;
+  final BookVOTest book;
 
   BookDetails(this.book, {required this.books});
 
@@ -160,7 +160,7 @@ class AboutTheAuthorSectionView extends StatelessWidget {
     required this.books,
   }) : super(key: key);
 
-  final List<BookVO> books;
+  final List<BookVOTest> books;
 
   @override
   Widget build(BuildContext context) {
@@ -190,7 +190,7 @@ class AboutEbooksSectionView extends StatelessWidget {
     required this.books,
   }) : super(key: key);
 
-  final List<BookVO> books;
+  final List<BookVOTest> books;
 
   @override
   Widget build(BuildContext context) {
@@ -242,7 +242,7 @@ class BookDetailsSectionView extends StatelessWidget {
     required this.book,
   }) : super(key: key);
 
-  final BookVO book;
+  final BookVOTest book;
 
   @override
   Widget build(BuildContext context) {

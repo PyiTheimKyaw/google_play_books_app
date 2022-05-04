@@ -2,7 +2,7 @@
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:google_play_books_app/data/vos/book_vo.dart';
+import 'package:google_play_books_app/data/vos/book_vo_test.dart';
 import 'package:google_play_books_app/dummy/dummy_data.dart';
 import 'package:google_play_books_app/pages/book_details.dart';
 import 'package:google_play_books_app/resources/dimens.dart';
@@ -19,7 +19,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-  List<BookVO> booksList = dummyBooks;
+  List<BookVOTest> booksList = dummyBooks;
   late TabController _tabController;
   late ScrollController _scrollController;
 
@@ -84,7 +84,7 @@ class _HomePageState extends State<HomePage>
 }
 
 class EbooksSectionView extends StatelessWidget {
-  final List<BookVO> booksList;
+  final List<BookVOTest> booksList;
   final Function(int) navigatePage;
 
   EbooksSectionView({required this.booksList, required this.navigatePage});
@@ -106,7 +106,7 @@ class EbooksSectionView extends StatelessWidget {
 }
 
 class AudioBooksSectionView extends StatelessWidget {
-  final List<BookVO> booksList;
+  final List<BookVOTest> booksList;
   final Function(int) navigatePage;
 
   AudioBooksSectionView({required this.booksList, required this.navigatePage});
@@ -182,7 +182,7 @@ class RecentBooksListSectionView extends StatelessWidget {
     required this.booksList,
   }) : super(key: key);
 
-  final List<BookVO> booksList;
+  final List<BookVOTest> booksList;
 
   @override
   Widget build(BuildContext context) {
@@ -193,7 +193,7 @@ class RecentBooksListSectionView extends StatelessWidget {
 }
 
 class RecentViewBooks extends StatelessWidget {
-  List<BookVO> booksList;
+  List<BookVOTest> booksList;
 
   RecentViewBooks({required this.booksList});
 

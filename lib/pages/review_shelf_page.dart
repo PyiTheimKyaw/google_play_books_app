@@ -2,7 +2,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_play_books_app/data/vos/book_vo.dart';
+import 'package:google_play_books_app/data/vos/book_vo_test.dart';
 import 'package:google_play_books_app/pages/library_page.dart';
 import 'package:google_play_books_app/resources/dimens.dart';
 import 'package:google_play_books_app/viewitems/sorting_view.dart';
@@ -16,7 +16,7 @@ class ReviewShelfPage extends StatefulWidget {
    TextEditingController editShelfName = TextEditingController();
    Function editShelf;
    Function deleteShelf;
-   List<BookVO> booksList;
+   List<BookVOTest> booksList;
   ReviewShelfPage({required this.shelfName,required this.editShelfName,required this.editShelf,required this.deleteShelf,required this.booksList});
 
   @override

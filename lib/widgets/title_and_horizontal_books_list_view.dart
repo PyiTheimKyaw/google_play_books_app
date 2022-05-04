@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors,prefer_const_literals_to_create_immutables, sized_box_for_whitespace,
 import 'package:flutter/material.dart';
 import 'package:google_play_books_app/components/smart_horizontal_list_view.dart';
-import 'package:google_play_books_app/data/vos/book_vo.dart';
+import 'package:google_play_books_app/data/vos/book_vo_test.dart';
 import 'package:google_play_books_app/resources/dimens.dart';
 import 'package:google_play_books_app/viewitems/categories_label_and_more_view.dart';
 import 'package:google_play_books_app/widgets/book_view_with_book_title_view.dart';
@@ -10,7 +10,7 @@ class GoogleBooksHorizontalListSectionView extends StatelessWidget {
   final String booksCategoriesLabel;
   final Function navigateToDetails;
   final bool seePrice;
-  List<BookVO> books;
+  List<BookVOTest> books;
   GoogleBooksHorizontalListSectionView(
       {required this.booksCategoriesLabel, required this.navigateToDetails,this.seePrice=true,required this.books});
 
@@ -46,7 +46,7 @@ class GoogleBooksHorizontalListSectionView extends StatelessWidget {
 class HorizontalBooksListView extends StatelessWidget {
   final Function navigateToDetails;
   final bool seePrice;
-  List<BookVO> book;
+  List<BookVOTest> book;
   HorizontalBooksListView({required this.navigateToDetails,this.seePrice=true,required this.book});
 
   @override
