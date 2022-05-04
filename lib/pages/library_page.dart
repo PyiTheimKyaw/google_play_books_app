@@ -6,6 +6,7 @@ import 'package:google_play_books_app/dummy/dummy_data.dart';
 import 'package:google_play_books_app/pages/add_new_shelf_page.dart';
 import 'package:google_play_books_app/pages/book_details.dart';
 import 'package:google_play_books_app/pages/review_shelf_page.dart';
+import 'package:google_play_books_app/resources/colors.dart';
 import 'package:google_play_books_app/resources/dimens.dart';
 import 'package:google_play_books_app/resources/strings.dart';
 import 'package:google_play_books_app/viewitems/sorting_view.dart';
@@ -85,49 +86,23 @@ class _LibraryPageState extends State<LibraryPage>
         height: MediaQuery.of(context).size.height,
         padding: EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
         child: TabBarView(controller: tabController, children: [
-          Column(
-            children: [
-              Divider(
-                color: Colors.black,
-                thickness: 1,
-              ),
-              SizedBox(
-                height: MARGIN_MEDIUM_2,
-              ),
-              Row(
-                children: [
-                  SortingSectionView(
-                    val: byType,
-                    onTap: () {
-                      buildShowModalBottomSheetForSorting(context);
-                    },
-                  ),
-                  Spacer(),
-                  SortingViewListSectionView(
-                    view: byView,
-                    opTap: () {
-                      buildShowModalBottomSheetForSortingView(context);
-                    },
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: MARGIN_MEDIUM,
-              ),
-              Expanded(
-                child: (byView == "List")
-                    ? YourBooksByListSectionView()
-                    : (byView == "Small Grid")
-                        ? YourBooksByGridSectionView(
-                            books: bookList,
-                          )
-                        : (byView == "Large Grid")
-                            ? YourBooksByLargeGridSectionView(books: bookList)
-                            : Container(),
-              ),
-            ],
+          YourBooksSectionView(
+            bookList: bookList,
+            byType: byType,
+            byView: byView,
+            onTapType: (value) {
+              setState(() {
+                byType = value!;
+              });
+              Navigator.pop(context);
+            },
+            onTapView: (value) {
+              setState(() {
+                byView = value!;
+              });
+              Navigator.pop(context);
+            },
           ),
-          // YourBooksSectionView(),
 
           ///Shelves
           ShelvesSectionView(
@@ -142,6 +117,67 @@ class _LibraryPageState extends State<LibraryPage>
           ),
         ]),
       ),
+    );
+  }
+}
+
+class YourBooksSectionView extends StatelessWidget {
+  String byType;
+  String byView;
+  List<BookVO> bookList;
+  final Function(String?) onTapType;
+  final Function(String?) onTapView;
+
+  YourBooksSectionView(
+      {required this.byType,
+      required this.byView,
+      required this.bookList,
+      required this.onTapType,
+      required this.onTapView});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Divider(
+          color: Colors.black26,
+          thickness: 1,
+        ),
+        SizedBox(
+          height: MARGIN_MEDIUM_2,
+        ),
+        Row(
+          children: [
+            SortingSectionView(
+              val: byType,
+              onTap: () {
+                buildShowModalBottomSheetForSorting(context);
+              },
+            ),
+            Spacer(),
+            SortingViewListSectionView(
+              view: byView,
+              opTap: () {
+                buildShowModalBottomSheetForSortingView(context);
+              },
+            ),
+          ],
+        ),
+        SizedBox(
+          height: MARGIN_MEDIUM,
+        ),
+        Expanded(
+          child: (byView == "List")
+              ? YourBooksByListSectionView()
+              : (byView == "Small Grid")
+                  ? YourBooksByGridSectionView(
+                      books: bookList,
+                    )
+                  : (byView == "Large Grid")
+                      ? YourBooksByLargeGridSectionView(books: bookList)
+                      : Container(),
+        ),
+      ],
     );
   }
 
@@ -168,32 +204,20 @@ class _LibraryPageState extends State<LibraryPage>
                 thickness: 1,
               ),
               RadioWithText(
-                  value: "Author",
-                  val: byType,
-                  onTap: (value) {
-                    setState(() {
-                      byType = value!;
-                    });
-                    Navigator.pop(context);
-                  }),
+                value: "Author",
+                val: byType,
+                onTap: onTapType,
+              ),
               RadioWithText(
-                  value: "Recent",
-                  val: byType,
-                  onTap: (value) {
-                    setState(() {
-                      byType = value!;
-                    });
-                    Navigator.pop(context);
-                  }),
+                value: "Recent",
+                val: byType,
+                onTap: onTapType,
+              ),
               RadioWithText(
-                  value: "Title",
-                  val: byType,
-                  onTap: (value) {
-                    setState(() {
-                      byType = value!;
-                    });
-                    Navigator.pop(context);
-                  }),
+                value: "Title",
+                val: byType,
+                onTap: onTapType,
+              ),
             ],
           );
         });
@@ -223,44 +247,23 @@ class _LibraryPageState extends State<LibraryPage>
                 thickness: 1,
               ),
               RadioWithText(
-                  value: "List",
-                  val: byView,
-                  onTap: (value) {
-                    setState(() {
-                      byView = value!;
-                    });
-                    Navigator.pop(context);
-                  }),
+                value: "List",
+                val: byView,
+                onTap: onTapView,
+              ),
               RadioWithText(
-                  value: "Small Grid",
-                  val: byView,
-                  onTap: (value) {
-                    setState(() {
-                      byView = value!;
-                    });
-                    Navigator.pop(context);
-                  }),
+                value: "Small Grid",
+                val: byView,
+                onTap: onTapView,
+              ),
               RadioWithText(
-                  value: "Large Grid",
-                  val: byView,
-                  onTap: (value) {
-                    setState(() {
-                      byView = value!;
-                    });
-                    Navigator.pop(context);
-                  }),
+                value: "Large Grid",
+                val: byView,
+                onTap: onTapView,
+              ),
             ],
           );
         });
-  }
-}
-
-class YourBooksSectionView extends StatelessWidget {
-  const YourBooksSectionView({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container();
   }
 }
 

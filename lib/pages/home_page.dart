@@ -203,7 +203,7 @@ class RecentViewBooks extends StatelessWidget {
       itemCount: booksList.length,
       options: CarouselOptions(
         onPageChanged: (index, reason) {},
-        height: MediaQuery.of(context).size.height / 4,
+        height: MediaQuery.of(context).size.height / 3.5,
         aspectRatio: 4 / 3,
         viewportFraction: 0.4,
         initialPage: 0,

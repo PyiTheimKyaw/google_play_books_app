@@ -32,8 +32,8 @@ class BookItemView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 187,
-      width: 170,
+      height: 210,
+      width: 150,
       child: Stack(
         children: [
           BookImageView(booksList: booksList),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_play_books_app/pages/home_page.dart';
 import 'package:google_play_books_app/pages/library_page.dart';
 import 'package:google_play_books_app/pages/search_page.dart';
+import 'package:google_play_books_app/pages/search_page_test.dart';
 import 'package:google_play_books_app/resources//dimens.dart';
 import 'package:google_play_books_app/resources//strings.dart';
 import 'package:google_play_books_app/widgets/debounce.dart';
@@ -38,7 +39,9 @@ class _StartPageState extends State<StartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
+
         backgroundColor: Colors.white,
         elevation: 0,
         title: SearchAndProfileSectionView(
@@ -85,17 +88,17 @@ class _BottomNavigationBarSectionViewState
         widget.changePage(newIndex);
       },
       destinations: [
-        navigationDestination(
+        NavigationDestination(
             selectedIcon: Icon(
               Icons.home,
               color: Colors.blueAccent,
             ),
-            unSelectedIcon: Icon(Icons.home_outlined),
+            icon: Icon(Icons.home_outlined),
             label: BOTTOM_NAVI_HOME),
-        navigationDestination(
+        NavigationDestination(
             selectedIcon:
-                Icon(Icons.library_books_rounded, color: Colors.blueAccent),
-            unSelectedIcon: Icon(Icons.library_books_outlined),
+                Icon(Icons.library_books_outlined, color: Colors.blueAccent),
+            icon: Icon(Icons.library_books_outlined),
             label: BOTTOM_NAVI_LIBRARY),
       ],
     );
@@ -103,6 +106,7 @@ class _BottomNavigationBarSectionViewState
 }
 
 class SearchAndProfileSectionView extends StatelessWidget {
+
   SearchAndProfileSectionView({
     Key? key,
     required this.debouncer,
@@ -145,7 +149,7 @@ class SearchAndProfileSectionView extends StatelessWidget {
               ),
               Expanded(
                 child: TextField(
-                  autofocus: true,
+                  // autofocus: true,
                   decoration: InputDecoration(
                     hintText: SEARCH_PLAY_BOOKS,
                     hintStyle: TextStyle(
@@ -160,7 +164,7 @@ class SearchAndProfileSectionView extends StatelessWidget {
                   },
                   onTap: () {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Home()));
+                        MaterialPageRoute(builder: (context) => SearchPage()));
                   },
                 ),
               ),

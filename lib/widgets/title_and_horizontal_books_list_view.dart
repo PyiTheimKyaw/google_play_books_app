@@ -52,12 +52,12 @@ class HorizontalBooksListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SmartHorizontalListView(
-      itemCount: 9,
+      itemCount: book.length,
       // padding: EdgeInsets.only(left: 16),
       itemBuilder: (_, index) {
         return Container(
-          margin: EdgeInsets.only(right: 12),
-          width: 170,
+          padding: EdgeInsets.only(right: 12),
+          width: 160,
           child: GestureDetector(
             onTap: () {
               navigateToDetails();

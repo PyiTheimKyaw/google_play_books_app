@@ -1,91 +1,134 @@
-import 'dart:math';
+// ignore_for_file: prefer_const_constructors,prefer_const_literals_to_create_immutables, sized_box_for_whitespace, prefer_final_fields
 
-import 'package:flappy_search_bar_ns/flappy_search_bar_ns.dart';
-import 'package:flappy_search_bar_ns/scaled_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:google_play_books_app/data/vos/book_vo.dart';
-import 'package:google_play_books_app/viewitems/book_and_row_title_view.dart';
-import 'package:google_play_books_app/widgets/your_books_by_list_section_view.dart';
+import 'package:google_play_books_app/dummy/dummy_data.dart';
+import 'package:google_play_books_app/pages/book_details.dart';
+import 'package:google_play_books_app/resources/colors.dart';
+import 'package:google_play_books_app/resources/dimens.dart';
+import 'package:google_play_books_app/widgets/searh_widget.dart';
+import 'package:google_play_books_app/widgets/title_and_horizontal_books_list_view.dart';
 
-class Home extends StatefulWidget {
+class SearchPage extends StatefulWidget {
   @override
-  _HomeState createState() => _HomeState();
+  State<SearchPage> createState() => _SearchPageState();
 }
 
-class _HomeState extends State<Home> {
-  final SearchBarController<BookVO> _searchBarController =
-      SearchBarController();
-  bool isReplay = false;
+class _SearchPageState extends State<SearchPage> {
+  String query = '';
 
-  Future<List<BookVO>> _getALlPosts(String? text) async {
-    await Future.delayed(Duration(seconds: text!.length == 4 ? 10 : 1));
-    if (isReplay)
-      return [
-        BookVO(
-          "The Marathon Don't stop !",
-        )
-      ];
-    if (text.length == 5) throw Error();
-    if (text.length == 6) return [];
-    List<BookVO> books = [];
-
-    var random = new Random();
-    for (int i = 0; i < 10; i++) {
-      books.add(
-        BookVO("$text $i"),
-      );
-    }
-    return books;
-  }
+  List<BookVO> allBokks = dummyBooks;
+  List<BookVO> searchedBooks = [];
+  bool isOntapChanged = false;
+  bool isOnTapSubmitted = false;
+  List<String> showSuggestion=[];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: SearchBar<BookVO>(
-          searchBarPadding: EdgeInsets.symmetric(horizontal: 10),
-          headerPadding: EdgeInsets.symmetric(horizontal: 10),
-          listPadding: EdgeInsets.symmetric(horizontal: 10),
-          onSearch: _getALlPosts,
-          searchBarController: _searchBarController,
-          onError: (error) => Text('ERROR: ${error.toString()}'),
-          // placeHolder: Text("placeholder"),
-          hintText: "Search Play Books",
-          cancellationWidget: Text("Cancel"),
-          emptyWidget: Text("empty"),
-          indexedScaledTileBuilder: (int index) =>
-              ScaledTile.count(1, index.isEven ? 2 : 1),
-
-          onCancelled: () {
-            print("Cancelled triggered");
-          },
-          mainAxisSpacing: 10,
-          // crossAxisSpacing: 10,
-          crossAxisCount: 1,
-          onItemFound: (BookVO? post, int index) {
-            return YourBooksByListSectionView();
+      appBar: AppBar(
+        titleSpacing: MARGIN_SMALL - 7,
+        backgroundColor: Colors.white,
+        elevation: 0.2,
+        iconTheme: IconThemeData(color: ICON_COLOR),
+        toolbarHeight: MediaQuery.of(context).size.height * 0.07,
+        title: SearchWidget(
+          searchText: query,
+          onChanged: searchBook,
+          onTapSubmitted: searchSubmittedBook,
+          onTapClear: () {
+            setState(() {
+              isOnTapSubmitted = false;
+              // searchedBooks.remove(searchedBooks);
+            });
           },
         ),
-      ),
-    );
-  }
-}
-
-class Detail extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () => Navigator.of(context).pop(),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: MARGIN_MEDIUM),
+            child: Icon(
+              Icons.mic,
+              color: ICON_COLOR,
             ),
-            Text("Detail"),
-          ],
-        ),
+          ),
+        ],
+      ),
+      body: Column(
+        children: <Widget>[
+          (query.isNotEmpty)
+              ? Expanded(
+                  child: (!isOnTapSubmitted)
+                      ? ListView.builder(
+                          itemCount: searchedBooks.length,
+                          itemBuilder: (context, index) {
+                            return buildBook(searchedBooks[index]);
+                          },
+                        )
+                      : GoogleBooksHorizontalListSectionView(
+                          books: searchedBooks,
+                          booksCategoriesLabel: "Shop",
+                          navigateToDetails: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => BookDetails(
+                                        searchedBooks[1],
+                                        books: searchedBooks)));
+                          },
+                        ),
+                )
+              : Row(
+            children: [
+              Icon(Icons.timelapse),
+              Text(showSuggestion.reversed.take(4).toString()),
+            ],
+          ),
+        ],
       ),
     );
   }
+
+  void searchBook(String query) {
+    setState(() {
+      isOnTapSubmitted = false;
+      searchedBooks = allBokks.where((book) {
+        final titleLower = book.title.toLowerCase();
+        // final authorLower = book.author.toLowerCase();
+        final searchLower = query.toLowerCase();
+
+        return titleLower.contains(searchLower);
+        // || authorLower.contains(searchLower);
+      }).toList();
+      this.query = query;
+      allBokks = searchedBooks;
+    });
+  }
+
+  void searchSubmittedBook(String query) {
+    setState(() {
+      isOnTapSubmitted = true;
+      showSuggestion.add(query);
+      searchedBooks = allBokks.where((book) {
+        final titleLower = book.title.toLowerCase();
+        // final authorLower = book.author.toLowerCase();
+        final searchLower = query.toLowerCase();
+
+        return titleLower.contains(searchLower);
+        // || authorLower.contains(searchLower);
+      }).toList();
+      this.query = query;
+      allBokks = searchedBooks;
+    });
+  }
+
+  Widget buildBook(BookVO book) => ListTile(
+        leading: Image.network(
+          book.imageUrl ?? "",
+          fit: BoxFit.cover,
+          width: 50,
+          height: 50,
+        ),
+        title: Text(book.title),
+        // subtitle: Text(book.author),
+      );
 }
