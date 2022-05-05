@@ -35,7 +35,7 @@ class BookViewWithBookTitleView extends StatelessWidget {
           visible: seePrice,
           child: Expanded(
             child: Text(
-              "\$2.89",
+              "\$ ${books?.price ?? 0}",
               style: TextStyle(
                   color: TITLE_COLOR,
                   fontSize: 13,

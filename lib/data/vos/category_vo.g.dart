@@ -3,6 +3,68 @@
 part of 'category_vo.dart';
 
 // **************************************************************************
+// TypeAdapterGenerator
+// **************************************************************************
+
+class CategoryVoAdapter extends TypeAdapter<CategoryVO> {
+  @override
+  final int typeId = 2;
+
+  @override
+  CategoryVO read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return CategoryVO(
+      fields[0] as int?,
+      fields[1] as String?,
+      fields[2] as String?,
+      fields[3] as String?,
+      fields[4] as String?,
+      fields[5] as String?,
+      fields[6] as double?,
+      fields[7] as double?,
+      (fields[8] as List?)?.cast<BookVO>(),
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, CategoryVO obj) {
+    writer
+      ..writeByte(9)
+      ..writeByte(0)
+      ..write(obj.listId)
+      ..writeByte(1)
+      ..write(obj.listName)
+      ..writeByte(2)
+      ..write(obj.listNameEncoded)
+      ..writeByte(3)
+      ..write(obj.displayName)
+      ..writeByte(4)
+      ..write(obj.updated)
+      ..writeByte(5)
+      ..write(obj.listImage)
+      ..writeByte(6)
+      ..write(obj.listImageWidth)
+      ..writeByte(7)
+      ..write(obj.listImageHeight)
+      ..writeByte(8)
+      ..write(obj.books);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CategoryVoAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+// **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
