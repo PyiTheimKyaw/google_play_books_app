@@ -10,7 +10,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import 'package:hive/hive.dart';
 
-
 void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(OverviewVOAdapter());
@@ -20,6 +19,7 @@ void main() async {
 
   await Hive.openBox<OverviewVo>(BOX_NAME_OVERVIEW_VO);
   await Hive.openBox<BookVO>(BOX_NAME_BOOK_VO);
+  await Hive.openBox<BookVO>(BOX_NAME_BOOK_VO_FOR_RECENT);
   runApp(MyApp());
 }
 

@@ -10,11 +10,11 @@ class BookDao {
   }
 
   void saveSingleBook(BookVO book) async {
-    await getBookBox().put(book.title, book);
+    await getBookBoxFroRecent().put(book.title, book);
   }
 
   BookVO? getBook(String bookTitle) {
-    return getBookBox().get(bookTitle);
+    return getBookBoxFroRecent().get(bookTitle);
   }
 
   List<BookVO> getAllBooks() {
@@ -23,5 +23,9 @@ class BookDao {
 
   Box<BookVO> getBookBox() {
     return Hive.box<BookVO>(BOX_NAME_BOOK_VO);
+  }
+
+  Box<BookVO> getBookBoxFroRecent() {
+    return Hive.box<BookVO>(BOX_NAME_BOOK_VO_FOR_RECENT);
   }
 }

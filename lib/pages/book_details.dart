@@ -27,35 +27,34 @@ class BookDetails extends StatefulWidget {
   String? bookTitle;
   String list;
 
-  BookDetails(this.book, {required this.books,required this.category,required this.bookTitle,required this.list});
+  BookDetails(this.book,
+      {required this.books,
+      required this.category,
+      required this.bookTitle,
+      required this.list});
 
   @override
   State<BookDetails> createState() => _BookDetailsState();
 }
 
 class _BookDetailsState extends State<BookDetails> {
-  BookVO? book;
-  BookModel mBookModel=BookModelImpl();
+  BookModel mBookModel = BookModelImpl();
   OverviewVo? overview;
+
+  List<BookVO> recentList = [];
   @override
   void initState() {
-    print(widget.list);
-    mBookModel.getCategories().then((value) {
-      setState(() {
-        overview = value;
+    if (widget.book != null) {
+      mBookModel.saveSingleBook(widget.book!).then((value) {
+        print("Book => ${value.toString()}");
+        setState(() {
+          recentList.add(value!);
+        });
+        print("Recent list => ${recentList.toString()}");
       });
-      mBookModel.saveSingleBook(widget.list ,overview?.bestSellersDate ?? "",
-          overview?.publishedDate ?? "").then((value) {
-         setState(() {
-           book=value;
-         });
-         print(overview?.bestSellersDate);
-         print(overview?.publishedDate);
-         print("Book details =? ${book.toString()}");
-      });
-    });
-
+    }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,7 +88,10 @@ class _BookDetailsState extends State<BookDetails> {
               Padding(
                 padding: const EdgeInsets.symmetric(
                     horizontal: MARGIN_MEDIUM_2, vertical: MARGIN_MEDIUM_3),
-                child: BookDetailsSectionView(bookTitle: widget.bookTitle,book: widget.book,),
+                child: BookDetailsSectionView(
+                  bookTitle: widget.bookTitle,
+                  book: widget.book,
+                ),
               ),
               AboutBookTypeAndReviewSectionView(),
               SizedBox(
@@ -99,20 +101,25 @@ class _BookDetailsState extends State<BookDetails> {
               SizedBox(
                 height: MARGIN_LARGE,
               ),
-              AboutEbooksSectionView(books: widget.books,category: widget.category,),
-              AboutTheAuthorSectionView(books: widget.books,category: widget.category,),
+              AboutEbooksSectionView(
+                books: widget.books,
+                category: widget.category,
+              ),
+              AboutTheAuthorSectionView(
+                books: widget.books,
+                category: widget.category,
+              ),
               GoogleBooksHorizontalListSectionView(
                 index: 1,
                 category: widget.category,
                 categoryIndex: 0,
                 books: widget.books,
                 booksCategoriesLabel: "Similar Ebooks",
-                navigateToDetails: (i,j) {
+                navigateToDetails: (i, j) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => BookDetails(
-
                         widget.book,
                         bookTitle: widget.bookTitle,
                         books: widget.books,
@@ -197,7 +204,7 @@ class AboutBookTypeAndReviewSectionView extends StatelessWidget {
 }
 
 class AboutTheAuthorSectionView extends StatelessWidget {
-   AboutTheAuthorSectionView({
+  AboutTheAuthorSectionView({
     Key? key,
     required this.books,
     required this.category,
@@ -213,8 +220,12 @@ class AboutTheAuthorSectionView extends StatelessWidget {
       height: MediaQuery.of(context).size.height / 5,
       child: Column(
         children: [
-          CategoriesLabelAndMoreView(index: 1,
-              books: books, booksCategoriesLabel: "About the author",category: category,),
+          CategoriesLabelAndMoreView(
+            index: 1,
+            books: books,
+            booksCategoriesLabel: "About the author",
+            category: category,
+          ),
           Text(
             "Project Hail Mary is a 2021 science fiction novel by American novelist Andy Weir. Set in "
             "the near future, the novel centers on junior high (middle) school-teacher-turned-astronaut "
@@ -229,7 +240,7 @@ class AboutTheAuthorSectionView extends StatelessWidget {
 }
 
 class AboutEbooksSectionView extends StatelessWidget {
-   AboutEbooksSectionView({
+  AboutEbooksSectionView({
     Key? key,
     required this.books,
     required this.category,
@@ -245,8 +256,12 @@ class AboutEbooksSectionView extends StatelessWidget {
       height: MediaQuery.of(context).size.height / 5,
       child: Column(
         children: [
-          CategoriesLabelAndMoreView(index: 1,
-              books: books, booksCategoriesLabel: "About this eBook",category:category ,),
+          CategoriesLabelAndMoreView(
+            index: 1,
+            books: books,
+            booksCategoriesLabel: "About this eBook",
+            category: category,
+          ),
           Text(
             "Project Hail Mary is a 2021 science fiction novel by American novelist Andy Weir. Set in "
             "the near future, the novel centers on junior high (middle) school-teacher-turned-astronaut "
@@ -283,10 +298,10 @@ class ButtonSectionView extends StatelessWidget {
 }
 
 class BookDetailsSectionView extends StatelessWidget {
-   BookDetailsSectionView({
+  BookDetailsSectionView({
     Key? key,
     required this.bookTitle,
-     required this.book,
+    required this.book,
   }) : super(key: key);
 
   String? bookTitle;
@@ -299,20 +314,22 @@ class BookDetailsSectionView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         BookItemView(
-          bookList:book,
-         bookTitle: bookTitle,
+          bookList: book,
+          bookTitle: bookTitle,
         ),
         SizedBox(
           width: 16,
         ),
-        BookDetailsView(book: book,),
+        BookDetailsView(
+          book: book,
+        ),
       ],
     );
   }
 }
 
 class BookDetailsView extends StatelessWidget {
-   BookDetailsView({
+  BookDetailsView({
     Key? key,
     required this.book,
   }) : super(key: key);

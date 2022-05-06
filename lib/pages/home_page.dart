@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage>
 
   BookModel mBookModel = BookModelImpl();
   List<CategoryVO>? categoriesList;
-  List<BookVO> recentBooks=[];
+  List<BookVO>? recentBooks;
   OverviewVo? overview;
   String? title;
 
@@ -46,8 +46,21 @@ class _HomePageState extends State<HomePage>
         categoriesList = overview?.lists;
         overview = overview;
       });
+      categoriesList?.map((category) {
+        category.bookDetails?.map((book) {
+          mBookModel.getSingleBook(book.title ?? "").then((recentBook) {
+            setState(() {
+              recentBooks?.add(recentBook!);
+            });
+            print("Recent book list => ${recentBook.toString()}");
+          });
+        });
+      });
 
-      print("Recent book list => ${recentBooks.toString()}");
+      Future.delayed(Duration(seconds: 5), () {
+        print("Recent book list1 => ${recentBooks.toString()}");
+      });
+
       print("Category list length => ${categoriesList?.length}");
     });
 
@@ -278,7 +291,7 @@ class RecentViewBooks extends StatelessWidget {
               )
             ],
           ),
-          child: BookItemView(bookTitle: "", bookList:booksList?[index] ),
+          child: BookItemView(bookTitle: "", bookList: booksList?[index]),
         );
       },
     );

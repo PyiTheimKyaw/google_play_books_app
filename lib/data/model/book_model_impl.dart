@@ -31,28 +31,9 @@ class BookModelImpl extends BookModel {
   }
 
   @override
-  void saveSingleBook(
-      String list, String bestSellersDate, String publishedDate) {
-     mDataAgent.getBooksList(list, bestSellersDate, publishedDate).then((value) {
-      value?.map((e) {
-e.bookDetails?.map((e) {
-  BookVO book=e;
-  bookDao.saveSingleBook(book);
-});
-      });
-    });
-    // return mDataAgent
-    //     .getBooksList(list, bestSellersDate, publishedDate)
-    //     .then((value) {
-    //   value
-    //       ?.map((e) => {
-    //            e.bookDetails?.forEach((element) {
-    //           return  bookDao.saveSingleBook(element);
-    //            })
-    //           })
-    //       .toList();
-    //   return Future.value(value);
-    // });
+  Future<BookVO?> saveSingleBook(BookVO book) {
+    bookDao.saveSingleBook(book);
+    return Future.value(book);
   }
 
   @override
