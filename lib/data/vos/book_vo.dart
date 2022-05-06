@@ -83,33 +83,37 @@ class BookVO {
   @JsonKey(name: 'buy_links')
   @HiveField(24)
   List<BuyLinksVO>? buyLinks;
+  @HiveField(25)
+  DateTime? time;
 
   BookVO(
-      this.ageGroup,
-      this.amazonProductUrl,
-      this.articleChapterLink,
-      this.author,
-      this.bookImage,
-      this.booImageWidth,
-      this.bookImageHeight,
-      this.bookReviewLink,
-      this.contributor,
-      this.contributorNote,
-      this.createdDate,
-      this.description,
-      this.firstChapterLink,
-      this.price,
-      this.primaryIsbn10,
-      this.primaryIsbn13,
-      this.bookUri,
-      this.publisher,
-      this.rank,
-      this.rankLastWeek,
-      this.sundayReviewLink,
-      this.title,
-      this.updatedDate,
-      this.weeksOnList,
-      this.buyLinks);
+    this.ageGroup,
+    this.amazonProductUrl,
+    this.articleChapterLink,
+    this.author,
+    this.bookImage,
+    this.booImageWidth,
+    this.bookImageHeight,
+    this.bookReviewLink,
+    this.contributor,
+    this.contributorNote,
+    this.createdDate,
+    this.description,
+    this.firstChapterLink,
+    this.price,
+    this.primaryIsbn10,
+    this.primaryIsbn13,
+    this.bookUri,
+    this.publisher,
+    this.rank,
+    this.rankLastWeek,
+    this.sundayReviewLink,
+    this.title,
+    this.updatedDate,
+    this.weeksOnList,
+    this.buyLinks,
+    this.time,
+  );
 
   factory BookVO.fromJson(Map<String, dynamic> json) => _$BookVOFromJson(json);
 

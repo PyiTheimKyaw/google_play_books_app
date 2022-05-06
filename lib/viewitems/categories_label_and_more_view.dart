@@ -8,17 +8,14 @@ import 'package:google_play_books_app/pages/more_view_page.dart';
 import 'package:google_play_books_app/resources/dimens.dart';
 
 class CategoriesLabelAndMoreView extends StatelessWidget {
-  CategoriesLabelAndMoreView({
-    Key? key,
-    required this.booksCategoriesLabel,
-    required this.books,
-    required this.category,
-    required this.index,
-  }) : super(key: key);
-  List<BookVO>? books;
+  // List<BookVO>? books;
   CategoryVO? category;
   final String booksCategoriesLabel;
   int index;
+
+  CategoriesLabelAndMoreView(
+      {required this.category,required this.booksCategoriesLabel,required this.index});
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -39,8 +36,6 @@ class CategoriesLabelAndMoreView extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (context) => MoreViewPage(
                     index: index,
-                    books: books,
-                    category: category,
                     list: category?.listNameEncoded ?? "",
                   ),
                 ),

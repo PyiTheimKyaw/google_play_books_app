@@ -25,9 +25,24 @@ class BookModelImpl extends BookModel {
     return mDataAgent
         .getBooksList(list, bestSellersDate, publishedDate)
         .then((value) {
+      // List<CategoryVO>? categoryList = value?.map((e) {
+      //   e.bookDetails?.map((e) {
+      //     e.time = DateTime.now();
+      //   });
+      //   return e;
+      // }).toList();
+      // categoryList?.map((e) {
+      //   bookDao.saveAllBooks(e.bookDetails ?? []);
+      // });
       value?.map((e) => {bookDao.saveAllBooks(e.bookDetails ?? [])}).toList();
       return Future.value(value);
     });
+  }
+
+  @override
+  Future<List<BookVO>?> saveAllRecentBooks(List<BookVO> booksList) {
+    bookDao.saveRecentAllBooks(booksList);
+    return Future.value(booksList);
   }
 
   @override
@@ -50,5 +65,10 @@ class BookModelImpl extends BookModel {
   @override
   Future<BookVO?> getSingleBook(String bookTitle) {
     return Future.value(bookDao.getBook(bookTitle));
+  }
+
+  @override
+  Future<List<BookVO>?> getAllRecentBooks() {
+    return Future.value(bookDao.getAllRecentBooks());
   }
 }

@@ -6,5 +6,5 @@ abstract class BookDataAgent{
 
   Future<OverviewVo?> getCategories();
   Future<List<CategoryVO>?> getBooksList(String list,String bestSellersDate,String publishedDate);
-  Future<BookVO?> getBook(String list,String bestSellersDate,String publishedDate);
+
 }

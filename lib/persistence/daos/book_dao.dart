@@ -4,28 +4,38 @@ import 'package:hive/hive.dart';
 
 class BookDao {
   void saveAllBooks(List<BookVO> booksList) async {
-    Map<int, BookVO> booksMap = Map.fromIterable(booksList,
-        key: (book) => book.id, value: (book) => book);
+    Map<String, BookVO> booksMap = Map.fromIterable(booksList,
+        key: (book) => book.title, value: (book) => book);
     await getBookBox().putAll(booksMap);
   }
 
+  void saveRecentAllBooks(List<BookVO> booksList) async {
+    Map<String, BookVO> booksMap = Map.fromIterable(booksList,
+        key: (book) => book.title, value: (book) => book);
+    await getBookBoxForRecent().putAll(booksMap);
+  }
+
   void saveSingleBook(BookVO book) async {
-    await getBookBoxFroRecent().put(book.title, book);
+    await getBookBoxForRecent().put(book.title, book);
   }
 
   BookVO? getBook(String bookTitle) {
-    return getBookBoxFroRecent().get(bookTitle);
+    return getBookBoxForRecent().get(bookTitle);
   }
 
   List<BookVO> getAllBooks() {
     return getBookBox().values.toList();
   }
 
+  List<BookVO> getAllRecentBooks() {
+    return getBookBoxForRecent().values.toList();
+  }
+
   Box<BookVO> getBookBox() {
     return Hive.box<BookVO>(BOX_NAME_BOOK_VO);
   }
 
-  Box<BookVO> getBookBoxFroRecent() {
+  Box<BookVO> getBookBoxForRecent() {
     return Hive.box<BookVO>(BOX_NAME_BOOK_VO_FOR_RECENT);
   }
 }

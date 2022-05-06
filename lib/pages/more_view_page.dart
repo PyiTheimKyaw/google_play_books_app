@@ -11,14 +11,12 @@ import 'package:google_play_books_app/widgets/your_books_by_grid_section_view.da
 import 'package:google_play_books_app/widgets/your_books_by_large_grid_section_view.dart';
 
 class MoreViewPage extends StatefulWidget {
-  List<BookVO>? books;
-  CategoryVO? category;
+
   String list;
   int index;
 
   MoreViewPage({
-    required this.books,
-    required this.category,
+
     required this.list,
     required this.index,
   });
@@ -47,11 +45,11 @@ class _MoreViewPageState extends State<MoreViewPage> {
           .then((value) {
         setState(() {
           viewMoreList = value;
-          books=value?[widget.index].bookDetails;
+          books = value?[widget.index].bookDetails;
         });
         print(viewMoreList.toString());
         print("Books => ${books.toString()}");
-      }).catchError((error){
+      }).catchError((error) {
         print("Error ${error.toString()}");
       });
 

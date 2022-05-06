@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors,prefer_const_literals_to_create_immutables
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_play_books_app/data/model/book_model.dart';
 import 'package:google_play_books_app/data/model/book_model_impl.dart';
@@ -27,8 +28,9 @@ class BookDetails extends StatefulWidget {
   String? bookTitle;
   String list;
 
-  BookDetails(this.book,
-      {required this.books,
+  BookDetails(
+      {required this.book,
+      required this.books,
       required this.category,
       required this.bookTitle,
       required this.list});
@@ -41,16 +43,24 @@ class _BookDetailsState extends State<BookDetails> {
   BookModel mBookModel = BookModelImpl();
   OverviewVo? overview;
 
-  List<BookVO> recentList = [];
+  List<BookVO>? recentList;
+
   @override
   void initState() {
     if (widget.book != null) {
       mBookModel.saveSingleBook(widget.book!).then((value) {
         print("Book => ${value.toString()}");
         setState(() {
-          recentList.add(value!);
+          value?.time = DateTime.now();
+          // List<BookVO>? tmpoRecent;
+          // tmpoRecent?.add(value!);
+          recentList?.add(value!);
         });
-        print("Recent list => ${recentList.toString()}");
+
+        mBookModel.saveAllRecentBooks(recentList ?? []);
+        Future.delayed(Duration(seconds: 5), () {
+          print("Recent list => ${recentList.toString()}");
+        });
       });
     }
   }
@@ -59,8 +69,17 @@ class _BookDetailsState extends State<BookDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         elevation: 0,
         iconTheme: IconThemeData(color: ICON_COLOR),
+        leading: GestureDetector(
+            onTap: () {
+              Navigator.of(context).pop(true);
+            },
+            child: Icon(
+              Icons.chevron_left,
+              color: ICON_COLOR,
+            )),
         backgroundColor: Colors.white,
         actions: [
           icon(Icons.search),
@@ -102,11 +121,9 @@ class _BookDetailsState extends State<BookDetails> {
                 height: MARGIN_LARGE,
               ),
               AboutEbooksSectionView(
-                books: widget.books,
                 category: widget.category,
               ),
               AboutTheAuthorSectionView(
-                books: widget.books,
                 category: widget.category,
               ),
               GoogleBooksHorizontalListSectionView(
@@ -120,7 +137,7 @@ class _BookDetailsState extends State<BookDetails> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => BookDetails(
-                        widget.book,
+                        book:  widget.book,
                         bookTitle: widget.bookTitle,
                         books: widget.books,
                         category: widget.category,
@@ -129,7 +146,7 @@ class _BookDetailsState extends State<BookDetails> {
                     ),
                   );
                 },
-              )
+              ),
             ],
           ),
         ),
@@ -206,11 +223,9 @@ class AboutBookTypeAndReviewSectionView extends StatelessWidget {
 class AboutTheAuthorSectionView extends StatelessWidget {
   AboutTheAuthorSectionView({
     Key? key,
-    required this.books,
     required this.category,
   }) : super(key: key);
 
-  final List<BookVO>? books;
   CategoryVO? category;
 
   @override
@@ -222,7 +237,6 @@ class AboutTheAuthorSectionView extends StatelessWidget {
         children: [
           CategoriesLabelAndMoreView(
             index: 1,
-            books: books,
             booksCategoriesLabel: "About the author",
             category: category,
           ),
@@ -242,11 +256,9 @@ class AboutTheAuthorSectionView extends StatelessWidget {
 class AboutEbooksSectionView extends StatelessWidget {
   AboutEbooksSectionView({
     Key? key,
-    required this.books,
     required this.category,
   }) : super(key: key);
 
-  final List<BookVO>? books;
   CategoryVO? category;
 
   @override
@@ -258,7 +270,6 @@ class AboutEbooksSectionView extends StatelessWidget {
         children: [
           CategoriesLabelAndMoreView(
             index: 1,
-            books: books,
             booksCategoriesLabel: "About this eBook",
             category: category,
           ),
@@ -334,6 +345,7 @@ class BookDetailsView extends StatelessWidget {
     required this.book,
   }) : super(key: key);
   BookVO? book;
+
   @override
   Widget build(BuildContext context) {
     return Flexible(

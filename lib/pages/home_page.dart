@@ -46,22 +46,20 @@ class _HomePageState extends State<HomePage>
         categoriesList = overview?.lists;
         overview = overview;
       });
-      categoriesList?.map((category) {
-        category.bookDetails?.map((book) {
-          mBookModel.getSingleBook(book.title ?? "").then((recentBook) {
-            setState(() {
-              recentBooks?.add(recentBook!);
-            });
-            print("Recent book list => ${recentBook.toString()}");
-          });
-        });
-      });
 
       Future.delayed(Duration(seconds: 5), () {
         print("Recent book list1 => ${recentBooks.toString()}");
       });
 
       print("Category list length => ${categoriesList?.length}");
+    });
+
+    mBookModel.getAllRecentBooks().then((books) {
+      setState(() {
+        recentBooks = books;
+      });
+      recentBooks?.sort((a, b) =>
+          (b.time ?? DateTime.now()).compareTo(a.time ?? DateTime.now()));
     });
 
     super.initState();
@@ -72,13 +70,23 @@ class _HomePageState extends State<HomePage>
         context,
         MaterialPageRoute(
             builder: (context) => BookDetails(
-                  categoriesList?[categoryIndex ?? 0].books?[title ?? 0],
+                  book: categoriesList?[categoryIndex ?? 0].books?[title ?? 0],
                   books: booksList ?? [],
                   bookTitle: "title",
                   category: categoriesList?[1],
                   list:
                       categoriesList?[categoryIndex ?? 0].listNameEncoded ?? "",
-                )));
+                ))).then((value) {
+      if (value == true) {
+        mBookModel.getAllRecentBooks().then((books) {
+          setState(() {
+            recentBooks = books;
+          });
+          recentBooks?.sort((a, b) =>
+              (b.time ?? DateTime.now()).compareTo(a.time ?? DateTime.now()));
+        });
+      }
+    });
   }
 
   @override
@@ -98,7 +106,11 @@ class _HomePageState extends State<HomePage>
             headerSliverBuilder:
                 (BuildContext context, bool innerBoxIsScrolled) {
               return [
-                RecentBooksListSectionView(booksList: recentBooks),
+                (recentBooks != [])
+                    ? RecentBooksListSectionView(booksList: recentBooks)
+                    : Container(
+                        height: 2,
+                      ),
                 TabsSectionView(tabController: _tabController),
                 DividerSectionView(),
               ];
@@ -108,7 +120,6 @@ class _HomePageState extends State<HomePage>
               children: [
                 EbooksSectionView(
                     category: categoriesList,
-                    booksList: booksList,
                     navigatePage: (categoryIndex, index) {
                       navigateToBookDetails(
                         context,
@@ -130,14 +141,10 @@ class _HomePageState extends State<HomePage>
 }
 
 class EbooksSectionView extends StatelessWidget {
-  final List<BookVO>? booksList;
   final Function(int?, int?) navigatePage;
   List<CategoryVO>? category;
 
-  EbooksSectionView(
-      {required this.booksList,
-      required this.navigatePage,
-      required this.category});
+  EbooksSectionView({required this.navigatePage, required this.category});
 
   @override
   Widget build(BuildContext context) {

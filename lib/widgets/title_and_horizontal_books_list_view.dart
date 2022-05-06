@@ -35,7 +35,6 @@ class GoogleBooksHorizontalListSectionView extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
           child: CategoriesLabelAndMoreView(
             booksCategoriesLabel: booksCategoriesLabel,
-            books: books,
             category: category,
             index: index,
           ),
