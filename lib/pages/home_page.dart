@@ -7,6 +7,7 @@ import 'package:google_play_books_app/data/model/book_model_impl.dart';
 import 'package:google_play_books_app/data/vos/book_vo.dart';
 import 'package:google_play_books_app/data/vos/book_vo_test.dart';
 import 'package:google_play_books_app/data/vos/category_vo.dart';
+import 'package:google_play_books_app/data/vos/overview_vo.dart';
 import 'package:google_play_books_app/dummy/dummy_data.dart';
 import 'package:google_play_books_app/pages/book_details.dart';
 import 'package:google_play_books_app/resources/dimens.dart';
@@ -29,6 +30,9 @@ class _HomePageState extends State<HomePage>
 
   BookModel mBookModel = BookModelImpl();
   List<CategoryVO>? categoriesList;
+  List<BookVO> recentBooks=[];
+  OverviewVo? overview;
+  String? title;
 
   @override
   void initState() {
@@ -40,22 +44,27 @@ class _HomePageState extends State<HomePage>
     mBookModel.getCategories().then((overview) {
       setState(() {
         categoriesList = overview?.lists;
+        overview = overview;
       });
+
+      print("Recent book list => ${recentBooks.toString()}");
       print("Category list length => ${categoriesList?.length}");
     });
 
     super.initState();
   }
 
-  navigateToBookDetails(BuildContext context, int? categoryIndex,int? title) {
+  navigateToBookDetails(BuildContext context, int? categoryIndex, int? title) {
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => BookDetails(
-                  categoriesList?[categoryIndex?? 0].books?[title ?? 0],
+                  categoriesList?[categoryIndex ?? 0].books?[title ?? 0],
                   books: booksList ?? [],
                   bookTitle: "title",
                   category: categoriesList?[1],
+                  list:
+                      categoriesList?[categoryIndex ?? 0].listNameEncoded ?? "",
                 )));
   }
 
@@ -76,7 +85,7 @@ class _HomePageState extends State<HomePage>
             headerSliverBuilder:
                 (BuildContext context, bool innerBoxIsScrolled) {
               return [
-                // RecentBooksListSectionView(booksList: categoriesList),
+                RecentBooksListSectionView(booksList: recentBooks),
                 TabsSectionView(tabController: _tabController),
                 DividerSectionView(),
               ];
@@ -87,7 +96,7 @@ class _HomePageState extends State<HomePage>
                 EbooksSectionView(
                     category: categoriesList,
                     booksList: booksList,
-                    navigatePage: (categoryIndex,index) {
+                    navigatePage: (categoryIndex, index) {
                       navigateToBookDetails(
                         context,
                         categoryIndex,
@@ -97,8 +106,8 @@ class _HomePageState extends State<HomePage>
                 AudioBooksSectionView(
                     category: categoriesList,
                     booksList: booksList,
-                    navigatePage: (categoryIndex,index) {
-                      navigateToBookDetails(context,categoryIndex, index);
+                    navigatePage: (categoryIndex, index) {
+                      navigateToBookDetails(context, categoryIndex, index);
                     }),
               ],
             )),
@@ -109,7 +118,7 @@ class _HomePageState extends State<HomePage>
 
 class EbooksSectionView extends StatelessWidget {
   final List<BookVO>? booksList;
-  final Function(int?,int?) navigatePage;
+  final Function(int?, int?) navigatePage;
   List<CategoryVO>? category;
 
   EbooksSectionView(
@@ -123,11 +132,12 @@ class EbooksSectionView extends StatelessWidget {
         itemCount: category?.length ?? 0,
         itemBuilder: (context, index) {
           return GoogleBooksHorizontalListSectionView(
+            index: index,
             books: category?[index].books ?? [],
             category: category?[index],
             categoryIndex: index,
-            navigateToDetails: (index,title) {
-              navigatePage(index,title);
+            navigateToDetails: (index, title) {
+              navigatePage(index, title);
             },
             booksCategoriesLabel: category?[index].listName ?? "",
           );
@@ -137,7 +147,7 @@ class EbooksSectionView extends StatelessWidget {
 
 class AudioBooksSectionView extends StatelessWidget {
   final List<BookVO>? booksList;
-  final Function(int?,int?) navigatePage;
+  final Function(int?, int?) navigatePage;
   List<CategoryVO>? category;
 
   AudioBooksSectionView(
@@ -151,11 +161,12 @@ class AudioBooksSectionView extends StatelessWidget {
         itemCount: booksList?.length,
         itemBuilder: (context, index) {
           return GoogleBooksHorizontalListSectionView(
+            index: index,
             category: category?[index],
             categoryIndex: index,
             books: booksList,
-            navigateToDetails: (index,title) {
-              navigatePage(index,title);
+            navigateToDetails: (index, title) {
+              navigatePage(index, title);
             },
             booksCategoriesLabel: "Tales of terror & intrigue",
           );
@@ -218,7 +229,7 @@ class RecentBooksListSectionView extends StatelessWidget {
     required this.booksList,
   }) : super(key: key);
 
-  final List<CategoryVO>? booksList;
+  final List<BookVO>? booksList;
 
   @override
   Widget build(BuildContext context) {
@@ -229,14 +240,14 @@ class RecentBooksListSectionView extends StatelessWidget {
 }
 
 class RecentViewBooks extends StatelessWidget {
-  List<CategoryVO>? booksList;
+  List<BookVO>? booksList;
 
   RecentViewBooks({required this.booksList});
 
   @override
   Widget build(BuildContext context) {
     return CarouselSlider.builder(
-      itemCount: booksList?[1].books?.length,
+      itemCount: booksList?.length ?? 0,
       options: CarouselOptions(
         onPageChanged: (index, reason) {},
         height: MediaQuery.of(context).size.height / 3.5,
@@ -267,7 +278,7 @@ class RecentViewBooks extends StatelessWidget {
               )
             ],
           ),
-          child: Container(),
+          child: BookItemView(bookTitle: "", bookList:booksList?[index] ),
         );
       },
     );

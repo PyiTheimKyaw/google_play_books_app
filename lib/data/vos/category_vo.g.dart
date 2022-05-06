@@ -26,13 +26,24 @@ class CategoryVoAdapter extends TypeAdapter<CategoryVO> {
       fields[6] as double?,
       fields[7] as double?,
       (fields[8] as List?)?.cast<BookVO>(),
+      fields[9] as String?,
+      fields[10] as String?,
+      fields[11] as int?,
+      fields[12] as int?,
+      fields[13] as int?,
+      fields[14] as int?,
+      fields[15] as int?,
+      fields[16] as String?,
+      (fields[17] as List?)?.cast<dynamic>(),
+      (fields[18] as List?)?.cast<BookVO>(),
+      (fields[19] as List?)?.cast<dynamic>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, CategoryVO obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(20)
       ..writeByte(0)
       ..write(obj.listId)
       ..writeByte(1)
@@ -50,7 +61,29 @@ class CategoryVoAdapter extends TypeAdapter<CategoryVO> {
       ..writeByte(7)
       ..write(obj.listImageHeight)
       ..writeByte(8)
-      ..write(obj.books);
+      ..write(obj.books)
+      ..writeByte(9)
+      ..write(obj.bestSellersDate)
+      ..writeByte(10)
+      ..write(obj.publishedDate)
+      ..writeByte(11)
+      ..write(obj.rank)
+      ..writeByte(12)
+      ..write(obj.rankLastWeek)
+      ..writeByte(13)
+      ..write(obj.weeksOnList)
+      ..writeByte(14)
+      ..write(obj.asterisk)
+      ..writeByte(15)
+      ..write(obj.dagger)
+      ..writeByte(16)
+      ..write(obj.amazonProductUrl)
+      ..writeByte(17)
+      ..write(obj.isbns)
+      ..writeByte(18)
+      ..write(obj.bookDetails)
+      ..writeByte(19)
+      ..write(obj.reviews);
   }
 
   @override
@@ -80,6 +113,19 @@ CategoryVO _$CategoryVOFromJson(Map<String, dynamic> json) => CategoryVO(
       (json['books'] as List<dynamic>?)
           ?.map((e) => BookVO.fromJson(e as Map<String, dynamic>))
           .toList(),
+      json['bestsellers_date'] as String?,
+      json['published_date'] as String?,
+      json['rank'] as int?,
+      json['rank_last_week'] as int?,
+      json['weeks_on_list'] as int?,
+      json['asterisk'] as int?,
+      json['dagger'] as int?,
+      json['amazon_product_url'] as String?,
+      json['isbns'] as List<dynamic>?,
+      (json['book_details'] as List<dynamic>?)
+          ?.map((e) => BookVO.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      json['reviews'] as List<dynamic>?,
     );
 
 Map<String, dynamic> _$CategoryVOToJson(CategoryVO instance) =>
@@ -93,4 +139,15 @@ Map<String, dynamic> _$CategoryVOToJson(CategoryVO instance) =>
       'list_image_width': instance.listImageWidth,
       'list_image_height': instance.listImageHeight,
       'books': instance.books,
+      'bestsellers_date': instance.bestSellersDate,
+      'published_date': instance.publishedDate,
+      'rank': instance.rank,
+      'rank_last_week': instance.rankLastWeek,
+      'weeks_on_list': instance.weeksOnList,
+      'asterisk': instance.asterisk,
+      'dagger': instance.dagger,
+      'amazon_product_url': instance.amazonProductUrl,
+      'isbns': instance.isbns,
+      'book_details': instance.bookDetails,
+      'reviews': instance.reviews,
     };

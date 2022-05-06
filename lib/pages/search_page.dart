@@ -69,6 +69,7 @@ class _SearchPageState extends State<SearchPage> {
                           },
                         )
                       : GoogleBooksHorizontalListSectionView(
+                    index: 1,
                           category: category,
                           books: searchedBooks,
                           booksCategoriesLabel: "Shop",
@@ -82,6 +83,7 @@ class _SearchPageState extends State<SearchPage> {
                                   books: searchedBooks,
                                   bookTitle: "",
                                   category: category,
+                                  list: "",
                                 ),
                               ),
                             );

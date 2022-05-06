@@ -1,9 +1,12 @@
 // ignore_for_file: prefer_const_constructors,prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:google_play_books_app/data/model/book_model.dart';
+import 'package:google_play_books_app/data/model/book_model_impl.dart';
 import 'package:google_play_books_app/data/vos/book_vo.dart';
 import 'package:google_play_books_app/data/vos/book_vo_test.dart';
 import 'package:google_play_books_app/data/vos/category_vo.dart';
+import 'package:google_play_books_app/data/vos/overview_vo.dart';
 import 'package:google_play_books_app/resources/colors.dart';
 import 'package:google_play_books_app/resources/dimens.dart';
 import 'package:google_play_books_app/viewitems/book_item_view.dart';
@@ -17,14 +20,42 @@ Icon icon(IconData icon) {
   );
 }
 
-class BookDetails extends StatelessWidget {
+class BookDetails extends StatefulWidget {
   final List<BookVO>? books;
   final BookVO? book;
   CategoryVO? category;
   String? bookTitle;
+  String list;
 
-  BookDetails(this.book, {required this.books,required this.category,required this.bookTitle});
+  BookDetails(this.book, {required this.books,required this.category,required this.bookTitle,required this.list});
 
+  @override
+  State<BookDetails> createState() => _BookDetailsState();
+}
+
+class _BookDetailsState extends State<BookDetails> {
+  BookVO? book;
+  BookModel mBookModel=BookModelImpl();
+  OverviewVo? overview;
+  @override
+  void initState() {
+    print(widget.list);
+    mBookModel.getCategories().then((value) {
+      setState(() {
+        overview = value;
+      });
+      mBookModel.saveSingleBook(widget.list ,overview?.bestSellersDate ?? "",
+          overview?.publishedDate ?? "").then((value) {
+         setState(() {
+           book=value;
+         });
+         print(overview?.bestSellersDate);
+         print(overview?.publishedDate);
+         print("Book details =? ${book.toString()}");
+      });
+    });
+
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,7 +89,7 @@ class BookDetails extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(
                     horizontal: MARGIN_MEDIUM_2, vertical: MARGIN_MEDIUM_3),
-                child: BookDetailsSectionView(bookTitle: bookTitle,book: book,),
+                child: BookDetailsSectionView(bookTitle: widget.bookTitle,book: widget.book,),
               ),
               AboutBookTypeAndReviewSectionView(),
               SizedBox(
@@ -68,12 +99,13 @@ class BookDetails extends StatelessWidget {
               SizedBox(
                 height: MARGIN_LARGE,
               ),
-              AboutEbooksSectionView(books: books,category: category,),
-              AboutTheAuthorSectionView(books: books,category: category,),
+              AboutEbooksSectionView(books: widget.books,category: widget.category,),
+              AboutTheAuthorSectionView(books: widget.books,category: widget.category,),
               GoogleBooksHorizontalListSectionView(
-                category: category,
+                index: 1,
+                category: widget.category,
                 categoryIndex: 0,
-                books: books,
+                books: widget.books,
                 booksCategoriesLabel: "Similar Ebooks",
                 navigateToDetails: (i,j) {
                   Navigator.push(
@@ -81,10 +113,11 @@ class BookDetails extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (context) => BookDetails(
 
-                        book,
-                        bookTitle: bookTitle,
-                        books: books,
-                        category: category,
+                        widget.book,
+                        bookTitle: widget.bookTitle,
+                        books: widget.books,
+                        category: widget.category,
+                        list: "",
                       ),
                     ),
                   );
@@ -180,7 +213,7 @@ class AboutTheAuthorSectionView extends StatelessWidget {
       height: MediaQuery.of(context).size.height / 5,
       child: Column(
         children: [
-          CategoriesLabelAndMoreView(
+          CategoriesLabelAndMoreView(index: 1,
               books: books, booksCategoriesLabel: "About the author",category: category,),
           Text(
             "Project Hail Mary is a 2021 science fiction novel by American novelist Andy Weir. Set in "
@@ -212,7 +245,7 @@ class AboutEbooksSectionView extends StatelessWidget {
       height: MediaQuery.of(context).size.height / 5,
       child: Column(
         children: [
-          CategoriesLabelAndMoreView(
+          CategoriesLabelAndMoreView(index: 1,
               books: books, booksCategoriesLabel: "About this eBook",category:category ,),
           Text(
             "Project Hail Mary is a 2021 science fiction novel by American novelist Andy Weir. Set in "

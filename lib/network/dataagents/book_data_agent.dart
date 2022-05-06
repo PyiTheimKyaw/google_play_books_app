@@ -5,6 +5,6 @@ import 'package:google_play_books_app/data/vos/overview_vo.dart';
 abstract class BookDataAgent{
 
   Future<OverviewVo?> getCategories();
-  Future<List<BookVO>?> getBooksList();
-
+  Future<List<CategoryVO>?> getBooksList(String list,String bestSellersDate,String publishedDate);
+  Future<BookVO?> getBook(String list,String bestSellersDate,String publishedDate);
 }

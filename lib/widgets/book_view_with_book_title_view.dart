@@ -8,9 +8,10 @@ import 'package:google_play_books_app/viewitems/book_item_view.dart';
 import 'package:google_play_books_app/viewitems/book_view.dart';
 
 class BookViewWithBookTitleView extends StatelessWidget {
-  BookViewWithBookTitleView({this.seePrice=true,required this.books});
+  BookViewWithBookTitleView({this.seePrice=true,required this.books, this.isViewMore=false});
   BookVO? books;
   final bool seePrice;
+  bool isViewMore;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class BookViewWithBookTitleView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        BookItemView(bookList: books,bookTitle: '',),
+        BookItemView(bookList: books,bookTitle: '',isViewMore: isViewMore,),
         SizedBox(
           height: 5,
         ),

@@ -33,6 +33,40 @@ class CategoryVO {
   @JsonKey(name: 'books')
   @HiveField(8)
   List<BookVO>? books;
+  @JsonKey(name: 'bestsellers_date')
+  @HiveField(9)
+  String? bestSellersDate;
+  @JsonKey(name: 'published_date')
+  @HiveField(10)
+  String? publishedDate;
+  @JsonKey(name: 'rank')
+  @HiveField(11)
+  int? rank;
+  @JsonKey(name: 'rank_last_week')
+  @HiveField(12)
+  int? rankLastWeek;
+  @JsonKey(name: 'weeks_on_list')
+  @HiveField(13)
+  int? weeksOnList;
+  @JsonKey(name: 'asterisk')
+  @HiveField(14)
+  int? asterisk;
+  @JsonKey(name: 'dagger')
+  @HiveField(15)
+  int? dagger;
+  @JsonKey(name: 'amazon_product_url')
+  @HiveField(16)
+  String? amazonProductUrl;
+  @JsonKey(name: 'isbns')
+  @HiveField(17)
+  List? isbns;
+  @JsonKey(name: 'book_details')
+  @HiveField(18)
+  List<BookVO>? bookDetails;
+  @JsonKey(name: 'reviews')
+  @HiveField(19)
+  List? reviews;
+
 
   CategoryVO(
       this.listId,
@@ -43,7 +77,18 @@ class CategoryVO {
       this.listImage,
       this.listImageWidth,
       this.listImageHeight,
-      this.books);
+      this.books,
+      this.bestSellersDate,
+      this.publishedDate,
+      this.rank,
+      this.rankLastWeek,
+      this.weeksOnList,
+      this.asterisk,
+      this.dagger,
+      this.amazonProductUrl,
+      this.isbns,
+      this.bookDetails,
+      this.reviews);
 
   factory CategoryVO.fromJson(Map<String,dynamic> json) => _$CategoryVOFromJson(json);
   Map<String,dynamic> toJson() => _$CategoryVOToJson(this);

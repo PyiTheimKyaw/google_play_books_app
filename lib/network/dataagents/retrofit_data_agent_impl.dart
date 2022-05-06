@@ -24,15 +24,30 @@ class RetrofitDataAgentImpl extends BookDataAgent {
   @override
   Future<OverviewVo?> getCategories() {
     return mApi
-        .getList(API_KEY, PUBLISHED_DATE)
+        .getOverview(API_KEY, PUBLISHED_DATE)
         .asStream()
         .map((event) => event.results)
         .first;
   }
 
   @override
-  Future<List<BookVO>?> getBooksList() {
-    // TODO: implement getBooksList
-    throw UnimplementedError();
+  Future<List<CategoryVO>?> getBooksList(String list,String bestSellersDate,String publishedDate) {
+    return mApi.getBookList(list, API_KEY, bestSellersDate, publishedDate, OFFSET)
+        .asStream()
+        .map((event) => event.results)
+        .first;
+  }
+
+  @override
+  Future<BookVO?> getBook(String list, String bestSellersDate, String publishedDate) {
+  return  mApi.getBookList(list, API_KEY, bestSellersDate, publishedDate, OFFSET)
+        .asStream()
+        .map((event) {
+           event.results?.forEach((e) {
+             e.bookDetails?.map((b){
+               return b;
+             });
+           });
+    }).first;
   }
 }

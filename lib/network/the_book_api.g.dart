@@ -18,7 +18,7 @@ class _TheBookApi implements TheBookApi {
   String? baseUrl;
 
   @override
-  Future<OverviewResponse> getList(apiKey, publishedDate) async {
+  Future<OverviewResponse> getOverview(apiKey, publishedDate) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'api-key': apiKey,
@@ -33,6 +33,29 @@ class _TheBookApi implements TheBookApi {
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = OverviewResponse.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<BookListResponse> getBookList(
+      list, apiKey, bestSellersDate, publishedDate, offset) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'list': list,
+      r'api-key': apiKey,
+      r'bestsellers_date': bestSellersDate,
+      r'published_date': publishedDate,
+      r'offset': offset
+    };
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<BookListResponse>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, '/lists.json',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = BookListResponse.fromJson(_result.data!);
     return value;
   }
 

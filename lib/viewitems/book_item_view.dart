@@ -27,10 +27,12 @@ class BookItemView extends StatelessWidget {
     Key? key,
     required this.bookTitle,
      required this.bookList,
+      this.isViewMore=false,
   }) : super(key: key);
 
   String? bookTitle;
   BookVO? bookList;
+  bool isViewMore;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +41,7 @@ class BookItemView extends StatelessWidget {
       width: 150,
       child: Stack(
         children: [
-          BookImageView(bookTitle: bookList),
+          BookImageView(bookTitle: bookList,isViewMore: isViewMore,),
           MoreButtonAndDownloadOrReadButtonSectionView(),
         ],
       ),
@@ -94,9 +96,11 @@ class BookImageView extends StatelessWidget {
    BookImageView({
     Key? key,
     required this.bookTitle,
+     required this.isViewMore,
   }) : super(key: key);
 
   BookVO? bookTitle;
+  bool isViewMore;
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +108,7 @@ class BookImageView extends StatelessWidget {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5),
           image: DecorationImage(
-            image: NetworkImage(bookTitle?.bookImage ?? ""),
+            image: NetworkImage((!isViewMore) ? bookTitle?.bookImage ?? "" :"https://th.bing.com/th/id/OIP.T0yAGl5mXcZHC5Pt5Uc3igHaHa?pid=ImgDet&rs=1"),
             fit: BoxFit.cover,
           )),
     );

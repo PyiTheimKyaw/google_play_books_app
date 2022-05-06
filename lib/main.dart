@@ -19,7 +19,7 @@ void main() async {
   Hive.registerAdapter(BuyLinksVOAdapter());
 
   await Hive.openBox<OverviewVo>(BOX_NAME_OVERVIEW_VO);
-
+  await Hive.openBox<BookVO>(BOX_NAME_BOOK_VO);
   runApp(MyApp());
 }
 

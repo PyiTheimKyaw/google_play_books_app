@@ -10,13 +10,21 @@ import 'package:google_play_books_app/widgets/book_view_with_book_title_view.dar
 
 class GoogleBooksHorizontalListSectionView extends StatelessWidget {
   final String booksCategoriesLabel;
-  final Function(int?,int?) navigateToDetails;
+  final Function(int?, int?) navigateToDetails;
   final bool seePrice;
   int? categoryIndex;
   List<BookVO>? books;
   CategoryVO? category;
+  int index;
+
   GoogleBooksHorizontalListSectionView(
-      {required this.booksCategoriesLabel, required this.navigateToDetails,this.seePrice=true,required this.books,required this.category,required this.categoryIndex});
+      {required this.booksCategoriesLabel,
+      required this.navigateToDetails,
+      this.seePrice = true,
+      required this.books,
+      required this.category,
+      required this.categoryIndex,
+      required this.index});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +33,12 @@ class GoogleBooksHorizontalListSectionView extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
-          child: CategoriesLabelAndMoreView(booksCategoriesLabel: booksCategoriesLabel,books: books,category: category,),
+          child: CategoriesLabelAndMoreView(
+            booksCategoriesLabel: booksCategoriesLabel,
+            books: books,
+            category: category,
+            index: index,
+          ),
         ),
         Flexible(
           child: Container(
@@ -35,8 +48,8 @@ class GoogleBooksHorizontalListSectionView extends StatelessWidget {
               categoryIndex: categoryIndex,
               book: books,
               seePrice: seePrice,
-              navigateToDetails: (categoryIndex,index) {
-                navigateToDetails(categoryIndex,index);
+              navigateToDetails: (categoryIndex, index) {
+                navigateToDetails(categoryIndex, index);
               },
             ),
           ),
@@ -46,14 +59,17 @@ class GoogleBooksHorizontalListSectionView extends StatelessWidget {
   }
 }
 
-
-
 class HorizontalBooksListView extends StatelessWidget {
-  final Function(int?,int?) navigateToDetails;
+  final Function(int?, int?) navigateToDetails;
   final bool seePrice;
   List<BookVO>? book;
   int? categoryIndex;
-  HorizontalBooksListView({required this.navigateToDetails,this.seePrice=true,required this.book,required this.categoryIndex});
+
+  HorizontalBooksListView(
+      {required this.navigateToDetails,
+      this.seePrice = true,
+      required this.book,
+      required this.categoryIndex});
 
   @override
   Widget build(BuildContext context) {
@@ -66,14 +82,15 @@ class HorizontalBooksListView extends StatelessWidget {
           width: 160,
           child: GestureDetector(
             onTap: () {
-              navigateToDetails(categoryIndex,index);
+              navigateToDetails(categoryIndex, index);
             },
-            child: BookViewWithBookTitleView(seePrice: seePrice,books: book?[index],),
+            child: BookViewWithBookTitleView(
+              seePrice: seePrice,
+              books: book?[index],
+            ),
           ),
         );
       },
     );
   }
 }
-
-
