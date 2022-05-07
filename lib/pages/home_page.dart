@@ -2,6 +2,8 @@
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:google_play_books_app/blocs/home_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:google_play_books_app/data/model/book_model.dart';
 import 'package:google_play_books_app/data/model/book_model_impl.dart';
 import 'package:google_play_books_app/data/vos/book_vo.dart';
@@ -24,15 +26,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-  List<BookVO>? booksList;
   late TabController _tabController;
   late ScrollController _scrollController;
-
-  BookModel mBookModel = BookModelImpl();
-  List<CategoryVO>? categoriesList;
-  List<BookVO>? recentBooks;
-  OverviewVo? overview;
-  String? title;
 
   @override
   void initState() {
@@ -40,53 +35,7 @@ class _HomePageState extends State<HomePage>
     _scrollController = ScrollController();
     _tabController = TabController(length: 2, vsync: this);
 
-    ///Api call
-    mBookModel.getCategories().then((overview) {
-      setState(() {
-        categoriesList = overview?.lists;
-        overview = overview;
-      });
-
-      Future.delayed(Duration(seconds: 5), () {
-        print("Recent book list1 => ${recentBooks.toString()}");
-      });
-
-      print("Category list length => ${categoriesList?.length}");
-    });
-
-    mBookModel.getAllRecentBooksFromDatabase().then((books) {
-      setState(() {
-        recentBooks = books;
-      });
-      recentBooks?.sort((a, b) =>
-          (b.time ?? DateTime.now()).compareTo(a.time ?? DateTime.now()));
-    });
-
     super.initState();
-  }
-
-  navigateToBookDetails(BuildContext context, int? categoryIndex, int? title) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => BookDetails(
-                  book: categoriesList?[categoryIndex ?? 0].books?[title ?? 0],
-                  books: booksList ?? [],
-                  bookTitle: "title",
-                  category: categoriesList,
-                  list:
-                      categoriesList?[categoryIndex ?? 0].listNameEncoded ?? "",
-                ))).then((value) {
-      if (value == true) {
-        mBookModel.getAllRecentBooksFromDatabase().then((books) {
-          setState(() {
-            recentBooks = books;
-          });
-          recentBooks?.sort((a, b) =>
-              (b.time ?? DateTime.now()).compareTo(a.time ?? DateTime.now()));
-        });
-      }
-    });
   }
 
   @override
@@ -98,39 +47,66 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        padding: EdgeInsets.only(top: MARGIN_MEDIUM_2),
-        color: Colors.white,
-        child: NestedScrollView(
-            headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
-              return [
-                RecentBooksListSectionView(booksList: recentBooks),
-                TabsSectionView(tabController: _tabController),
-                DividerSectionView(),
-              ];
-            },
-            body: TabBarView(
-              controller: _tabController,
-              children: [
-                EbooksSectionView(
-                    category: categoriesList,
-                    navigatePage: (categoryIndex, index) {
-                      navigateToBookDetails(
-                        context,
-                        categoryIndex,
-                        index,
-                      );
-                    }),
-                AudioBooksSectionView(
-                    category: categoriesList,
-                    booksList: booksList,
-                    navigatePage: (categoryIndex, index) {
-                      navigateToBookDetails(context, categoryIndex, index);
-                    }),
-              ],
-            )),
+    return ChangeNotifierProvider(
+      create: (context) => HomeBloc(),
+      child: Scaffold(
+        body: Container(
+          padding: EdgeInsets.only(top: MARGIN_MEDIUM_2),
+          color: Colors.white,
+          child: NestedScrollView(
+              headerSliverBuilder:
+                  (BuildContext context, bool innerBoxIsScrolled) {
+                return [
+                  Selector<HomeBloc, List<BookVO>?>(
+                      selector: (context, bloc) => bloc.recentBooks,
+                      shouldRebuild: (previous, next) => previous != next,
+                      builder: (BuildContext context, books, Widget? child) =>
+                          RecentBooksListSectionView(booksList: books)),
+                  TabsSectionView(tabController: _tabController),
+                  DividerSectionView(),
+                ];
+              },
+              body: TabBarView(
+                controller: _tabController,
+                children: [
+                  Selector<HomeBloc, List<CategoryVO>?>(
+                    selector: (context, bloc) => bloc.categoriesList,
+                    shouldRebuild: (previous, next) => previous != next,
+                    builder: (context, categoryList, child) =>
+                        EbooksSectionView(
+                            category: categoryList,
+                            navigatePage: (categoryIndex, index) {
+                              HomeBloc bloc =
+                                  Provider.of(context, listen: false);
+                              bloc.navigateToBookDetails(
+                                context,
+                                categoryIndex,
+                                index,
+                              );
+                            }),
+                  ),
+                  Selector<HomeBloc, List<CategoryVO>?>(
+                    selector: (context, bloc) => bloc.categoriesList,
+                    shouldRebuild: (previous, next) => previous != next,
+                    builder: (context, categoryList, child) =>
+                        Selector<HomeBloc, List<BookVO>?>(
+                      selector: (context, bloc) => bloc.booksList,
+                      shouldRebuild: (previous, next) => previous != next,
+                      builder: (context, bookList, child) =>
+                          AudioBooksSectionView(
+                              category: categoryList,
+                              booksList: bookList,
+                              navigatePage: (categoryIndex, index) {
+                                HomeBloc bloc =
+                                    Provider.of(context, listen: false);
+                                bloc.navigateToBookDetails(
+                                    context, categoryIndex, index);
+                              }),
+                    ),
+                  ),
+                ],
+              )),
+        ),
       ),
     );
   }
@@ -249,9 +225,14 @@ class RecentBooksListSectionView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return (booksList != [])?SliverToBoxAdapter(
-      child: RecentViewBooks(booksList: booksList),
-    ):Container(height: 2,width: 2,);
+    return (booksList != [])
+        ? SliverToBoxAdapter(
+            child: RecentViewBooks(booksList: booksList),
+          )
+        : Container(
+            height: 2,
+            width: 2,
+          );
   }
 }
 

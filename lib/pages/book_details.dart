@@ -2,6 +2,7 @@
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:google_play_books_app/blocs/book_details_bloc.dart';
 import 'package:google_play_books_app/data/model/book_model.dart';
 import 'package:google_play_books_app/data/model/book_model_impl.dart';
 import 'package:google_play_books_app/data/vos/book_vo.dart';
@@ -13,6 +14,7 @@ import 'package:google_play_books_app/resources/dimens.dart';
 import 'package:google_play_books_app/viewitems/book_item_view.dart';
 import 'package:google_play_books_app/viewitems/categories_label_and_more_view.dart';
 import 'package:google_play_books_app/widgets/title_and_horizontal_books_list_view.dart';
+import 'package:provider/provider.dart';
 
 Icon icon(IconData icon) {
   return Icon(
@@ -21,7 +23,7 @@ Icon icon(IconData icon) {
   );
 }
 
-class BookDetails extends StatefulWidget {
+class BookDetails extends StatelessWidget {
   final List<BookVO>? books;
   final BookVO? book;
   List<CategoryVO>? category;
@@ -36,126 +38,101 @@ class BookDetails extends StatefulWidget {
       required this.list});
 
   @override
-  State<BookDetails> createState() => _BookDetailsState();
-}
-
-class _BookDetailsState extends State<BookDetails> {
-  BookModel mBookModel = BookModelImpl();
-  OverviewVo? overview;
-  List<CategoryVO>? categoriesList;
-  List<BookVO>? recentList;
-
-  @override
-  void initState() {
-    if (widget.book != null) {
-      mBookModel.saveSingleBook(widget.book!).then((value) {
-        print("Book => ${value.toString()}");
-        setState(() {
-          value?.time = DateTime.now();
-          // List<BookVO>? tmpoRecent;
-          // tmpoRecent?.add(value!);
-          recentList?.add(value!);
-        });
-
-        mBookModel.saveAllRecentBooks(recentList ?? []);
-        Future.delayed(Duration(seconds: 5), () {
-          print("Recent list => ${recentList.toString()}");
-        });
-      });
-    }
-    mBookModel.getCategories().then((overview) {
-      setState(() {
-        categoriesList  = overview?.lists;
-        overview = overview;
-      });
-
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        elevation: 0,
-        iconTheme: IconThemeData(color: ICON_COLOR),
-        leading: GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop(true);
-            },
-            child: Icon(
-              Icons.chevron_left,
-              color: ICON_COLOR,
-            )),
-        backgroundColor: Colors.white,
-        actions: [
-          icon(Icons.search),
-          SizedBox(
-            width: 8,
-          ),
-          icon(Icons.bookmark_add_outlined),
-          SizedBox(
-            width: 8,
-          ),
-          icon(Icons.more_vert),
-          SizedBox(
-            width: MARGIN_MEDIUM_2,
-          ),
-        ],
-      ),
-      body: Container(
-        color: Colors.white,
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: MARGIN_MEDIUM_2, vertical: MARGIN_MEDIUM_3),
-                child: BookDetailsSectionView(
-                  bookTitle: widget.book?.title ?? "",
-                  book: widget.book,
+    return ChangeNotifierProvider(
+      create: (context) => BookDetailsBloc(book!),
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          elevation: 0,
+          iconTheme: IconThemeData(color: ICON_COLOR),
+          leading: GestureDetector(
+              onTap: () {
+                Navigator.of(context).pop(true);
+              },
+              child: Icon(
+                Icons.chevron_left,
+                color: ICON_COLOR,
+              )),
+          backgroundColor: Colors.white,
+          actions: [
+            icon(Icons.search),
+            SizedBox(
+              width: 8,
+            ),
+            icon(Icons.bookmark_add_outlined),
+            SizedBox(
+              width: 8,
+            ),
+            icon(Icons.more_vert),
+            SizedBox(
+              width: MARGIN_MEDIUM_2,
+            ),
+          ],
+        ),
+        body: Container(
+          color: Colors.white,
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: MARGIN_MEDIUM_2, vertical: MARGIN_MEDIUM_3),
+                  child: BookDetailsSectionView(
+                    bookTitle: book?.title ?? "",
+                    book: book,
+                  ),
                 ),
-              ),
-              AboutBookTypeAndReviewSectionView(),
-              SizedBox(
-                height: MARGIN_LARGE,
-              ),
-              ButtonSectionView(),
-              SizedBox(
-                height: MARGIN_LARGE,
-              ),
-              AboutEbooksSectionView(
-                book: widget.book,
-                category: widget.category?[0],
-              ),
-              AboutTheAuthorSectionView(
-                category: widget.category?[1],
-              ),
-              GoogleBooksHorizontalListSectionView(
-                index: 1,
-                category:categoriesList?[1],
-                categoryIndex: 1,
-                books: categoriesList?[1].books,
-                booksCategoriesLabel: "Similar Ebooks",
-                navigateToDetails: (i, j) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => BookDetails(
-                        book:  widget.book,
-                        bookTitle: widget.bookTitle,
-                        books: categoriesList?[0].books,
-                        category: categoriesList,
-                        list: "",
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ],
+                AboutBookTypeAndReviewSectionView(),
+                SizedBox(
+                  height: MARGIN_LARGE,
+                ),
+                ButtonSectionView(),
+                SizedBox(
+                  height: MARGIN_LARGE,
+                ),
+                AboutEbooksSectionView(
+                  book: book,
+                  category: category?[0],
+                ),
+                AboutTheAuthorSectionView(
+                  category: category?[1],
+                ),
+                Selector<BookDetailsBloc, List<CategoryVO>?>(
+                  selector: (context, bloc) => bloc.categoriesList,
+                  shouldRebuild: (previous, next) => previous != next,
+                  builder: (context, categoriesList, child) =>
+                      GoogleBooksHorizontalListSectionView(
+                    index: 1,
+                    category: categoriesList?[1],
+                    categoryIndex: 1,
+                    books: categoriesList?[1].books,
+                    booksCategoriesLabel: "Similar Ebooks",
+                    navigateToDetails: (i, j) {
+                      BookDetailsBloc bloc =
+                          Provider.of(context, listen: false);
+                      bloc.navigateToBookDetails(
+                          context, i, j, bookTitle, book);
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => BookDetails(
+                      //       book:  widget.book,
+                      //       bookTitle: widget.bookTitle,
+                      //       books: categoriesList?[0].books,
+                      //       category: categoriesList,
+                      //       list: "",
+                      //     ),
+                      //   ),
+                      // );
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

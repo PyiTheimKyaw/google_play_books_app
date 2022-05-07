@@ -59,13 +59,6 @@ class _LibraryPageState extends State<LibraryPage>
     isGrid = true;
   }
 
-  _buildTabContext(IndexedWidgetBuilder itemBuilder, int itemCount) =>
-      ListView.builder(
-        // physics: const ClampingScrollPhysics(),
-        itemCount: itemCount,
-        itemBuilder: itemBuilder,
-      );
-
   // navigateToBookDetails(BuildContext context, int i) {
   //   Navigator.push(
   //       context,
@@ -132,17 +125,17 @@ class _LibraryPageState extends State<LibraryPage>
           ),
 
           ///Shelves
-          Container(),
-          // ShelvesSectionView(
-          //   booksList: bookList,
-          //   dummyShelf: dummyShelf,
-          //   shelfName: shelfName,
-          //   bookCount: bookCount,
-          //   editShelfName: editShelfName,
-          //   onPressedCreate: () {
-          //     dummyShelf.add(shelfName.text);
-          //   },
-          // ),
+          // Container(),
+          ShelvesSectionView(
+            booksList: recentBooks ?? [],
+            dummyShelf: dummyShelf,
+            shelfName: shelfName,
+            bookCount: bookCount,
+            editShelfName: editShelfName,
+            onPressedCreate: () {
+              dummyShelf.add(shelfName.text);
+            },
+          ),
         ]),
       ),
     );
@@ -366,132 +359,132 @@ class SortingSectionView extends StatelessWidget {
   }
 }
 
-// class ShelvesSectionView extends StatefulWidget {
-//   const ShelvesSectionView({
-//     Key? key,
-//     required this.dummyShelf,
-//     required this.shelfName,
-//     required this.bookCount,
-//     required this.editShelfName,
-//     required this.onPressedCreate,
-//     required this.booksList,
-//   }) : super(key: key);
-//
-//   final List<String> dummyShelf;
-//   final TextEditingController shelfName;
-//   final int bookCount;
-//   final TextEditingController editShelfName;
-//   final Function onPressedCreate;
-//   final List<BookVOTest> booksList;
-//
-//   @override
-//   State<ShelvesSectionView> createState() => _ShelvesSectionViewState();
-// }
-//
-// class _ShelvesSectionViewState extends State<ShelvesSectionView> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-//       floatingActionButton: Container(
-//         width: MediaQuery.of(context).size.width / 3,
-//         height: 50,
-//         child: FloatingActionButton(
-//           onPressed: () {
-//             Navigator.push(
-//                 context,
-//                 MaterialPageRoute(
-//                     builder: (context) => AddNewShelfPage(
-//                           shelfNameList: widget.dummyShelf,
-//                           shelfName: widget.shelfName,
-//                           onPressedCreate: () {
-//                             widget.onPressedCreate();
-//                           },
-//                         )));
-//           },
-//           child: Row(
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             children: [Icon(Icons.create), Text("Create New")],
-//           ),
-//           shape: RoundedRectangleBorder(
-//             borderRadius: BorderRadius.circular(30),
-//           ),
-//         ),
-//       ),
-//       body: ListView.builder(
-//         itemCount: widget.dummyShelf.length,
-//         itemBuilder: (BuildContext context, int index) {
-//           return (widget.dummyShelf.isNotEmpty)
-//               ? GestureDetector(
-//                   onTap: () {
-//                     Navigator.push(
-//                         context,
-//                         MaterialPageRoute(
-//                             builder: (context) => ReviewShelfPage(
-//                                   booksList: widget.booksList,
-//                                   shelfName: widget.dummyShelf[index],
-//                                   editShelfName: widget.editShelfName,
-//                                   editShelf: () {
-//                                     setState(() {
-//                                       widget.dummyShelf[index] =
-//                                           widget.editShelfName.text;
-//                                     });
-//                                   },
-//                                   deleteShelf: () {
-//                                     setState(() {
-//                                       widget.dummyShelf.removeAt(index);
-//                                     });
-//                                   },
-//                                 )));
-//                   },
-//                   child: Container(
-//                     margin: EdgeInsets.only(top: 10),
-//                     decoration: BoxDecoration(
-//                         color: Colors.white,
-//                         border: Border.all(width: 1, color: Colors.white)),
-//                     height: 100,
-//                     child: Column(
-//                       children: [
-//                         Row(
-//                           crossAxisAlignment: CrossAxisAlignment.start,
-//                           children: [
-//                             Container(
-//                               padding: EdgeInsets.symmetric(
-//                                   horizontal: 5, vertical: 2),
-//                               height: 67,
-//                               width: 70,
-//                               decoration: BoxDecoration(
-//                                 image: DecorationImage(
-//                                     image: NetworkImage(
-//                                         "https://th.bing.com/th/id/OIP.T0yAGl5mXcZHC5Pt5Uc3igHaHa?pid=ImgDet&rs=1"),
-//                                     fit: BoxFit.cover),
-//                                 borderRadius: BorderRadius.circular(5),
-//                               ),
-//                             ),
-//                             SizedBox(
-//                               width: MARGIN_MEDIUM,
-//                             ),
-//                             Column(
-//                               crossAxisAlignment: CrossAxisAlignment.start,
-//                               children: [
-//                                 Text(widget.dummyShelf[index]),
-//                                 Text("${widget.bookCount} book"),
-//                               ],
-//                             ),
-//                             Spacer(),
-//                             Icon(Icons.navigate_next),
-//                           ],
-//                         ),
-//                         Divider(
-//                           color: Colors.black26,
-//                         ),
-//                       ],
-//                     ),
-//                   ),
-//                 )
-//               : Container();
-//         },
-//       ),
-//     );
-//   }
-// }
+class ShelvesSectionView extends StatefulWidget {
+  const ShelvesSectionView({
+    Key? key,
+    required this.dummyShelf,
+    required this.shelfName,
+    required this.bookCount,
+    required this.editShelfName,
+    required this.onPressedCreate,
+    required this.booksList,
+  }) : super(key: key);
+
+  final List<String> dummyShelf;
+  final TextEditingController shelfName;
+  final int bookCount;
+  final TextEditingController editShelfName;
+  final Function onPressedCreate;
+  final List<BookVO> booksList;
+
+  @override
+  State<ShelvesSectionView> createState() => _ShelvesSectionViewState();
+}
+
+class _ShelvesSectionViewState extends State<ShelvesSectionView> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: Container(
+        width: MediaQuery.of(context).size.width / 3,
+        height: 50,
+        child: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AddNewShelfPage(
+                          shelfNameList: widget.dummyShelf,
+                          shelfName: widget.shelfName,
+                          onPressedCreate: () {
+                            widget.onPressedCreate();
+                          },
+                        )));
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [Icon(Icons.create), Text("Create New")],
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+        ),
+      ),
+      body: ListView.builder(
+        itemCount: widget.dummyShelf.length,
+        itemBuilder: (BuildContext context, int index) {
+          return (widget.dummyShelf.isNotEmpty)
+              ? GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ReviewShelfPage(
+                                  booksList: widget.booksList,
+                                  shelfName: widget.dummyShelf[index],
+                                  editShelfName: widget.editShelfName,
+                                  editShelf: () {
+                                    setState(() {
+                                      widget.dummyShelf[index] =
+                                          widget.editShelfName.text;
+                                    });
+                                  },
+                                  deleteShelf: () {
+                                    setState(() {
+                                      widget.dummyShelf.removeAt(index);
+                                    });
+                                  },
+                                )));
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(top: 10),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(width: 1, color: Colors.white)),
+                    height: 100,
+                    child: Column(
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 5, vertical: 2),
+                              height: 67,
+                              width: 70,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: NetworkImage(
+                                        "https://th.bing.com/th/id/OIP.T0yAGl5mXcZHC5Pt5Uc3igHaHa?pid=ImgDet&rs=1"),
+                                    fit: BoxFit.cover),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                            ),
+                            SizedBox(
+                              width: MARGIN_MEDIUM,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(widget.dummyShelf[index]),
+                                Text("${widget.bookCount} book"),
+                              ],
+                            ),
+                            Spacer(),
+                            Icon(Icons.navigate_next),
+                          ],
+                        ),
+                        Divider(
+                          color: Colors.black26,
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              : Container();
+        },
+      ),
+    );
+  }
+}
