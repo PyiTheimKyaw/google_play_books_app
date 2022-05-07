@@ -23,11 +23,11 @@ import 'package:google_play_books_app/viewitems/more_button_view.dart';
 // }
 
 class BookItemView extends StatelessWidget {
-   BookItemView({
+  BookItemView({
     Key? key,
     required this.bookTitle,
-     required this.book,
-      this.isViewMore=false,
+    required this.book,
+    this.isViewMore = false,
   }) : super(key: key);
 
   String? bookTitle;
@@ -41,8 +41,13 @@ class BookItemView extends StatelessWidget {
       width: 150,
       child: Stack(
         children: [
-          BookImageView(book: book,isViewMore: isViewMore,),
-          MoreButtonAndDownloadOrReadButtonSectionView(book: book,),
+          BookImageView(
+            book: book,
+            isViewMore: isViewMore,
+          ),
+          MoreButtonAndDownloadOrReadButtonSectionView(
+            book: book,
+          ),
         ],
       ),
     );
@@ -63,7 +68,9 @@ class MoreButtonAndDownloadOrReadButtonSectionView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            MoreButtonView(book: book,),
+            MoreButtonView(
+              book: book,
+            ),
             Spacer(),
             DownloadOrReadButtonView(),
           ],
@@ -93,10 +100,10 @@ class DownloadOrReadButtonView extends StatelessWidget {
 }
 
 class BookImageView extends StatelessWidget {
-   BookImageView({
+  BookImageView({
     Key? key,
     required this.book,
-     required this.isViewMore,
+    required this.isViewMore,
   }) : super(key: key);
 
   BookVO? book;
@@ -108,7 +115,9 @@ class BookImageView extends StatelessWidget {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5),
           image: DecorationImage(
-            image: NetworkImage((!isViewMore) ? book?.bookImage ?? "" :"https://th.bing.com/th/id/OIP.T0yAGl5mXcZHC5Pt5Uc3igHaHa?pid=ImgDet&rs=1"),
+            image: NetworkImage((!isViewMore)
+                ? book?.bookImage ?? ""
+                : "https://th.bing.com/th/id/OIP.T0yAGl5mXcZHC5Pt5Uc3igHaHa?pid=ImgDet&rs=1"),
             fit: BoxFit.cover,
           )),
     );

@@ -23,7 +23,7 @@ class YourBooksByLargeGridSectionView extends StatelessWidget {
       ),
       itemBuilder: (context, index) {
         return Padding(
-          padding: const EdgeInsets.all(MARGIN_SMALL-4),
+          padding: const EdgeInsets.symmetric(horizontal: MARGIN_SMALL - 5),
           child: BookViewWithBookTitleView(
             books: books?[index],
           ),

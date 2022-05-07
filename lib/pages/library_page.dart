@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors,prefer_const_literals_to_create_immutables, sized_box_for_whitespace, prefer_final_fields
 
 import 'package:flutter/material.dart';
+import 'package:google_play_books_app/blocs/library_bloc.dart';
 import 'package:google_play_books_app/data/model/book_model.dart';
 import 'package:google_play_books_app/data/model/book_model_impl.dart';
 import 'package:google_play_books_app/data/vos/book_vo.dart';
@@ -19,6 +20,7 @@ import 'package:google_play_books_app/viewitems/view_list_view.dart';
 import 'package:google_play_books_app/widgets/your_books_by_grid_section_view.dart';
 import 'package:google_play_books_app/widgets/your_books_by_large_grid_section_view.dart';
 import 'package:google_play_books_app/widgets/your_books_by_list_section_view.dart';
+import 'package:provider/provider.dart';
 
 class LibraryPage extends StatefulWidget {
   const LibraryPage({Key? key}) : super(key: key);
@@ -30,113 +32,101 @@ class LibraryPage extends StatefulWidget {
 class _LibraryPageState extends State<LibraryPage>
     with SingleTickerProviderStateMixin {
   late TabController tabController;
-  bool isGrid = false;
-  List<BookVOTest> bookList = dummyBooks;
-  String byType = "Author";
+
   String byView = "List";
   int bookCount = 1;
-  List<String> dummyShelf = [];
+  List<String>? dummyShelf;
   TextEditingController shelfName = TextEditingController();
   TextEditingController editShelfName = TextEditingController();
-  BookModel mBookModel = BookModelImpl();
   List<BookVO>? recentBooks;
-
-  List<CategoryVO>? viewMoreList;
-  OverviewVo? overview;
 
   @override
   void initState() {
     super.initState();
 
-    ///Api
-    mBookModel.getAllRecentBooksFromDatabase().then((books) {
-      setState(() {
-        recentBooks = books;
-      });
-      recentBooks?.sort((a, b) => (a.author ?? "").compareTo(b.author ?? ""));
-    });
     tabController = TabController(length: 2, vsync: this);
-    isGrid = true;
   }
-
-  // navigateToBookDetails(BuildContext context, int i) {
-  //   Navigator.push(
-  //       context,
-  //       MaterialPageRoute(
-  //           builder: (context) => BookDetails(
-  //                 bookList[i],
-  //                 books: bookList,
-  //               )));
-  // }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        toolbarHeight: 2,
-        bottom: TabBar(
-          controller: tabController,
-          labelColor: Colors.blue,
-          unselectedLabelColor: Colors.black38,
-          indicatorSize: TabBarIndicatorSize.label,
-          tabs: [
-            Tab(
-              text: YOUR_BOOKS,
-            ),
-            Tab(
-              text: SHELVES,
-            ),
-          ],
+    return ChangeNotifierProvider(
+      create: (context) => LibraryBloc(),
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          toolbarHeight: 2,
+          bottom: TabBar(
+            controller: tabController,
+            labelColor: Colors.blue,
+            unselectedLabelColor: Colors.black38,
+            indicatorSize: TabBarIndicatorSize.label,
+            tabs: [
+              Tab(
+                text: YOUR_BOOKS,
+              ),
+              Tab(
+                text: SHELVES,
+              ),
+            ],
+          ),
         ),
-      ),
-      body: Container(
-        color: Colors.white,
-        height: MediaQuery.of(context).size.height,
-        padding: EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
-        child: TabBarView(controller: tabController, children: [
-          YourBooksSectionView(
-            recentBooksList: recentBooks,
-            byType: byType,
-            byView: byView,
-            onTapType: (value) {
-              setState(() {
-                byType = value!;
-                if (byType == "Author") {
-                  recentBooks?.sort(
-                      (a, b) => (a.author ?? "").compareTo(b.author ?? ""));
-                } else if (byType == "Title") {
-                  recentBooks?.sort(
-                      (a, b) => (a.title ?? "").compareTo(b.title ?? ""));
-                } else {
-                  recentBooks?.sort((a, b) => (b.time ?? DateTime.now())
-                      .compareTo(a.time ?? DateTime.now()));
-                }
-              });
-              Navigator.pop(context);
-            },
-            onTapView: (value) {
-              setState(() {
-                byView = value!;
-              });
-              Navigator.pop(context);
-            },
-          ),
+        body: Container(
+          color: Colors.white,
+          height: MediaQuery.of(context).size.height,
+          padding: EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
+          child: TabBarView(controller: tabController, children: [
+            Selector<LibraryBloc, List<BookVO>?>(
+              selector: (context, bloc) => bloc.recentBooks,
+              shouldRebuild: (previous, next) => previous != next,
+              builder: (context, recentBooks, child) =>
+                  Selector<LibraryBloc, String>(
+                selector: (context, bloc) => bloc.byType,
+                shouldRebuild: (previous, next) => previous != next,
+                builder: (context, byType, child) => YourBooksSectionView(
+                  recentBooksList: recentBooks,
+                  byType: byType,
+                  byView: byView,
+                  onTapType: (value) {
+                    setState(() {
+                      byType = value!;
+                      if (byType == "Author") {
+                        recentBooks?.sort((a, b) =>
+                            (a.author ?? "").compareTo(b.author ?? ""));
+                      } else if (byType == "Title") {
+                        recentBooks?.sort(
+                            (a, b) => (a.title ?? "").compareTo(b.title ?? ""));
+                      } else {
+                        recentBooks?.sort((a, b) => (b.time ?? DateTime.now())
+                            .compareTo(a.time ?? DateTime.now()));
+                      }
+                    });
+                    Navigator.pop(context);
+                  },
+                  onTapView: (value) {
+                    setState(() {
+                      byView = value!;
+                    });
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+            ),
 
-          ///Shelves
-          // Container(),
-          ShelvesSectionView(
-            booksList: recentBooks ?? [],
-            dummyShelf: dummyShelf,
-            shelfName: shelfName,
-            bookCount: bookCount,
-            editShelfName: editShelfName,
-            onPressedCreate: () {
-              dummyShelf.add(shelfName.text);
-            },
-          ),
-        ]),
+            ///Shelves
+            // Container(),
+            ShelvesSectionView(
+              booksList: recentBooks ?? [],
+              dummyShelf: dummyShelf ?? [],
+              shelfName: shelfName,
+              bookCount: bookCount,
+              editShelfName: editShelfName,
+              onPressedCreate: () {
+                dummyShelf?.add(shelfName.text);
+              },
+            ),
+          ]),
+        ),
       ),
     );
   }

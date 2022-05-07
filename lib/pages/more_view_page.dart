@@ -50,7 +50,7 @@ class MoreViewPage extends StatelessWidget {
                 YourBooksByGridSectionView(
               isViewMore: true,
               category: viewMoreList,
-              books: viewMoreList?[index].bookDetails,
+              books: viewMoreList?[index].books,
             ),
           ),
         ),

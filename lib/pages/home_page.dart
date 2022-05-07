@@ -3,6 +3,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_play_books_app/blocs/home_bloc.dart';
+import 'package:google_play_books_app/widgets/audio_books_section_view.dart';
+import 'package:google_play_books_app/widgets/ebooks_section_view.dart';
 import 'package:provider/provider.dart';
 import 'package:google_play_books_app/data/model/book_model.dart';
 import 'package:google_play_books_app/data/model/book_model_impl.dart';
@@ -60,8 +62,12 @@ class _HomePageState extends State<HomePage>
                   Selector<HomeBloc, List<BookVO>?>(
                       selector: (context, bloc) => bloc.recentBooks,
                       shouldRebuild: (previous, next) => previous != next,
-                      builder: (BuildContext context, books, Widget? child) =>
-                          RecentBooksListSectionView(booksList: books)),
+                      builder:
+                          (BuildContext context, recentBooks, Widget? child) =>
+                              Visibility(
+                                  visible: recentBooks != [],
+                                  child: RecentBooksListSectionView(
+                                      booksList: recentBooks))),
                   TabsSectionView(tabController: _tabController),
                   DividerSectionView(),
                 ];
@@ -109,60 +115,6 @@ class _HomePageState extends State<HomePage>
         ),
       ),
     );
-  }
-}
-
-class EbooksSectionView extends StatelessWidget {
-  final Function(int?, int?) navigatePage;
-  List<CategoryVO>? category;
-
-  EbooksSectionView({required this.navigatePage, required this.category});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-        itemCount: category?.length ?? 0,
-        itemBuilder: (context, index) {
-          return GoogleBooksHorizontalListSectionView(
-            index: index,
-            books: category?[index].books ?? [],
-            category: category?[index],
-            categoryIndex: index,
-            navigateToDetails: (index, title) {
-              navigatePage(index, title);
-            },
-            booksCategoriesLabel: category?[index].listName ?? "",
-          );
-        });
-  }
-}
-
-class AudioBooksSectionView extends StatelessWidget {
-  final List<BookVO>? booksList;
-  final Function(int?, int?) navigatePage;
-  List<CategoryVO>? category;
-
-  AudioBooksSectionView(
-      {required this.booksList,
-      required this.navigatePage,
-      required this.category});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-        itemCount: booksList?.length,
-        itemBuilder: (context, index) {
-          return GoogleBooksHorizontalListSectionView(
-            index: index,
-            category: category?[index],
-            categoryIndex: index,
-            books: booksList,
-            navigateToDetails: (index, title) {
-              navigatePage(index, title);
-            },
-            booksCategoriesLabel: "Tales of terror & intrigue",
-          );
-        });
   }
 }
 
@@ -225,14 +177,9 @@ class RecentBooksListSectionView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return (booksList != [])
-        ? SliverToBoxAdapter(
-            child: RecentViewBooks(booksList: booksList),
-          )
-        : Container(
-            height: 2,
-            width: 2,
-          );
+    return SliverToBoxAdapter(
+      child: RecentViewBooks(booksList: booksList),
+    );
   }
 }
 
