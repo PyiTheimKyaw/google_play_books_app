@@ -31,6 +31,37 @@ class BookDao {
     return getBookBoxForRecent().values.toList();
   }
 
+  ///Reactive Programming
+  Stream<void> getAllBooksEventStream() {
+    return getBookBox().watch();
+  }
+
+  Stream<void> getAllRecentBooksEventStream() {
+    return getBookBoxForRecent().watch();
+  }
+
+  List<BookVO> getBooks() {
+    if (getAllBooks() != null && getAllBooks().isNotEmpty ?? false) {
+      return getAllBooks();
+    } else {
+      return [];
+    }
+  }
+
+  List<BookVO> getRecentBooks(){
+    if(getAllRecentBooks()!=null && getAllRecentBooks().isNotEmpty ?? false){
+      return getAllRecentBooks();
+    }else{
+      return [];
+    }
+  }
+  Stream<List<BookVO>> getBooksStream(){
+    return Stream.value(getAllBooks());
+  }
+  Stream<List<BookVO>> getRecentBooksStream(){
+    return Stream.value(getAllRecentBooks());
+  }
+
   Box<BookVO> getBookBox() {
     return Hive.box<BookVO>(BOX_NAME_BOOK_VO);
   }

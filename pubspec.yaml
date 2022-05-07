@@ -43,6 +43,9 @@ dependencies:
   hive: ^2.1.0
   hive_flutter: ^1.1.0
   provider: ^6.0.2
+  stream_transform: ^2.0.0
+  smooth_star_rating: ^1.1.1
+  percent_indicator: ^2.1.9
 
 dev_dependencies:
   flutter_test:

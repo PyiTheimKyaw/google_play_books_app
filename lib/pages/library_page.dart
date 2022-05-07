@@ -33,7 +33,6 @@ class _LibraryPageState extends State<LibraryPage>
     with SingleTickerProviderStateMixin {
   late TabController tabController;
 
-  String byView = "List";
   int bookCount = 1;
   List<String>? dummyShelf;
   TextEditingController shelfName = TextEditingController();
@@ -83,32 +82,22 @@ class _LibraryPageState extends State<LibraryPage>
                   Selector<LibraryBloc, String>(
                 selector: (context, bloc) => bloc.byType,
                 shouldRebuild: (previous, next) => previous != next,
-                builder: (context, byType, child) => YourBooksSectionView(
-                  recentBooksList: recentBooks,
-                  byType: byType,
-                  byView: byView,
-                  onTapType: (value) {
-                    setState(() {
-                      byType = value!;
-                      if (byType == "Author") {
-                        recentBooks?.sort((a, b) =>
-                            (a.author ?? "").compareTo(b.author ?? ""));
-                      } else if (byType == "Title") {
-                        recentBooks?.sort(
-                            (a, b) => (a.title ?? "").compareTo(b.title ?? ""));
-                      } else {
-                        recentBooks?.sort((a, b) => (b.time ?? DateTime.now())
-                            .compareTo(a.time ?? DateTime.now()));
-                      }
-                    });
-                    Navigator.pop(context);
-                  },
-                  onTapView: (value) {
-                    setState(() {
-                      byView = value!;
-                    });
-                    Navigator.pop(context);
-                  },
+                builder: (context, byType, child) =>
+                    Selector<LibraryBloc, String>(
+                  selector: (context, bloc) => bloc.byView,
+                  builder: (context, byView, child) => YourBooksSectionView(
+                    recentBooksList: recentBooks,
+                    byType: byType,
+                    byView: byView,
+                    onTapType: (value) {
+                      LibraryBloc bloc = Provider.of(context, listen: false);
+                      bloc.sortByType(value, context);
+                    },
+                    onTapView: (value) {
+                      LibraryBloc bloc = Provider.of(context, listen: false);
+                      bloc.sortByView(value, context);
+                    },
+                  ),
                 ),
               ),
             ),

@@ -64,10 +64,8 @@ class _HomePageState extends State<HomePage>
                       shouldRebuild: (previous, next) => previous != next,
                       builder:
                           (BuildContext context, recentBooks, Widget? child) =>
-                              Visibility(
-                                  visible: recentBooks != [],
-                                  child: RecentBooksListSectionView(
-                                      booksList: recentBooks))),
+                              RecentBooksListSectionView(
+                                  booksList: recentBooks)),
                   TabsSectionView(tabController: _tabController),
                   DividerSectionView(),
                 ];
@@ -96,7 +94,7 @@ class _HomePageState extends State<HomePage>
                     shouldRebuild: (previous, next) => previous != next,
                     builder: (context, categoryList, child) =>
                         Selector<HomeBloc, List<BookVO>?>(
-                      selector: (context, bloc) => bloc.booksList,
+                      selector: (context, bloc) => bloc.recentBooks,
                       shouldRebuild: (previous, next) => previous != next,
                       builder: (context, bookList, child) =>
                           AudioBooksSectionView(
@@ -178,7 +176,9 @@ class RecentBooksListSectionView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
-      child: RecentViewBooks(booksList: booksList),
+      child: Visibility(
+          visible: booksList?.isNotEmpty ?? false,
+          child: RecentViewBooks(booksList: booksList)),
     );
   }
 }
@@ -196,7 +196,7 @@ class RecentViewBooks extends StatelessWidget {
         onPageChanged: (index, reason) {},
         height: MediaQuery.of(context).size.height / 3.5,
         aspectRatio: 4 / 3,
-        viewportFraction: 0.4,
+        viewportFraction: 0.5,
         initialPage: 0,
         enableInfiniteScroll: false,
         reverse: false,
@@ -211,6 +211,7 @@ class RecentViewBooks extends StatelessWidget {
       itemBuilder: (BuildContext context, int index, int realIndex) {
         return Container(
           margin: EdgeInsets.only(bottom: 12),
+          width: 200,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             boxShadow: [

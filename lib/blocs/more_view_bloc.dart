@@ -9,7 +9,9 @@ class MoreViewBloc extends ChangeNotifier {
   BookModel mBookModel = BookModelImpl();
   List<CategoryVO>? viewMoreList;
   OverviewVo? overview;
-  List<BookVO>? books;
+  List<BookVO>? viewMoreBooks;
+  List<BookVO>? allBooks;
+  BookVO? a;
 
   MoreViewBloc(String list, int index) {
     mBookModel.getCategories().then((value) {
@@ -20,11 +22,12 @@ class MoreViewBloc extends ChangeNotifier {
               overview?.publishedDate ?? "")
           .then((value) {
         viewMoreList = value;
-        books = value?[index].bookDetails;
+        viewMoreBooks = value?[index].bookDetails;
         notifyListeners();
       }).catchError((error) {
         print("Error ${error.toString()}");
       });
     });
+
   }
 }

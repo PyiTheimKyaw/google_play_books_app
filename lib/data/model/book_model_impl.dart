@@ -5,6 +5,7 @@ import 'package:google_play_books_app/data/vos/overview_vo.dart';
 import 'package:google_play_books_app/network/dataagents/book_data_agent.dart';
 import 'package:google_play_books_app/network/dataagents/retrofit_data_agent_impl.dart';
 import 'package:google_play_books_app/persistence/daos/book_dao.dart';
+import 'package:stream_transform/stream_transform.dart';
 
 class BookModelImpl extends BookModel {
   static final BookModelImpl _singleton = BookModelImpl._internal();
@@ -34,7 +35,7 @@ class BookModelImpl extends BookModel {
       // categoryList?.map((e) {
       //   bookDao.saveAllBooks(e.bookDetails ?? []);
       // });
-      value?.map((e) => {bookDao.saveAllBooks(e.bookDetails ?? [])}).toList();
+      // value?.map((e) => {bookDao.saveAllBooks(e.bookDetails ?? [])}).toList();
       return Future.value(value);
     });
   }
@@ -53,13 +54,21 @@ class BookModelImpl extends BookModel {
 
   @override
   Future<OverviewVo?> getCategories() {
-    return Future.value(mDataAgent.getCategories());
+    return mDataAgent.getCategories().then((value) {
+      value?.lists?.map((e) {
+        bookDao.saveAllBooks(e.books ?? []);
+      }).toList();
+      return Future.value(value);
+    });
   }
 
   ///Database
   @override
-  Future<List<BookVO>?> getAllBooksFromDatabase() {
-    return Future.value(bookDao.getAllBooks());
+  Stream<List<BookVO>?> getAllBooksFromDatabase() {
+    return bookDao
+        .getAllBooksEventStream()
+        .startWith(bookDao.getBooksStream())
+        .map((event) => bookDao.getBooks());
   }
 
   @override
@@ -68,7 +77,10 @@ class BookModelImpl extends BookModel {
   }
 
   @override
-  Future<List<BookVO>?> getAllRecentBooksFromDatabase() {
-    return Future.value(bookDao.getAllRecentBooks());
+  Stream<List<BookVO>?> getAllRecentBooksFromDatabase() {
+    return bookDao
+        .getAllRecentBooksEventStream()
+        .startWith(bookDao.getRecentBooksStream())
+        .map((event) => bookDao.getRecentBooks());
   }
 }

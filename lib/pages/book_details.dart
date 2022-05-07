@@ -10,11 +10,15 @@ import 'package:google_play_books_app/data/vos/book_vo_test.dart';
 import 'package:google_play_books_app/data/vos/category_vo.dart';
 import 'package:google_play_books_app/data/vos/overview_vo.dart';
 import 'package:google_play_books_app/resources/colors.dart';
+import 'package:google_play_books_app/resources/constant.dart';
 import 'package:google_play_books_app/resources/dimens.dart';
 import 'package:google_play_books_app/viewitems/book_item_view.dart';
 import 'package:google_play_books_app/viewitems/categories_label_and_more_view.dart';
+import 'package:google_play_books_app/viewitems/review.dart';
 import 'package:google_play_books_app/widgets/title_and_horizontal_books_list_view.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
+import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 Icon icon(IconData icon) {
   return Icon(
@@ -29,9 +33,13 @@ class BookDetails extends StatelessWidget {
   List<CategoryVO>? category;
   String? bookTitle;
   String list;
+  int categoryIndex;
+  int bookIndex;
 
   BookDetails(
-      {required this.book,
+      {this.categoryIndex = 0,
+      this.bookIndex = 0,
+      required this.book,
       required this.books,
       required this.category,
       required this.bookTitle,
@@ -39,6 +47,7 @@ class BookDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<double> ratings = [0.1, 0.3, 0.5, 0.7, 0.9];
     return ChangeNotifierProvider(
       create: (context) => BookDetailsBloc(book!),
       child: Scaffold(
@@ -101,21 +110,22 @@ class BookDetails extends StatelessWidget {
                 AboutTheAuthorSectionView(
                   category: category?[1],
                 ),
+                RatingAndReviewsSectionView(ratings: ratings),
                 Selector<BookDetailsBloc, List<CategoryVO>?>(
                   selector: (context, bloc) => bloc.categoriesList,
                   shouldRebuild: (previous, next) => previous != next,
                   builder: (context, categoriesList, child) =>
                       GoogleBooksHorizontalListSectionView(
                     index: 1,
-                    category: categoriesList?[1],
+                    category: categoriesList?[categoryIndex],
                     categoryIndex: 1,
-                    books: categoriesList?[1].books,
+                    books: categoriesList?[categoryIndex].books,
                     booksCategoriesLabel: "Similar Ebooks",
-                    navigateToDetails: (i, j) {
+                    navigateToDetails: (categoryIndex, index) {
                       BookDetailsBloc bloc =
                           Provider.of(context, listen: false);
                       bloc.navigateToBookDetails(
-                          context, i, j, bookTitle, book);
+                          context, index, categoryIndex, bookTitle, book);
                       // Navigator.push(
                       //   context,
                       //   MaterialPageRoute(
@@ -136,6 +146,107 @@ class BookDetails extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class RatingAndReviewsSectionView extends StatelessWidget {
+  const RatingAndReviewsSectionView({
+    Key? key,
+    required this.ratings,
+  }) : super(key: key);
+
+  final List<double> ratings;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: CategoriesLabelAndMoreView(
+            index: 1,
+            booksCategoriesLabel: "Rating And Reviews",
+            category: null,
+          ),
+        ),
+        Container(
+          color: Colors.white,
+          padding: EdgeInsets.symmetric(
+            horizontal: 16.0,
+            vertical: 16.0,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "4.5",
+                          style: TextStyle(
+                            fontSize: 48.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Column(
+                    children: [
+                      SmoothStarRating(
+                        starCount: 5,
+                        rating: 4.5,
+                        size: 15.0,
+                        color: Colors.blue,
+                        borderColor: Colors.blue,
+                      ),
+                      SizedBox(height: 16.0),
+                      Text(
+                        "52 Total",
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          color: ICON_COLOR,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Container(
+                width: 270.0,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  reverse: true,
+                  itemCount: 5,
+                  itemBuilder: (context, index) {
+                    return Row(
+                      children: [
+                        Text(
+                          "${index + 1}",
+                          style: TextStyle(fontSize: 18.0),
+                        ),
+                        SizedBox(width: 8.0),
+                        LinearPercentIndicator(
+                          lineHeight: 8.0,
+                          // linearStrokeCap: LinearStrokeCap.roundAll,
+                          width: MediaQuery.of(context).size.width / 1.7,
+                          animation: true,
+                          animationDuration: 2500,
+                          percent: ratings[index],
+                          progressColor: Colors.blue,
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

@@ -25,7 +25,7 @@ class HomeBloc extends ChangeNotifier {
       debugPrint("Error => ${error.toString()}");
     });
 
-    mBookModel.getAllRecentBooksFromDatabase().then((books) {
+    mBookModel.getAllRecentBooksFromDatabase().listen((books) {
       recentBooks = books;
       recentBooks?.sort((a, b) =>
           (b.time ?? DateTime.now()).compareTo(a.time ?? DateTime.now()));
@@ -37,7 +37,9 @@ class HomeBloc extends ChangeNotifier {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => BookDetails(
+            builder: (context) =>
+                BookDetails(
+              categoryIndex: categoryIndex ?? 0,
                   book: categoriesList?[categoryIndex ?? 0].books?[title ?? 0],
                   books: booksList ?? [],
                   bookTitle: "title",
@@ -46,7 +48,7 @@ class HomeBloc extends ChangeNotifier {
                       categoriesList?[categoryIndex ?? 0].listNameEncoded ?? "",
                 ))).then((value) {
       if (value == true) {
-        mBookModel.getAllRecentBooksFromDatabase().then((books) {
+        mBookModel.getAllRecentBooksFromDatabase().listen((books) {
           recentBooks = books;
 
           recentBooks?.sort((a, b) =>

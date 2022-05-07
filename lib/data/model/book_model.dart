@@ -10,7 +10,7 @@ abstract class BookModel {
   Future<BookVO?> saveSingleBook(BookVO book);
 
   ///Database
-  Future<List<BookVO>?> getAllBooksFromDatabase();
-  Future<List<BookVO>?> getAllRecentBooksFromDatabase();
+  Stream<List<BookVO>?> getAllBooksFromDatabase();
+  Stream<List<BookVO>?> getAllRecentBooksFromDatabase();
   Future<BookVO?> getSingleBookFromDatabase(String bookTitle);
 }

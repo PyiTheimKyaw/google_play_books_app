@@ -36,11 +36,12 @@ class BookDetailsBloc extends ChangeNotifier {
         context,
         MaterialPageRoute(
             builder: (context) => BookDetails(
-                  book: book,
-                  books: categoriesList?[0].books,
+              categoryIndex: categoryIndex ?? 0,
+                  book: categoriesList?[categoryIndex ?? 0].books?[title ?? 0],
+                  books: [],
                   bookTitle: bookTitle,
                   category: categoriesList,
-                  list: "",
+                  list: categoriesList?[categoryIndex ?? 0].listNameEncoded ?? "",
                 )));
   }
 }
