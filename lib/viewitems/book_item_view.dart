@@ -26,12 +26,12 @@ class BookItemView extends StatelessWidget {
    BookItemView({
     Key? key,
     required this.bookTitle,
-     required this.bookList,
+     required this.book,
       this.isViewMore=false,
   }) : super(key: key);
 
   String? bookTitle;
-  BookVO? bookList;
+  BookVO? book;
   bool isViewMore;
 
   @override
@@ -41,8 +41,8 @@ class BookItemView extends StatelessWidget {
       width: 150,
       child: Stack(
         children: [
-          BookImageView(bookTitle: bookList,isViewMore: isViewMore,),
-          MoreButtonAndDownloadOrReadButtonSectionView(),
+          BookImageView(book: book,isViewMore: isViewMore,),
+          MoreButtonAndDownloadOrReadButtonSectionView(book: book,),
         ],
       ),
     );
@@ -50,9 +50,9 @@ class BookItemView extends StatelessWidget {
 }
 
 class MoreButtonAndDownloadOrReadButtonSectionView extends StatelessWidget {
-  const MoreButtonAndDownloadOrReadButtonSectionView({
-    Key? key,
-  }) : super(key: key);
+  BookVO? book;
+
+  MoreButtonAndDownloadOrReadButtonSectionView({required this.book});
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +63,7 @@ class MoreButtonAndDownloadOrReadButtonSectionView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            MoreButtonView(),
+            MoreButtonView(book: book,),
             Spacer(),
             DownloadOrReadButtonView(),
           ],
@@ -95,11 +95,11 @@ class DownloadOrReadButtonView extends StatelessWidget {
 class BookImageView extends StatelessWidget {
    BookImageView({
     Key? key,
-    required this.bookTitle,
+    required this.book,
      required this.isViewMore,
   }) : super(key: key);
 
-  BookVO? bookTitle;
+  BookVO? book;
   bool isViewMore;
 
   @override
@@ -108,7 +108,7 @@ class BookImageView extends StatelessWidget {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5),
           image: DecorationImage(
-            image: NetworkImage((!isViewMore) ? bookTitle?.bookImage ?? "" :"https://th.bing.com/th/id/OIP.T0yAGl5mXcZHC5Pt5Uc3igHaHa?pid=ImgDet&rs=1"),
+            image: NetworkImage((!isViewMore) ? book?.bookImage ?? "" :"https://th.bing.com/th/id/OIP.T0yAGl5mXcZHC5Pt5Uc3igHaHa?pid=ImgDet&rs=1"),
             fit: BoxFit.cover,
           )),
     );

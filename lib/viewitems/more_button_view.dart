@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:google_play_books_app/data/vos/book_vo.dart';
 import 'package:google_play_books_app/resources/colors.dart';
 import 'package:google_play_books_app/resources/dimens.dart';
 import 'package:google_play_books_app/viewitems/book_and_row_title_view.dart';
 
 class MoreButtonView extends StatelessWidget {
   bool isLibrary;
+  BookVO? book;
 
-  MoreButtonView({this.isLibrary=false});
+  MoreButtonView({this.isLibrary=false,required this.book});
 
   Text text(String text) {
     return Text(
@@ -43,7 +45,7 @@ class MoreButtonView extends StatelessWidget {
                           // left: MARGIN_MEDIUM_2,
                             top: MARGIN_MEDIUM_3,
                             bottom: MARGIN_MEDIUM_2),
-                        child: BookAAndTitleRowView(),
+                        child: BookAAndTitleRowView(book: book,),
                       ),
                       Divider(
                         thickness: 1,

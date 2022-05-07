@@ -31,8 +31,8 @@ class _StartPageState extends State<StartPage> {
   ///State Variables
   List<Widget> pages = [
     HomePage(),
-    // LibraryPage(),
-    Container(),
+    LibraryPage(),
+    // Container(),
   ];
   int _currentIndex = 0;
   final _debouncer = DebouncerClass(milliseconds: 500);

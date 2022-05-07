@@ -19,7 +19,7 @@ class BookViewWithBookTitleView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        BookItemView(bookList: books,bookTitle: '',isViewMore: isViewMore,),
+        BookItemView(book: books,bookTitle: '',isViewMore: isViewMore,),
         SizedBox(
           height: 5,
         ),

@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage>
       print("Category list length => ${categoriesList?.length}");
     });
 
-    mBookModel.getAllRecentBooks().then((books) {
+    mBookModel.getAllRecentBooksFromDatabase().then((books) {
       setState(() {
         recentBooks = books;
       });
@@ -73,12 +73,12 @@ class _HomePageState extends State<HomePage>
                   book: categoriesList?[categoryIndex ?? 0].books?[title ?? 0],
                   books: booksList ?? [],
                   bookTitle: "title",
-                  category: categoriesList?[1],
+                  category: categoriesList,
                   list:
                       categoriesList?[categoryIndex ?? 0].listNameEncoded ?? "",
                 ))).then((value) {
       if (value == true) {
-        mBookModel.getAllRecentBooks().then((books) {
+        mBookModel.getAllRecentBooksFromDatabase().then((books) {
           setState(() {
             recentBooks = books;
           });
@@ -106,11 +106,7 @@ class _HomePageState extends State<HomePage>
             headerSliverBuilder:
                 (BuildContext context, bool innerBoxIsScrolled) {
               return [
-                (recentBooks != [])
-                    ? RecentBooksListSectionView(booksList: recentBooks)
-                    : Container(
-                        height: 2,
-                      ),
+                RecentBooksListSectionView(booksList: recentBooks),
                 TabsSectionView(tabController: _tabController),
                 DividerSectionView(),
               ];
@@ -253,9 +249,9 @@ class RecentBooksListSectionView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
+    return (booksList != [])?SliverToBoxAdapter(
       child: RecentViewBooks(booksList: booksList),
-    );
+    ):Container(height: 2,width: 2,);
   }
 }
 
@@ -298,7 +294,7 @@ class RecentViewBooks extends StatelessWidget {
               )
             ],
           ),
-          child: BookItemView(bookTitle: "", bookList: booksList?[index]),
+          child: BookItemView(bookTitle: "", book: booksList?[index]),
         );
       },
     );

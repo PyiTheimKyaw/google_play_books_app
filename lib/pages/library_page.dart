@@ -1,7 +1,12 @@
 // ignore_for_file: prefer_const_constructors,prefer_const_literals_to_create_immutables, sized_box_for_whitespace, prefer_final_fields
 
 import 'package:flutter/material.dart';
+import 'package:google_play_books_app/data/model/book_model.dart';
+import 'package:google_play_books_app/data/model/book_model_impl.dart';
+import 'package:google_play_books_app/data/vos/book_vo.dart';
 import 'package:google_play_books_app/data/vos/book_vo_test.dart';
+import 'package:google_play_books_app/data/vos/category_vo.dart';
+import 'package:google_play_books_app/data/vos/overview_vo.dart';
 import 'package:google_play_books_app/dummy/dummy_data.dart';
 import 'package:google_play_books_app/pages/add_new_shelf_page.dart';
 import 'package:google_play_books_app/pages/book_details.dart';
@@ -33,13 +38,23 @@ class _LibraryPageState extends State<LibraryPage>
   List<String> dummyShelf = [];
   TextEditingController shelfName = TextEditingController();
   TextEditingController editShelfName = TextEditingController();
+  BookModel mBookModel = BookModelImpl();
+  List<BookVO>? recentBooks;
+
+  List<CategoryVO>? viewMoreList;
+  OverviewVo? overview;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+
     ///Api
-    
+    mBookModel.getAllRecentBooksFromDatabase().then((books) {
+      setState(() {
+        recentBooks = books;
+      });
+      recentBooks?.sort((a, b) => (a.author ?? "").compareTo(b.author ?? ""));
+    });
     tabController = TabController(length: 2, vsync: this);
     isGrid = true;
   }
@@ -51,15 +66,15 @@ class _LibraryPageState extends State<LibraryPage>
         itemBuilder: itemBuilder,
       );
 
-  navigateToBookDetails(BuildContext context, int i) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => BookDetails(
-                  bookList[i],
-                  books: bookList,
-                )));
-  }
+  // navigateToBookDetails(BuildContext context, int i) {
+  //   Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //           builder: (context) => BookDetails(
+  //                 bookList[i],
+  //                 books: bookList,
+  //               )));
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -89,12 +104,22 @@ class _LibraryPageState extends State<LibraryPage>
         padding: EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
         child: TabBarView(controller: tabController, children: [
           YourBooksSectionView(
-            bookList: bookList,
+            recentBooksList: recentBooks,
             byType: byType,
             byView: byView,
             onTapType: (value) {
               setState(() {
                 byType = value!;
+                if (byType == "Author") {
+                  recentBooks?.sort(
+                      (a, b) => (a.author ?? "").compareTo(b.author ?? ""));
+                } else if (byType == "Title") {
+                  recentBooks?.sort(
+                      (a, b) => (a.title ?? "").compareTo(b.title ?? ""));
+                } else {
+                  recentBooks?.sort((a, b) => (b.time ?? DateTime.now())
+                      .compareTo(a.time ?? DateTime.now()));
+                }
               });
               Navigator.pop(context);
             },
@@ -107,16 +132,17 @@ class _LibraryPageState extends State<LibraryPage>
           ),
 
           ///Shelves
-          ShelvesSectionView(
-            booksList: bookList,
-            dummyShelf: dummyShelf,
-            shelfName: shelfName,
-            bookCount: bookCount,
-            editShelfName: editShelfName,
-            onPressedCreate: () {
-              dummyShelf.add(shelfName.text);
-            },
-          ),
+          Container(),
+          // ShelvesSectionView(
+          //   booksList: bookList,
+          //   dummyShelf: dummyShelf,
+          //   shelfName: shelfName,
+          //   bookCount: bookCount,
+          //   editShelfName: editShelfName,
+          //   onPressedCreate: () {
+          //     dummyShelf.add(shelfName.text);
+          //   },
+          // ),
         ]),
       ),
     );
@@ -126,14 +152,14 @@ class _LibraryPageState extends State<LibraryPage>
 class YourBooksSectionView extends StatelessWidget {
   String byType;
   String byView;
-  List<BookVOTest> bookList;
+  List<BookVO>? recentBooksList;
   final Function(String?) onTapType;
   final Function(String?) onTapView;
 
   YourBooksSectionView(
       {required this.byType,
       required this.byView,
-      required this.bookList,
+      required this.recentBooksList,
       required this.onTapType,
       required this.onTapView});
 
@@ -170,13 +196,20 @@ class YourBooksSectionView extends StatelessWidget {
         ),
         Expanded(
           child: (byView == "List")
-              ? YourBooksByListSectionView()
+              ? YourBooksByListSectionView(
+                  bookList: recentBooksList,
+                )
               : (byView == "Small Grid")
-                  ? YourBooksByGridSectionView(
-                      books: bookList,
+                  ? Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8),
+                      child: YourBooksByGridSectionView(
+                        category: [],
+                        isViewMore: false,
+                        books: recentBooksList,
+                      ),
                     )
                   : (byView == "Large Grid")
-                      ? YourBooksByLargeGridSectionView(books: bookList)
+                      ? YourBooksByLargeGridSectionView(books: recentBooksList)
                       : Container(),
         ),
       ],
@@ -333,132 +366,132 @@ class SortingSectionView extends StatelessWidget {
   }
 }
 
-class ShelvesSectionView extends StatefulWidget {
-  const ShelvesSectionView({
-    Key? key,
-    required this.dummyShelf,
-    required this.shelfName,
-    required this.bookCount,
-    required this.editShelfName,
-    required this.onPressedCreate,
-    required this.booksList,
-  }) : super(key: key);
-
-  final List<String> dummyShelf;
-  final TextEditingController shelfName;
-  final int bookCount;
-  final TextEditingController editShelfName;
-  final Function onPressedCreate;
-  final List<BookVOTest> booksList;
-
-  @override
-  State<ShelvesSectionView> createState() => _ShelvesSectionViewState();
-}
-
-class _ShelvesSectionViewState extends State<ShelvesSectionView> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: Container(
-        width: MediaQuery.of(context).size.width / 3,
-        height: 50,
-        child: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => AddNewShelfPage(
-                          shelfNameList: widget.dummyShelf,
-                          shelfName: widget.shelfName,
-                          onPressedCreate: () {
-                            widget.onPressedCreate();
-                          },
-                        )));
-          },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [Icon(Icons.create), Text("Create New")],
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
-        ),
-      ),
-      body: ListView.builder(
-        itemCount: widget.dummyShelf.length,
-        itemBuilder: (BuildContext context, int index) {
-          return (widget.dummyShelf.isNotEmpty)
-              ? GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ReviewShelfPage(
-                                  booksList: widget.booksList,
-                                  shelfName: widget.dummyShelf[index],
-                                  editShelfName: widget.editShelfName,
-                                  editShelf: () {
-                                    setState(() {
-                                      widget.dummyShelf[index] =
-                                          widget.editShelfName.text;
-                                    });
-                                  },
-                                  deleteShelf: () {
-                                    setState(() {
-                                      widget.dummyShelf.removeAt(index);
-                                    });
-                                  },
-                                )));
-                  },
-                  child: Container(
-                    margin: EdgeInsets.only(top: 10),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(width: 1, color: Colors.white)),
-                    height: 100,
-                    child: Column(
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 5, vertical: 2),
-                              height: 67,
-                              width: 70,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: NetworkImage(
-                                        "https://th.bing.com/th/id/OIP.T0yAGl5mXcZHC5Pt5Uc3igHaHa?pid=ImgDet&rs=1"),
-                                    fit: BoxFit.cover),
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                            ),
-                            SizedBox(
-                              width: MARGIN_MEDIUM,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(widget.dummyShelf[index]),
-                                Text("${widget.bookCount} book"),
-                              ],
-                            ),
-                            Spacer(),
-                            Icon(Icons.navigate_next),
-                          ],
-                        ),
-                        Divider(
-                          color: Colors.black26,
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              : Container();
-        },
-      ),
-    );
-  }
-}
+// class ShelvesSectionView extends StatefulWidget {
+//   const ShelvesSectionView({
+//     Key? key,
+//     required this.dummyShelf,
+//     required this.shelfName,
+//     required this.bookCount,
+//     required this.editShelfName,
+//     required this.onPressedCreate,
+//     required this.booksList,
+//   }) : super(key: key);
+//
+//   final List<String> dummyShelf;
+//   final TextEditingController shelfName;
+//   final int bookCount;
+//   final TextEditingController editShelfName;
+//   final Function onPressedCreate;
+//   final List<BookVOTest> booksList;
+//
+//   @override
+//   State<ShelvesSectionView> createState() => _ShelvesSectionViewState();
+// }
+//
+// class _ShelvesSectionViewState extends State<ShelvesSectionView> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+//       floatingActionButton: Container(
+//         width: MediaQuery.of(context).size.width / 3,
+//         height: 50,
+//         child: FloatingActionButton(
+//           onPressed: () {
+//             Navigator.push(
+//                 context,
+//                 MaterialPageRoute(
+//                     builder: (context) => AddNewShelfPage(
+//                           shelfNameList: widget.dummyShelf,
+//                           shelfName: widget.shelfName,
+//                           onPressedCreate: () {
+//                             widget.onPressedCreate();
+//                           },
+//                         )));
+//           },
+//           child: Row(
+//             mainAxisAlignment: MainAxisAlignment.center,
+//             children: [Icon(Icons.create), Text("Create New")],
+//           ),
+//           shape: RoundedRectangleBorder(
+//             borderRadius: BorderRadius.circular(30),
+//           ),
+//         ),
+//       ),
+//       body: ListView.builder(
+//         itemCount: widget.dummyShelf.length,
+//         itemBuilder: (BuildContext context, int index) {
+//           return (widget.dummyShelf.isNotEmpty)
+//               ? GestureDetector(
+//                   onTap: () {
+//                     Navigator.push(
+//                         context,
+//                         MaterialPageRoute(
+//                             builder: (context) => ReviewShelfPage(
+//                                   booksList: widget.booksList,
+//                                   shelfName: widget.dummyShelf[index],
+//                                   editShelfName: widget.editShelfName,
+//                                   editShelf: () {
+//                                     setState(() {
+//                                       widget.dummyShelf[index] =
+//                                           widget.editShelfName.text;
+//                                     });
+//                                   },
+//                                   deleteShelf: () {
+//                                     setState(() {
+//                                       widget.dummyShelf.removeAt(index);
+//                                     });
+//                                   },
+//                                 )));
+//                   },
+//                   child: Container(
+//                     margin: EdgeInsets.only(top: 10),
+//                     decoration: BoxDecoration(
+//                         color: Colors.white,
+//                         border: Border.all(width: 1, color: Colors.white)),
+//                     height: 100,
+//                     child: Column(
+//                       children: [
+//                         Row(
+//                           crossAxisAlignment: CrossAxisAlignment.start,
+//                           children: [
+//                             Container(
+//                               padding: EdgeInsets.symmetric(
+//                                   horizontal: 5, vertical: 2),
+//                               height: 67,
+//                               width: 70,
+//                               decoration: BoxDecoration(
+//                                 image: DecorationImage(
+//                                     image: NetworkImage(
+//                                         "https://th.bing.com/th/id/OIP.T0yAGl5mXcZHC5Pt5Uc3igHaHa?pid=ImgDet&rs=1"),
+//                                     fit: BoxFit.cover),
+//                                 borderRadius: BorderRadius.circular(5),
+//                               ),
+//                             ),
+//                             SizedBox(
+//                               width: MARGIN_MEDIUM,
+//                             ),
+//                             Column(
+//                               crossAxisAlignment: CrossAxisAlignment.start,
+//                               children: [
+//                                 Text(widget.dummyShelf[index]),
+//                                 Text("${widget.bookCount} book"),
+//                               ],
+//                             ),
+//                             Spacer(),
+//                             Icon(Icons.navigate_next),
+//                           ],
+//                         ),
+//                         Divider(
+//                           color: Colors.black26,
+//                         ),
+//                       ],
+//                     ),
+//                   ),
+//                 )
+//               : Container();
+//         },
+//       ),
+//     );
+//   }
+// }

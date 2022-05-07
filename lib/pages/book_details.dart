@@ -24,7 +24,7 @@ Icon icon(IconData icon) {
 class BookDetails extends StatefulWidget {
   final List<BookVO>? books;
   final BookVO? book;
-  CategoryVO? category;
+  List<CategoryVO>? category;
   String? bookTitle;
   String list;
 
@@ -42,7 +42,7 @@ class BookDetails extends StatefulWidget {
 class _BookDetailsState extends State<BookDetails> {
   BookModel mBookModel = BookModelImpl();
   OverviewVo? overview;
-
+  List<CategoryVO>? categoriesList;
   List<BookVO>? recentList;
 
   @override
@@ -63,6 +63,13 @@ class _BookDetailsState extends State<BookDetails> {
         });
       });
     }
+    mBookModel.getCategories().then((overview) {
+      setState(() {
+        categoriesList  = overview?.lists;
+        overview = overview;
+      });
+
+    });
   }
 
   @override
@@ -108,7 +115,7 @@ class _BookDetailsState extends State<BookDetails> {
                 padding: const EdgeInsets.symmetric(
                     horizontal: MARGIN_MEDIUM_2, vertical: MARGIN_MEDIUM_3),
                 child: BookDetailsSectionView(
-                  bookTitle: widget.bookTitle,
+                  bookTitle: widget.book?.title ?? "",
                   book: widget.book,
                 ),
               ),
@@ -121,16 +128,17 @@ class _BookDetailsState extends State<BookDetails> {
                 height: MARGIN_LARGE,
               ),
               AboutEbooksSectionView(
-                category: widget.category,
+                book: widget.book,
+                category: widget.category?[0],
               ),
               AboutTheAuthorSectionView(
-                category: widget.category,
+                category: widget.category?[1],
               ),
               GoogleBooksHorizontalListSectionView(
                 index: 1,
-                category: widget.category,
-                categoryIndex: 0,
-                books: widget.books,
+                category:categoriesList?[1],
+                categoryIndex: 1,
+                books: categoriesList?[1].books,
                 booksCategoriesLabel: "Similar Ebooks",
                 navigateToDetails: (i, j) {
                   Navigator.push(
@@ -139,8 +147,8 @@ class _BookDetailsState extends State<BookDetails> {
                       builder: (context) => BookDetails(
                         book:  widget.book,
                         bookTitle: widget.bookTitle,
-                        books: widget.books,
-                        category: widget.category,
+                        books: categoriesList?[0].books,
+                        category: categoriesList,
                         list: "",
                       ),
                     ),
@@ -257,15 +265,17 @@ class AboutEbooksSectionView extends StatelessWidget {
   AboutEbooksSectionView({
     Key? key,
     required this.category,
+    required this.book,
   }) : super(key: key);
 
   CategoryVO? category;
+  BookVO? book;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
-      height: MediaQuery.of(context).size.height / 5,
+      // height: MediaQuery.of(context).size.height / 5,
       child: Column(
         children: [
           CategoriesLabelAndMoreView(
@@ -274,10 +284,7 @@ class AboutEbooksSectionView extends StatelessWidget {
             category: category,
           ),
           Text(
-            "Project Hail Mary is a 2021 science fiction novel by American novelist Andy Weir. Set in "
-            "the near future, the novel centers on junior high (middle) school-teacher-turned-astronaut "
-            "Ryland Grace, who wakes up from a coma afflicted with amnesia. He gradually remembers that he was sent "
-            "to the Tau ",
+            book?.description ?? "",
             style: TextStyle(letterSpacing: 0.5),
           ),
         ],
@@ -325,7 +332,7 @@ class BookDetailsSectionView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         BookItemView(
-          bookList: book,
+          book: book,
           bookTitle: bookTitle,
         ),
         SizedBox(
@@ -362,12 +369,12 @@ class BookDetailsView extends StatelessWidget {
             ),
             Spacer(),
             Text(
-              "Clea Shearer and Joanna Teplin",
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+              book?.author ?? "",
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
             ),
             Text(
-              "Clarkson Potter",
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w300),
+              book?.contributor ?? "",
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
             ),
           ],
         ),

@@ -79,10 +79,10 @@ class _SearchPageState extends State<SearchPage> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => BookDetails(
-                                  searchedBooks?[1],
+                                 book: searchedBooks?[1],
                                   books: searchedBooks,
                                   bookTitle: "",
-                                  category: category,
+                                  category: [],
                                   list: "",
                                 ),
                               ),

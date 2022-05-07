@@ -58,17 +58,17 @@ class BookModelImpl extends BookModel {
 
   ///Database
   @override
-  Future<List<BookVO>?> getAllBooks() {
+  Future<List<BookVO>?> getAllBooksFromDatabase() {
     return Future.value(bookDao.getAllBooks());
   }
 
   @override
-  Future<BookVO?> getSingleBook(String bookTitle) {
+  Future<BookVO?> getSingleBookFromDatabase(String bookTitle) {
     return Future.value(bookDao.getBook(bookTitle));
   }
 
   @override
-  Future<List<BookVO>?> getAllRecentBooks() {
+  Future<List<BookVO>?> getAllRecentBooksFromDatabase() {
     return Future.value(bookDao.getAllRecentBooks());
   }
 }

@@ -11,12 +11,10 @@ import 'package:google_play_books_app/widgets/your_books_by_grid_section_view.da
 import 'package:google_play_books_app/widgets/your_books_by_large_grid_section_view.dart';
 
 class MoreViewPage extends StatefulWidget {
-
   String list;
   int index;
 
   MoreViewPage({
-
     required this.list,
     required this.index,
   });
@@ -71,6 +69,8 @@ class _MoreViewPageState extends State<MoreViewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leadingWidth: 50,
+        titleSpacing: 5,
         elevation: 0,
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.black),
@@ -80,7 +80,7 @@ class _MoreViewPageState extends State<MoreViewPage> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.only(left: 34.0),
+        padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: YourBooksByGridSectionView(
           isViewMore: true,
           category: viewMoreList,
