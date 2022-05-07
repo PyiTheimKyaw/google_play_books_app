@@ -62,6 +62,16 @@ class BookModelImpl extends BookModel {
     });
   }
 
+  @override
+  Future<List<BookVO>?> getSearchBooks(String query) {
+    return mDataAgent.getSearchBooks(query).then((value) {
+      // if (value != null) {
+      //   bookDao.saveAllBooks(value);
+      // }
+      return Future.value(value);
+    });
+  }
+
   ///Database
   @override
   Stream<List<BookVO>?> getAllBooksFromDatabase() {

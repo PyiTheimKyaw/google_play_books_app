@@ -33,8 +33,8 @@ class _SearchWidgetState extends State<SearchWidget> {
               onTap: (){
                 widget.onTapClear;
                 controller.clear();
-                widget.onChanged('');
-                FocusScope.of(context).requestFocus(FocusNode());
+                // widget.onChanged('');
+                // FocusScope.of(context).requestFocus(FocusNode());
               },
               child: Icon(Icons.close,color: ICON_COLOR,)),
         ):null,

@@ -8,6 +8,7 @@ abstract class BookModel {
       String list, String bestSellersDate, String publishedDate);
   Future<List<BookVO>?> saveAllRecentBooks(List<BookVO> booksList);
   Future<BookVO?> saveSingleBook(BookVO book);
+  Future<List<BookVO>?> getSearchBooks(String query);
 
   ///Database
   Stream<List<BookVO>?> getAllBooksFromDatabase();
