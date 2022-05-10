@@ -5,6 +5,7 @@ import 'package:google_play_books_app/data/vos/overview_vo.dart';
 import 'package:google_play_books_app/network/dataagents/book_data_agent.dart';
 import 'package:google_play_books_app/network/dataagents/retrofit_data_agent_impl.dart';
 import 'package:google_play_books_app/persistence/daos/book_dao.dart';
+import 'package:google_play_books_app/persistence/daos/google_search_book_dao.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 class BookModelImpl extends BookModel {
@@ -19,6 +20,7 @@ class BookModelImpl extends BookModel {
   BookDataAgent mDataAgent = RetrofitDataAgentImpl();
 
   BookDao bookDao = BookDao();
+  GoogleSearchBookDao searchDao = GoogleSearchBookDao();
 
   @override
   Future<List<CategoryVO>?> getBooksList(
@@ -63,12 +65,11 @@ class BookModelImpl extends BookModel {
   }
 
   @override
-  Future<List<BookVO>?> getSearchBooks(String query) {
-    return mDataAgent.getSearchBooks(query).then((value) {
-      // if (value != null) {
-      //   bookDao.saveAllBooks(value);
-      // }
-      return Future.value(value);
+  void getSearchBooks(String query) {
+    mDataAgent.getSearchBooks(query).then((value) {
+      if (value != null) {
+        bookDao.saveAllBooks(value);
+      }
     });
   }
 
@@ -92,5 +93,14 @@ class BookModelImpl extends BookModel {
         .getAllRecentBooksEventStream()
         .startWith(bookDao.getRecentBooksStream())
         .map((event) => bookDao.getRecentBooks());
+  }
+
+  @override
+  Stream<List<BookVO>?> getSearchedBooksFromDatabase(String query) {
+    getSearchBooks(query);
+    return bookDao
+        .getAllBooksEventStream()
+        .startWith(bookDao.getBooksStream())
+        .map((event) => bookDao.getBooks());
   }
 }

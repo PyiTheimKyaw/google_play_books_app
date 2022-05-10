@@ -47,6 +47,29 @@ class BookDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _navigateToBookDetails(
+      context,
+      int? categoryIndex,
+      int? title,
+      String? bookTitle,
+      BookVO? book,
+      List<CategoryVO>? categoriesList,
+    ) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => BookDetails(
+                    categoryIndex: categoryIndex ?? 0,
+                    book:
+                        categoriesList?[categoryIndex ?? 0].books?[title ?? 0],
+                    books: [],
+                    bookTitle: bookTitle,
+                    category: categoriesList,
+                    list: categoriesList?[categoryIndex ?? 0].listNameEncoded ??
+                        "",
+                  )));
+    }
+
     List<double> ratings = [0.1, 0.3, 0.5, 0.7, 0.9];
     return ChangeNotifierProvider(
       create: (context) => BookDetailsBloc(book!),
@@ -105,27 +128,25 @@ class BookDetails extends StatelessWidget {
                 ),
                 AboutEbooksSectionView(
                   book: book,
-                  category: category?[0],
+                  category: null,
                 ),
                 AboutTheAuthorSectionView(
-                  category: category?[1],
+                  category: null,
                 ),
                 RatingAndReviewsSectionView(ratings: ratings),
-                Selector<BookDetailsBloc, List<CategoryVO>?>(
-                  selector: (context, bloc) => bloc.categoriesList,
-                  shouldRebuild: (previous, next) => previous != next,
-                  builder: (context, categoriesList, child) =>
+                Consumer<BookDetailsBloc>(
+                  builder: (context, bloc, child) =>
                       GoogleBooksHorizontalListSectionView(
                     index: 1,
-                    category: categoriesList?[categoryIndex],
+                    category: bloc.categoriesList?[categoryIndex],
                     categoryIndex: 1,
-                    books: categoriesList?[categoryIndex].books,
+                    books: bloc.categoriesList?[categoryIndex].books,
                     booksCategoriesLabel: "Similar Ebooks",
                     navigateToDetails: (categoryIndex, index) {
                       BookDetailsBloc bloc =
                           Provider.of(context, listen: false);
-                      bloc.navigateToBookDetails(
-                          context, index, categoryIndex, bookTitle, book);
+                      _navigateToBookDetails(context, index, categoryIndex,
+                          bookTitle, book, bloc.categoriesList);
                       // Navigator.push(
                       //   context,
                       //   MaterialPageRoute(

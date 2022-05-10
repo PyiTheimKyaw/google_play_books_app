@@ -8,26 +8,27 @@ import 'package:google_play_books_app/data/vos/overview_vo.dart';
 class MoreViewBloc extends ChangeNotifier {
   BookModel mBookModel = BookModelImpl();
   List<CategoryVO>? viewMoreList;
+  List<CategoryVO>? categoryList;
+
   OverviewVo? overview;
   List<BookVO>? viewMoreBooks;
-  List<BookVO>? allBooks;
-  BookVO? a;
 
   MoreViewBloc(String list, int index) {
     mBookModel.getCategories().then((value) {
       overview = value;
+      categoryList=value?.lists;
       notifyListeners();
       mBookModel
           .getBooksList(list, overview?.bestSellersDate ?? "",
               overview?.publishedDate ?? "")
           .then((value) {
         viewMoreList = value;
+        viewMoreList?.add(categoryList![index]);
         viewMoreBooks = value?[index].bookDetails;
         notifyListeners();
       }).catchError((error) {
         print("Error ${error.toString()}");
       });
     });
-
   }
 }

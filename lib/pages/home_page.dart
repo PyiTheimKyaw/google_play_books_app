@@ -47,6 +47,22 @@ class _HomePageState extends State<HomePage>
     super.dispose();
   }
 
+  _navigateToBookDetails(context, int? categoryIndex, int? title,
+      List<CategoryVO>? categoriesList, List<BookVO>? booksList) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => BookDetails(
+                  categoryIndex: categoryIndex ?? 0,
+                  book: categoriesList?[categoryIndex ?? 0].books?[title ?? 0],
+                  books: booksList ?? [],
+                  bookTitle: "title",
+                  category: categoriesList,
+                  list:
+                      categoriesList?[categoryIndex ?? 0].listNameEncoded ?? "",
+                )));
+  }
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -59,13 +75,10 @@ class _HomePageState extends State<HomePage>
               headerSliverBuilder:
                   (BuildContext context, bool innerBoxIsScrolled) {
                 return [
-                  Selector<HomeBloc, List<BookVO>?>(
-                      selector: (context, bloc) => bloc.recentBooks,
-                      shouldRebuild: (previous, next) => previous != next,
-                      builder:
-                          (BuildContext context, recentBooks, Widget? child) =>
-                              RecentBooksListSectionView(
-                                  booksList: recentBooks)),
+                  Consumer<HomeBloc>(
+                      builder: (BuildContext context, bloc, Widget? child) =>
+                          RecentBooksListSectionView(
+                              booksList: bloc.recentBooks)),
                   TabsSectionView(tabController: _tabController),
                   DividerSectionView(),
                 ];
@@ -73,40 +86,29 @@ class _HomePageState extends State<HomePage>
               body: TabBarView(
                 controller: _tabController,
                 children: [
-                  Selector<HomeBloc, List<CategoryVO>?>(
-                    selector: (context, bloc) => bloc.categoriesList,
-                    shouldRebuild: (previous, next) => previous != next,
-                    builder: (context, categoryList, child) =>
-                        EbooksSectionView(
-                            category: categoryList,
-                            navigatePage: (categoryIndex, index) {
-                              HomeBloc bloc =
-                                  Provider.of(context, listen: false);
-                              bloc.navigateToBookDetails(
-                                context,
-                                categoryIndex,
-                                index,
-                              );
-                            }),
+                  Consumer<HomeBloc>(
+                    builder: (context, bloc, child) => EbooksSectionView(
+                        category: bloc.categoriesList,
+                        navigatePage: (categoryIndex, index) {
+                          HomeBloc bloc = Provider.of(context, listen: false);
+                          _navigateToBookDetails(
+                            context,
+                            categoryIndex,
+                            index,
+                            bloc.categoriesList,
+                            bloc.booksList,
+                          );
+                        }),
                   ),
-                  Selector<HomeBloc, List<CategoryVO>?>(
-                    selector: (context, bloc) => bloc.categoriesList,
-                    shouldRebuild: (previous, next) => previous != next,
-                    builder: (context, categoryList, child) =>
-                        Selector<HomeBloc, List<BookVO>?>(
-                      selector: (context, bloc) => bloc.recentBooks,
-                      shouldRebuild: (previous, next) => previous != next,
-                      builder: (context, bookList, child) =>
-                          AudioBooksSectionView(
-                              category: categoryList,
-                              booksList: bookList,
-                              navigatePage: (categoryIndex, index) {
-                                HomeBloc bloc =
-                                    Provider.of(context, listen: false);
-                                bloc.navigateToBookDetails(
-                                    context, categoryIndex, index);
-                              }),
-                    ),
+                  Consumer<HomeBloc>(
+                    builder: (context, bloc, child) => AudioBooksSectionView(
+                        category: bloc.categoriesList,
+                        booksList: bloc.booksList,
+                        navigatePage: (categoryIndex, index) {
+                          HomeBloc bloc = Provider.of(context, listen: false);
+                          _navigateToBookDetails(context, categoryIndex, index,
+                              bloc.categoriesList, bloc.booksList);
+                        }),
                   ),
                 ],
               )),
@@ -178,15 +180,15 @@ class RecentBooksListSectionView extends StatelessWidget {
     return SliverToBoxAdapter(
       child: Visibility(
           visible: booksList?.isNotEmpty ?? false,
-          child: RecentViewBooks(booksList: booksList)),
+          child: RecentBooksView(booksList: booksList)),
     );
   }
 }
 
-class RecentViewBooks extends StatelessWidget {
+class RecentBooksView extends StatelessWidget {
   List<BookVO>? booksList;
 
-  RecentViewBooks({required this.booksList});
+  RecentBooksView({required this.booksList});
 
   @override
   Widget build(BuildContext context) {

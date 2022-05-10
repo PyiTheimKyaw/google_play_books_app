@@ -75,30 +75,19 @@ class _LibraryPageState extends State<LibraryPage>
           height: MediaQuery.of(context).size.height,
           padding: EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
           child: TabBarView(controller: tabController, children: [
-            Selector<LibraryBloc, List<BookVO>?>(
-              selector: (context, bloc) => bloc.recentBooks,
-              shouldRebuild: (previous, next) => previous != next,
-              builder: (context, recentBooks, child) =>
-                  Selector<LibraryBloc, String>(
-                selector: (context, bloc) => bloc.byType,
-                shouldRebuild: (previous, next) => previous != next,
-                builder: (context, byType, child) =>
-                    Selector<LibraryBloc, String>(
-                  selector: (context, bloc) => bloc.byView,
-                  builder: (context, byView, child) => YourBooksSectionView(
-                    recentBooksList: recentBooks,
-                    byType: byType,
-                    byView: byView,
-                    onTapType: (value) {
-                      LibraryBloc bloc = Provider.of(context, listen: false);
-                      bloc.sortByType(value, context);
-                    },
-                    onTapView: (value) {
-                      LibraryBloc bloc = Provider.of(context, listen: false);
-                      bloc.sortByView(value, context);
-                    },
-                  ),
-                ),
+            Consumer<LibraryBloc>(
+              builder: (context, bloc, child) => YourBooksSectionView(
+                recentBooksList: bloc.recentBooks,
+                byType: bloc.byType,
+                byView: bloc.byView,
+                onTapType: (value) {
+                  LibraryBloc bloc = Provider.of(context, listen: false);
+                  bloc.sortByType(value, context);
+                },
+                onTapView: (value) {
+                  LibraryBloc bloc = Provider.of(context, listen: false);
+                  bloc.sortByView(value, context);
+                },
               ),
             ),
 

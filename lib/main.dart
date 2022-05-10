@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:google_play_books_app/data/vos/book_vo.dart';
 import 'package:google_play_books_app/data/vos/buy_links_vo.dart';
 import 'package:google_play_books_app/data/vos/category_vo.dart';
+import 'package:google_play_books_app/data/vos/google_book_vo.dart';
+import 'package:google_play_books_app/data/vos/google_search_vo.dart';
+import 'package:google_play_books_app/data/vos/image_link_vo.dart';
 import 'package:google_play_books_app/data/vos/overview_vo.dart';
 import 'package:google_play_books_app/network/dataagents/retrofit_data_agent_impl.dart';
 import 'package:google_play_books_app/pages/start_page.dart';
@@ -17,10 +20,14 @@ void main() async {
   Hive.registerAdapter(CategoryVoAdapter());
   Hive.registerAdapter(BookVOAdapter());
   Hive.registerAdapter(BuyLinksVOAdapter());
+  Hive.registerAdapter(ImageLinkVOAdapter());
+  Hive.registerAdapter(GoogleBookVOAdapter());
+  Hive.registerAdapter(GoogleSearchBookVOAdapter());
 
   await Hive.openBox<OverviewVo>(BOX_NAME_OVERVIEW_VO);
   await Hive.openBox<BookVO>(BOX_NAME_BOOK_VO);
   await Hive.openBox<BookVO>(BOX_NAME_BOOK_VO_FOR_RECENT);
+  await Hive.openBox<GoogleSearchVO>(BOX_NAME_GOOGLE_SEARCH_VO);
   runApp(MyApp());
 }
 

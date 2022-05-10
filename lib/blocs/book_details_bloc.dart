@@ -30,18 +30,5 @@ class BookDetailsBloc extends ChangeNotifier {
       notifyListeners();
     });
   }
-  navigateToBookDetails(context, int? categoryIndex, int? title,
-      String? bookTitle, BookVO? book) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => BookDetails(
-              categoryIndex: categoryIndex ?? 0,
-                  book: categoriesList?[categoryIndex ?? 0].books?[title ?? 0],
-                  books: [],
-                  bookTitle: bookTitle,
-                  category: categoriesList,
-                  list: categoriesList?[categoryIndex ?? 0].listNameEncoded ?? "",
-                )));
-  }
+  
 }

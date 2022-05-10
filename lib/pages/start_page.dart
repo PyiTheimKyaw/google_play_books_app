@@ -40,9 +40,8 @@ class _StartPageState extends State<StartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
-
         backgroundColor: Colors.white,
         elevation: 0,
         title: SearchAndProfileSectionView(
@@ -107,7 +106,6 @@ class _BottomNavigationBarSectionViewState
 }
 
 class SearchAndProfileSectionView extends StatelessWidget {
-
   SearchAndProfileSectionView({
     Key? key,
     required this.debouncer,
@@ -150,6 +148,7 @@ class SearchAndProfileSectionView extends StatelessWidget {
               ),
               Expanded(
                 child: TextField(
+                  showCursor: false,
                   // autofocus: true,
                   decoration: InputDecoration(
                     hintText: SEARCH_PLAY_BOOKS,
@@ -158,11 +157,11 @@ class SearchAndProfileSectionView extends StatelessWidget {
                     ),
                     border: InputBorder.none,
                   ),
-                  onChanged: (String text) {
-                    debouncer.run(() {
-                      print(text);
-                    });
-                  },
+                  // onChanged: (String text) {
+                  //   debouncer.run(() {
+                  //     print(text);
+                  //   });
+                  // },
                   onTap: () {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => SearchPage()));

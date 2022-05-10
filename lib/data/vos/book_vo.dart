@@ -1,4 +1,5 @@
 import 'package:google_play_books_app/data/vos/buy_links_vo.dart';
+import 'package:google_play_books_app/data/vos/google_search_vo.dart';
 import 'package:google_play_books_app/persistence/hive_constants.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -85,6 +86,8 @@ class BookVO {
   List<BuyLinksVO>? buyLinks;
   @HiveField(25)
   DateTime? time;
+  @HiveField(26)
+  GoogleSearchVO? searchResults;
 
   BookVO(
     this.ageGroup,
@@ -113,6 +116,7 @@ class BookVO {
     this.weeksOnList,
     this.buyLinks,
     this.time,
+      this.searchResults
   );
 
   factory BookVO.fromJson(Map<String, dynamic> json) => _$BookVOFromJson(json);

@@ -19,7 +19,7 @@ class HomeBloc extends ChangeNotifier {
     ///Api call
     mBookModel.getCategories().then((overview) {
       categoriesList = overview?.lists;
-      overview = overview;
+      this.overview = overview;
       notifyListeners();
     }).catchError((error) {
       debugPrint("Error => ${error.toString()}");
@@ -30,32 +30,6 @@ class HomeBloc extends ChangeNotifier {
       recentBooks?.sort((a, b) =>
           (b.time ?? DateTime.now()).compareTo(a.time ?? DateTime.now()));
       notifyListeners();
-    });
-  }
-
-  navigateToBookDetails(context, int? categoryIndex, int? title) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                BookDetails(
-              categoryIndex: categoryIndex ?? 0,
-                  book: categoriesList?[categoryIndex ?? 0].books?[title ?? 0],
-                  books: booksList ?? [],
-                  bookTitle: "title",
-                  category: categoriesList,
-                  list:
-                      categoriesList?[categoryIndex ?? 0].listNameEncoded ?? "",
-                ))).then((value) {
-      if (value == true) {
-        mBookModel.getAllRecentBooksFromDatabase().listen((books) {
-          recentBooks = books;
-
-          recentBooks?.sort((a, b) =>
-              (b.time ?? DateTime.now()).compareTo(a.time ?? DateTime.now()));
-          notifyListeners();
-        });
-      }
     });
   }
 }

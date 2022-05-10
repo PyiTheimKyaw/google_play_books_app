@@ -32,25 +32,21 @@ class MoreViewPage extends StatelessWidget {
           elevation: 0,
           backgroundColor: Colors.white,
           iconTheme: IconThemeData(color: Colors.black),
-          title: Selector<MoreViewBloc, List<CategoryVO>?>(
-            selector: (context, bloc) => bloc.viewMoreList,
-            shouldRebuild: (previous, next) => previous != next,
-            builder: (context, viewMoreList, child) => Text(
-              viewMoreList?[index].listName ?? "",
+          title: Consumer<MoreViewBloc>(
+            builder: (context, bloc, child) => Text(
+              bloc.viewMoreList?[index].listName ?? "",
               style: TextStyle(color: Colors.black),
             ),
           ),
         ),
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: 24.0),
-          child: Selector<MoreViewBloc, List<CategoryVO>?>(
-            selector: (context, bloc) => bloc.viewMoreList,
-            shouldRebuild: (previous, next) => previous != next,
-            builder: (context, viewMoreList, child) =>
+          child: Consumer<MoreViewBloc>(
+            builder: (context, bloc, child) =>
                 YourBooksByGridSectionView(
               isViewMore: true,
-              category: viewMoreList,
-              books: viewMoreList?[index].books,
+              category: bloc.viewMoreList,
+              books: bloc.viewMoreList?[index].books,
             ),
           ),
         ),
