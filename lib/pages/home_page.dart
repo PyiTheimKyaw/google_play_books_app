@@ -2,13 +2,17 @@
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:google_play_books_app/blocs/home_bloc.dart';
 import 'package:google_play_books_app/data/vos/book_vo.dart';
+import 'package:google_play_books_app/data/vos/book_vo_test.dart';
+import 'package:google_play_books_app/data/vos/category_vo.dart';
 import 'package:google_play_books_app/dummy/dummy_data.dart';
 import 'package:google_play_books_app/pages/book_details.dart';
 import 'package:google_play_books_app/resources/dimens.dart';
 import 'package:google_play_books_app/resources/strings.dart';
 import 'package:google_play_books_app/viewitems/book_item_view.dart';
 import 'package:google_play_books_app/widgets/title_and_horizontal_books_list_view.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -19,7 +23,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-  List<BookVO> booksList = dummyBooks;
+  List<BookVOTest> booksList = dummyBooks;
   late TabController _tabController;
   late ScrollController _scrollController;
 
@@ -33,12 +37,7 @@ class _HomePageState extends State<HomePage>
 
   navigateToBookDetails(BuildContext context, int i) {
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => BookDetails(
-                  booksList[i],
-                  books: booksList,
-                )));
+        context, MaterialPageRoute(builder: (context) => Container()));
   }
 
   @override
@@ -50,34 +49,45 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        padding: EdgeInsets.only(top: MARGIN_MEDIUM_2),
-        color: Colors.white,
-        child: NestedScrollView(
-            headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
-              return [
-                RecentBooksListSectionView(booksList: booksList),
-                TabsSectionView(tabController: _tabController),
-                DividerSectionView(),
-              ];
-            },
-            body: TabBarView(
-              controller: _tabController,
-              children: [
-                EbooksSectionView(
-                    booksList: booksList,
-                    navigatePage: (index) {
-                      navigateToBookDetails(context, index);
-                    }),
-                AudioBooksSectionView(
-                    booksList: booksList,
-                    navigatePage: (index) {
-                      navigateToBookDetails(context, index);
-                    }),
-              ],
-            )),
+    return ChangeNotifierProvider(
+      create: (context) => HomeBloc(),
+      child: Scaffold(
+        body: Container(
+          padding: EdgeInsets.only(top: MARGIN_MEDIUM_2),
+          color: Colors.white,
+          child: NestedScrollView(
+              headerSliverBuilder:
+                  (BuildContext context, bool innerBoxIsScrolled) {
+                return [
+                  Consumer<HomeBloc>(
+                      builder: (context, bloc, child) =>
+                          RecentBooksListSectionView(
+                              booksList: bloc.bookList ?? [])),
+                  TabsSectionView(tabController: _tabController),
+                  DividerSectionView(),
+                ];
+              },
+              body: TabBarView(
+                controller: _tabController,
+                children: [
+                  Consumer<HomeBloc>(
+                    builder: (context, bloc, Widget? child) =>
+                        EbooksSectionView(
+                      booksList: [],
+                      navigatePage: (index) {
+                        navigateToBookDetails(context, index);
+                      },
+                      categoriesList: bloc.categoriesList,
+                    ),
+                  ),
+                  AudioBooksSectionView(
+                      booksList: [],
+                      navigatePage: (index) {
+                        navigateToBookDetails(context, index);
+                      }),
+                ],
+              )),
+        ),
       ),
     );
   }
@@ -85,21 +95,25 @@ class _HomePageState extends State<HomePage>
 
 class EbooksSectionView extends StatelessWidget {
   final List<BookVO> booksList;
+  final List<CategoryVO>? categoriesList;
   final Function(int) navigatePage;
 
-  EbooksSectionView({required this.booksList, required this.navigatePage});
+  EbooksSectionView(
+      {required this.booksList,
+      required this.navigatePage,
+      required this.categoriesList});
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: booksList.length,
+        itemCount: categoriesList?.length,
         itemBuilder: (context, index) {
           return GoogleBooksHorizontalListSectionView(
-            books: booksList,
+            books: categoriesList?[index].books,
             navigateToDetails: () {
               navigatePage(index);
             },
-            booksCategoriesLabel: "On your wishlist",
+            booksCategoriesLabel: categoriesList?[index].listName ?? "",
           );
         });
   }

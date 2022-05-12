@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_play_books_app/components/smart_horizontal_list_view.dart';
 import 'package:google_play_books_app/data/vos/book_vo.dart';
+import 'package:google_play_books_app/data/vos/book_vo_test.dart';
 import 'package:google_play_books_app/resources/dimens.dart';
 import 'package:google_play_books_app/viewitems/categories_label_and_more_view.dart';
 import 'package:google_play_books_app/widgets/book_view_with_book_title_view.dart';
@@ -10,7 +11,7 @@ class GoogleBooksHorizontalListSectionView extends StatelessWidget {
   final String booksCategoriesLabel;
   final Function navigateToDetails;
   final bool seePrice;
-  List<BookVO> books;
+  List<BookVO>? books;
   GoogleBooksHorizontalListSectionView(
       {required this.booksCategoriesLabel, required this.navigateToDetails,this.seePrice=true,required this.books});
 
@@ -21,14 +22,14 @@ class GoogleBooksHorizontalListSectionView extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
-          child: CategoriesLabelAndMoreView(booksCategoriesLabel: booksCategoriesLabel,books: books,),
+          child: CategoriesLabelAndMoreView(booksCategoriesLabel: booksCategoriesLabel,books: [],),
         ),
         Flexible(
           child: Container(
             width: double.maxFinite,
             height: MediaQuery.of(context).size.height / 3.2,
             child: HorizontalBooksListView(
-              book: books,
+              book: books ?? [],
               seePrice: seePrice,
               navigateToDetails: () {
                 navigateToDetails();

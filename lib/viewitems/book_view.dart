@@ -1,5 +1,5 @@
 // import 'package:flutter/material.dart';
-// import 'package:google_play_books_app/data/vos/book_vo.dart';
+// import 'package:google_play_books_app/data/vos/book_vo_test.dart';
 //
 // class BookView extends StatelessWidget {
 //   BookVO book;

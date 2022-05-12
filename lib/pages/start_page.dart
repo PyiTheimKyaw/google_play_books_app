@@ -31,7 +31,8 @@ class _StartPageState extends State<StartPage> {
   ///State Variables
   List<Widget> pages = [
     HomePage(),
-    LibraryPage(),
+    // LibraryPage(),
+    Container(),
   ];
   int _currentIndex = 0;
   final _debouncer = DebouncerClass(milliseconds: 500);
@@ -164,7 +165,7 @@ class SearchAndProfileSectionView extends StatelessWidget {
                   },
                   onTap: () {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => SearchPage()));
+                        MaterialPageRoute(builder: (context) => Container()));
                   },
                 ),
               ),

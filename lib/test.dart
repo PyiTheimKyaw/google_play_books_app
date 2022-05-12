@@ -2,7 +2,7 @@
 //
 // import 'package:carousel_slider/carousel_slider.dart';
 // import 'package:flutter/material.dart';
-// import 'package:google_play_books_app/data/vos/book_vo.dart';
+// import 'package:google_play_books_app/data/vos/book_vo_test.dart';
 // import 'package:google_play_books_app/dummy/dummy_data.dart';
 // import 'package:google_play_books_app/resources/dimens.dart';
 // import 'package:google_play_books_app/resources/strings.dart';

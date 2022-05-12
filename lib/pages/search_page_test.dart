@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flappy_search_bar_ns/flappy_search_bar_ns.dart';
 import 'package:flappy_search_bar_ns/scaled_tile.dart';
 import 'package:flutter/material.dart';
-import 'package:google_play_books_app/data/vos/book_vo.dart';
+import 'package:google_play_books_app/data/vos/book_vo_test.dart';
 import 'package:google_play_books_app/pages/library_page.dart';
 import 'package:google_play_books_app/viewitems/book_and_row_title_view.dart';
 import 'package:google_play_books_app/widgets/your_books_by_list_section_view.dart';
@@ -14,26 +14,26 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final SearchBarController<BookVO> _searchBarController =
+  final SearchBarController<BookVOTest> _searchBarController =
       SearchBarController();
   bool isReplay = false;
 
-  Future<List<BookVO>> _getALlPosts(String? text) async {
+  Future<List<BookVOTest>> _getALlPosts(String? text) async {
     await Future.delayed(Duration(seconds: text!.length == 4 ? 10 : 1));
     if (isReplay)
       return [
-        BookVO(
+        BookVOTest(
           "The Marathon Don't stop !",
         )
       ];
     if (text.length == 5) throw Error();
     if (text.length == 6) return [];
-    List<BookVO> books = [];
+    List<BookVOTest> books = [];
 
     var random = new Random();
     for (int i = 0; i < 10; i++) {
       books.add(
-        BookVO("$text $i"),
+        BookVOTest("$text $i"),
       );
     }
     return books;
@@ -43,7 +43,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SearchBar<BookVO>(
+        child: SearchBar<BookVOTest>(
           searchBarPadding: EdgeInsets.symmetric(horizontal: 10),
           headerPadding: EdgeInsets.symmetric(horizontal: 10),
           listPadding: EdgeInsets.symmetric(horizontal: 10),
@@ -63,7 +63,7 @@ class _HomeState extends State<Home> {
           mainAxisSpacing: 10,
           // crossAxisSpacing: 10,
           crossAxisCount: 1,
-          onItemFound: (BookVO? post, int index) {
+          onItemFound: (BookVOTest? post, int index) {
             return BookAAndTitleRowView();
           },
         ),

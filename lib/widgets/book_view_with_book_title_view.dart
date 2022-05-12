@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_play_books_app/data/vos/book_vo.dart';
+import 'package:google_play_books_app/data/vos/book_vo_test.dart';
 import 'package:google_play_books_app/resources/colors.dart';
 import 'package:google_play_books_app/viewitems/book_item_view.dart';
 import 'package:google_play_books_app/viewitems/book_view.dart';
@@ -23,7 +24,7 @@ class BookViewWithBookTitleView extends StatelessWidget {
         ),
         Flexible(
           child: Text(
-            books.title,
+            books.title ?? "",
             style: TextStyle(
                 color: TITLE_COLOR,
                 fontSize: 13,
