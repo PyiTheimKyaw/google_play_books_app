@@ -89,6 +89,10 @@ class _LibraryPageState extends State<LibraryPage>
                   LibraryBloc bloc = Provider.of(context, listen: false);
                   bloc.sortByView(value, context);
                 },
+                onSelected: (index) {
+                  bloc.selectOrUnselectCategory(index);
+                },
+                isSelected: bloc.isSelectedCategory,
               ),
             ),
 
@@ -118,14 +122,18 @@ class YourBooksSectionView extends StatelessWidget {
   final Function(String?) onTapType;
   final Function(String?) onTapView;
   final List<String?>? categoriesStringList;
-
-  YourBooksSectionView(
-      {required this.byType,
-      required this.byView,
-      required this.recentBooksList,
-      required this.onTapType,
-      required this.onTapView,
-      required this.categoriesStringList});
+  final Function(int) onSelected;
+  final bool isSelected;
+  YourBooksSectionView({
+    required this.byType,
+    required this.byView,
+    required this.recentBooksList,
+    required this.onTapType,
+    required this.onTapView,
+    required this.categoriesStringList,
+    required this.onSelected,
+    required this.isSelected,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -135,34 +143,10 @@ class YourBooksSectionView extends StatelessWidget {
           color: Colors.black26,
           thickness: 1,
         ),
-        Container(
-          height: 50,
-          child: ListView.builder(
-              padding: EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
-              scrollDirection: Axis.horizontal,
-              itemCount: categoriesStringList?.length ?? 0,
-              itemBuilder: (context, index) {
-                return Row(
-                  children: [
-                    Chip(
-                      // elevation: 2,
-                      backgroundColor: Colors.white,
-                      shape: StadiumBorder(
-                        side: BorderSide(
-                          color: Color.fromRGBO(234, 234, 234, 1.0),
-                        ),
-                      ),
-                      label: Text(
-                        categoriesStringList?[index] ?? "",
-                        style: TextStyle(color: ICON_COLOR),
-                      ),
-                    ),
-                    SizedBox(
-                      width: MARGIN_MEDIUM,
-                    ),
-                  ],
-                );
-              }),
+        CategoriesView(
+          categoriesStringList: categoriesStringList,
+          onSelected: onSelected,
+          isSelected: isSelected,
         ),
         SizedBox(
           height: MARGIN_MEDIUM_2,
@@ -195,26 +179,26 @@ class YourBooksSectionView extends StatelessWidget {
                 Expanded(
                   child: (byView == "List")
                       ? YourBooksByListSectionView(
-                    bookList: recentBooksList,
-                  )
+                          bookList: recentBooksList,
+                        )
                       : (byView == "Small Grid")
-                      ? Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8),
-                    child: YourBooksByGridSectionView(
-                      category: [],
-                      isViewMore: false,
-                      books: recentBooksList,
-                    ),
-                  )
-                      : (byView == "Large Grid")
-                      ? YourBooksByLargeGridSectionView(books: recentBooksList)
-                      : Container(),
+                          ? Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 8),
+                              child: YourBooksByGridSectionView(
+                                category: [],
+                                isViewMore: false,
+                                books: recentBooksList,
+                              ),
+                            )
+                          : (byView == "Large Grid")
+                              ? YourBooksByLargeGridSectionView(
+                                  books: recentBooksList)
+                              : Container(),
                 ),
               ],
             ),
           ),
         ),
-
       ],
     );
   }
@@ -304,6 +288,54 @@ class YourBooksSectionView extends StatelessWidget {
         });
   }
 }
+
+class CategoriesView extends StatelessWidget {
+  final List<String?>? categoriesStringList;
+  final Function(int) onSelected;
+  final bool isSelected;
+  CategoriesView(
+      {required this.categoriesStringList, required this.onSelected,required this.isSelected});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 50,
+      child: ListView.builder(
+          padding: EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
+          scrollDirection: Axis.horizontal,
+          itemCount: categoriesStringList?.length ?? 0,
+          itemBuilder: (context, index) {
+            return Row(
+              children: [
+                Chip(
+                  // elevation: 2,
+                  backgroundColor: (isSelected)?Colors.blue : Colors.white,
+                  shape: StadiumBorder(
+                    side: BorderSide(
+                      color: Color.fromRGBO(234, 234, 234, 1.0),
+                    ),
+                  ),
+                  label: GestureDetector(
+                    onTap: (){
+                      print("tap cate");
+                      onSelected(index);
+                    },
+                    child: Text(
+                      categoriesStringList?[index] ?? "",
+                      style: TextStyle(color: ICON_COLOR),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: MARGIN_MEDIUM,
+                ),
+              ],
+            );
+          }),
+    );
+  }
+}
+
 class SortingViewAndTypeSectionView extends StatelessWidget {
   const SortingViewAndTypeSectionView({Key? key}) : super(key: key);
 
