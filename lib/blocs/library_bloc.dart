@@ -10,8 +10,16 @@ class LibraryBloc extends ChangeNotifier {
   String byView = "List";
   BookModel mBookModel = BookModelImpl();
   List<BookVO>? recentBooks;
+  List<String?>? categoriesStringList;
 
   LibraryBloc() {
+    ///Get all categories list
+    mBookModel.getCategoriesStringList().then((value) {
+      categoriesStringList = value;
+      notifyListeners();
+    });
+
+    ///Get all recent books
     mBookModel.getAllRecentBooksFromDatabase().listen((books) {
       recentBooks = books;
       notifyListeners();

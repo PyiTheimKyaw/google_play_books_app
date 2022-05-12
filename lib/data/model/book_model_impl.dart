@@ -73,6 +73,11 @@ class BookModelImpl extends BookModel {
     });
   }
 
+  @override
+  Future<List<String?>?> getCategoriesStringList() {
+    return Future.value(mDataAgent.categoriesString());
+  }
+
   ///Database
   @override
   Stream<List<BookVO>?> getAllBooksFromDatabase() {
@@ -103,4 +108,6 @@ class BookModelImpl extends BookModel {
         .startWith(bookDao.getBooksStream())
         .map((event) => bookDao.getBooks());
   }
+
+
 }

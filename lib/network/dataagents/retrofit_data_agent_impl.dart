@@ -52,4 +52,13 @@ class RetrofitDataAgentImpl extends BookDataAgent {
             response.items?.map((books) => books.convertToBookVO()).toList())
         .first;
   }
+
+  @override
+  Future<List<String?>?> categoriesString() {
+    return mApi
+        .getOverview(API_KEY, PUBLISHED_DATE)
+        .asStream()
+        .map((event) => event.results?.lists?.map((e) => e.listName).toList())
+        .first;
+  }
 }

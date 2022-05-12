@@ -30,5 +30,5 @@ class BookDetailsBloc extends ChangeNotifier {
       notifyListeners();
     });
   }
-  
+
 }

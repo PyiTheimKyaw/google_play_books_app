@@ -73,10 +73,11 @@ class _LibraryPageState extends State<LibraryPage>
         body: Container(
           color: Colors.white,
           height: MediaQuery.of(context).size.height,
-          padding: EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
+          // padding: EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
           child: TabBarView(controller: tabController, children: [
             Consumer<LibraryBloc>(
               builder: (context, bloc, child) => YourBooksSectionView(
+                categoriesStringList: bloc.categoriesStringList ?? [],
                 recentBooksList: bloc.recentBooks,
                 byType: bloc.byType,
                 byView: bloc.byView,
@@ -116,13 +117,15 @@ class YourBooksSectionView extends StatelessWidget {
   List<BookVO>? recentBooksList;
   final Function(String?) onTapType;
   final Function(String?) onTapView;
+  final List<String?>? categoriesStringList;
 
   YourBooksSectionView(
       {required this.byType,
       required this.byView,
       required this.recentBooksList,
       required this.onTapType,
-      required this.onTapView});
+      required this.onTapView,
+      required this.categoriesStringList});
 
   @override
   Widget build(BuildContext context) {
@@ -132,47 +135,86 @@ class YourBooksSectionView extends StatelessWidget {
           color: Colors.black26,
           thickness: 1,
         ),
+        Container(
+          height: 50,
+          child: ListView.builder(
+              padding: EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
+              scrollDirection: Axis.horizontal,
+              itemCount: categoriesStringList?.length ?? 0,
+              itemBuilder: (context, index) {
+                return Row(
+                  children: [
+                    Chip(
+                      // elevation: 2,
+                      backgroundColor: Colors.white,
+                      shape: StadiumBorder(
+                        side: BorderSide(
+                          color: Color.fromRGBO(234, 234, 234, 1.0),
+                        ),
+                      ),
+                      label: Text(
+                        categoriesStringList?[index] ?? "",
+                        style: TextStyle(color: ICON_COLOR),
+                      ),
+                    ),
+                    SizedBox(
+                      width: MARGIN_MEDIUM,
+                    ),
+                  ],
+                );
+              }),
+        ),
         SizedBox(
           height: MARGIN_MEDIUM_2,
         ),
-        Row(
-          children: [
-            SortingSectionView(
-              val: byType,
-              onTap: () {
-                buildShowModalBottomSheetForSorting(context);
-              },
-            ),
-            Spacer(),
-            SortingViewListSectionView(
-              view: byView,
-              opTap: () {
-                buildShowModalBottomSheetForSortingView(context);
-              },
-            ),
-          ],
-        ),
-        SizedBox(
-          height: MARGIN_MEDIUM,
-        ),
         Expanded(
-          child: (byView == "List")
-              ? YourBooksByListSectionView(
-                  bookList: recentBooksList,
-                )
-              : (byView == "Small Grid")
-                  ? Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8),
-                      child: YourBooksByGridSectionView(
-                        category: [],
-                        isViewMore: false,
-                        books: recentBooksList,
-                      ),
-                    )
-                  : (byView == "Large Grid")
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    SortingSectionView(
+                      val: byType,
+                      onTap: () {
+                        buildShowModalBottomSheetForSorting(context);
+                      },
+                    ),
+                    Spacer(),
+                    SortingViewListSectionView(
+                      view: byView,
+                      opTap: () {
+                        buildShowModalBottomSheetForSortingView(context);
+                      },
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: MARGIN_MEDIUM,
+                ),
+                Expanded(
+                  child: (byView == "List")
+                      ? YourBooksByListSectionView(
+                    bookList: recentBooksList,
+                  )
+                      : (byView == "Small Grid")
+                      ? Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    child: YourBooksByGridSectionView(
+                      category: [],
+                      isViewMore: false,
+                      books: recentBooksList,
+                    ),
+                  )
+                      : (byView == "Large Grid")
                       ? YourBooksByLargeGridSectionView(books: recentBooksList)
                       : Container(),
+                ),
+              ],
+            ),
+          ),
         ),
+
       ],
     );
   }
@@ -260,6 +302,14 @@ class YourBooksSectionView extends StatelessWidget {
             ],
           );
         });
+  }
+}
+class SortingViewAndTypeSectionView extends StatelessWidget {
+  const SortingViewAndTypeSectionView({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }
 
