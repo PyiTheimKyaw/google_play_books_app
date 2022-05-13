@@ -3,7 +3,9 @@ import 'package:google_play_books_app/data/vos/category_vo.dart';
 import 'package:google_play_books_app/data/vos/overview_vo.dart';
 
 abstract class BookModel {
-  Future<OverviewVo?> getCategories();
+  Future<OverviewVo?> getOverview();
+  void getBookListFromCategory();
+  void getCategoriesList();
   Future<List<CategoryVO>?> getBooksList(
       String list, String bestSellersDate, String publishedDate);
   Future<List<BookVO>?> saveAllRecentBooks(List<BookVO> booksList);
@@ -12,6 +14,7 @@ abstract class BookModel {
   Future<List<String?>?> getCategoriesStringList();
 
   ///Database
+  Stream<List<CategoryVO>?> getCategoriesListFromDatabase();
   Stream<List<BookVO>?> getAllBooksFromDatabase();
   Stream<List<BookVO>?> getAllRecentBooksFromDatabase();
   Stream<List<BookVO>?> getSearchedBooksFromDatabase(String query);

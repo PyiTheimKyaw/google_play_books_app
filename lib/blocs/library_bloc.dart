@@ -12,8 +12,8 @@ class LibraryBloc extends ChangeNotifier {
   List<BookVO>? recentBooks;
   List<BookVO>? selectedCategoriesBooksList;
   List<String?>? categoriesStringList;
-  List<String> selectedCategoriesStringList=[];
-  bool isSelectedCategory=false;
+  List<String> selectedCategoriesStringList = [];
+  bool isSelectedCategory = false;
 
   LibraryBloc() {
     ///Get all categories list
@@ -53,14 +53,21 @@ class LibraryBloc extends ChangeNotifier {
       notifyListeners();
     }
   }
-  void selectOrUnselectCategory(int index){
-    isSelectedCategory=!isSelectedCategory;
-    if(isSelectedCategory){
-      selectedCategoriesStringList
-          .add(categoriesStringList?[index] ?? "");
 
-      print("book library => ${recentBooks?[1].category}");
+  void selectOrUnselectCategory(int index) {
+    isSelectedCategory = !isSelectedCategory;
+    if (isSelectedCategory) {
+      print("book library => ${categoriesStringList?[index]}");
+      recentBooks = recentBooks
+          ?.where(
+              (element) => (element.category) == (categoriesStringList?[index]))
+          .toList();
+
+      selectedCategoriesStringList.add(categoriesStringList?[index] ?? "");
+      // categoriesStringList?.removeAt(index);
+
       notifyListeners();
     }
+    notifyListeners();
   }
 }

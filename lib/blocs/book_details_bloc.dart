@@ -24,11 +24,10 @@ class BookDetailsBloc extends ChangeNotifier {
         notifyListeners();
       });
     }
-    mBookModel.getCategories().then((overview) {
+    mBookModel.getOverview().then((overview) {
       categoriesList = overview?.lists;
       overview = overview;
       notifyListeners();
     });
   }
-
 }

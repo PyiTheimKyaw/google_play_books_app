@@ -90,6 +90,7 @@ class _LibraryPageState extends State<LibraryPage>
                   bloc.sortByView(value, context);
                 },
                 onSelected: (index) {
+                  LibraryBloc bloc = Provider.of(context, listen: false);
                   bloc.selectOrUnselectCategory(index);
                 },
                 isSelected: bloc.isSelectedCategory,
@@ -122,7 +123,7 @@ class YourBooksSectionView extends StatelessWidget {
   final Function(String?) onTapType;
   final Function(String?) onTapView;
   final List<String?>? categoriesStringList;
-  final Function(int) onSelected;
+  final ValueChanged<int> onSelected;
   final bool isSelected;
   YourBooksSectionView({
     required this.byType,
@@ -291,10 +292,12 @@ class YourBooksSectionView extends StatelessWidget {
 
 class CategoriesView extends StatelessWidget {
   final List<String?>? categoriesStringList;
-  final Function(int) onSelected;
+  final ValueChanged<int> onSelected;
   final bool isSelected;
   CategoriesView(
-      {required this.categoriesStringList, required this.onSelected,required this.isSelected});
+      {required this.categoriesStringList,
+      required this.onSelected,
+      required this.isSelected});
 
   @override
   Widget build(BuildContext context) {
@@ -307,22 +310,25 @@ class CategoriesView extends StatelessWidget {
           itemBuilder: (context, index) {
             return Row(
               children: [
-                Chip(
-                  // elevation: 2,
-                  backgroundColor: (isSelected)?Colors.blue : Colors.white,
-                  shape: StadiumBorder(
-                    side: BorderSide(
-                      color: Color.fromRGBO(234, 234, 234, 1.0),
-                    ),
-                  ),
-                  label: GestureDetector(
-                    onTap: (){
-                      print("tap cate");
-                      onSelected(index);
-                    },
-                    child: Text(
-                      categoriesStringList?[index] ?? "",
-                      style: TextStyle(color: ICON_COLOR),
+                GestureDetector(
+                  onTap: () {
+                    onSelected(index);
+                  },
+                  child: AnimatedContainer(
+                    duration: Duration(milliseconds: 500),
+                    child: Chip(
+                      elevation: 0.4,
+                      backgroundColor:
+                          (isSelected == true) ? Colors.blue : Colors.white,
+                      shape: StadiumBorder(
+                        side: BorderSide(
+                          color: Color.fromRGBO(234, 234, 234, 1.0),
+                        ),
+                      ),
+                      label: Text(
+                        categoriesStringList?[index] ?? "",
+                        style: TextStyle(color: ICON_COLOR),
+                      ),
                     ),
                   ),
                 ),

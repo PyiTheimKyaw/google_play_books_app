@@ -26,6 +26,7 @@ void main() async {
 
   await Hive.openBox<OverviewVo>(BOX_NAME_OVERVIEW_VO);
   await Hive.openBox<BookVO>(BOX_NAME_BOOK_VO);
+  await Hive.openBox<CategoryVO>(BOX_NAME_CATEGORY_VO);
   await Hive.openBox<BookVO>(BOX_NAME_BOOK_VO_FOR_RECENT);
   await Hive.openBox<GoogleSearchVO>(BOX_NAME_GOOGLE_SEARCH_VO);
   runApp(MyApp());

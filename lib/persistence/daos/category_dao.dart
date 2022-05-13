@@ -13,20 +13,29 @@ class CategoryDao {
 
   void saveAllCategories(List<CategoryVO> categoryList) async {
     Map<int, CategoryVO> categoryMap = Map.fromIterable(categoryList,
-        key: (category) => category.id, value: (category) => category);
+        key: (category) => category.listId, value: (category) => category);
     await getCategoryBox().putAll(categoryMap);
-  }
-
-  void saveSingleCategory(CategoryVO category) async {
-    return getCategoryBox().put(category.listId, category);
-  }
-
-  CategoryVO? getCategory(int categoryId) {
-    return getCategoryBox().get(categoryId);
   }
 
   List<CategoryVO> getAllCategories() {
     return getCategoryBox().values.toList();
+  }
+
+  ///Reactive Stream
+  Stream<void> getCategoryEventStream() {
+    return getCategoryBox().watch();
+  }
+
+  List<CategoryVO>? getCategories() {
+    if (getAllCategories() != null && getAllCategories().isNotEmpty ?? false) {
+      return getAllCategories();
+    } else {
+      return [];
+    }
+  }
+
+  Stream<List<CategoryVO>?> getCategoryStream() {
+    return Stream.value(getAllCategories());
   }
 
   Box<CategoryVO> getCategoryBox() {

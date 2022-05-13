@@ -88,17 +88,19 @@ class _HomePageState extends State<HomePage>
                 children: [
                   Consumer<HomeBloc>(
                     builder: (context, bloc, child) => EbooksSectionView(
-                        category: bloc.categoriesList,
-                        navigatePage: (categoryIndex, index) {
-                          HomeBloc bloc = Provider.of(context, listen: false);
-                          _navigateToBookDetails(
-                            context,
-                            categoryIndex,
-                            index,
-                            bloc.categoriesList,
-                            bloc.booksList,
-                          );
-                        }),
+                      category: bloc.categoriesList,
+                      navigatePage: (categoryIndex, index) {
+                        HomeBloc bloc = Provider.of(context, listen: false);
+                        _navigateToBookDetails(
+                          context,
+                          categoryIndex,
+                          index,
+                          bloc.categoriesList,
+                          bloc.booksList,
+                        );
+                      },
+                      allBooks: bloc.allBooks,
+                    ),
                   ),
                   Consumer<HomeBloc>(
                     builder: (context, bloc, child) => AudioBooksSectionView(

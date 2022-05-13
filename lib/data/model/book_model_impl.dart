@@ -5,6 +5,7 @@ import 'package:google_play_books_app/data/vos/overview_vo.dart';
 import 'package:google_play_books_app/network/dataagents/book_data_agent.dart';
 import 'package:google_play_books_app/network/dataagents/retrofit_data_agent_impl.dart';
 import 'package:google_play_books_app/persistence/daos/book_dao.dart';
+import 'package:google_play_books_app/persistence/daos/category_dao.dart';
 import 'package:google_play_books_app/persistence/daos/google_search_book_dao.dart';
 import 'package:stream_transform/stream_transform.dart';
 
@@ -19,8 +20,46 @@ class BookModelImpl extends BookModel {
 
   BookDataAgent mDataAgent = RetrofitDataAgentImpl();
 
-  BookDao bookDao = BookDao();
+  BookDao mBookDao = BookDao();
+  CategoryDao mCategoryDao = CategoryDao();
+
   GoogleSearchBookDao searchDao = GoogleSearchBookDao();
+
+  @override
+  void getBookListFromCategory() {
+    mDataAgent.getCategoriesList().then((value) {
+      List<CategoryVO>? category = value?.map((e) {
+            List<BookVO>? books = e.books?.map((book) {
+                  book.category = e.listName ?? "";
+                  return book;
+                }).toList() ??
+                [];
+            mBookDao.saveAllBooks(books);
+            return e;
+          }).toList() ??
+          [];
+    });
+  }
+
+  @override
+  void getCategoriesList() {
+    mDataAgent.getCategoriesList().then((categoryList) {
+      if (categoryList != null) {
+        mCategoryDao.saveAllCategories(categoryList);
+      }
+      List<CategoryVO>? category = categoryList?.map((e) {
+            List<BookVO>? books = e.books?.map((book) {
+                  book.category = e.listName ?? "";
+                  book.imageUrl = book.bookImage ?? "";
+                  return book;
+                }).toList() ??
+                [];
+            mBookDao.saveAllBooks(books);
+            return e;
+          }).toList() ??
+          [];
+    });
+  }
 
   @override
   Future<List<CategoryVO>?> getBooksList(
@@ -28,6 +67,17 @@ class BookModelImpl extends BookModel {
     return mDataAgent
         .getBooksList(list, bestSellersDate, publishedDate)
         .then((value) {
+      List<CategoryVO>? category = value?.map((e) {
+            List<BookVO>? books = e.books?.map((book) {
+                  book.category = e.listName ?? "";
+                  book.imageUrl = book.bookImage ?? "";
+                  return book;
+                }).toList() ??
+                [];
+            mBookDao.saveAllBooks(books);
+            return e;
+          }).toList() ??
+          [];
       // List<CategoryVO>? categoryList = value?.map((e) {
       //   e.bookDetails?.map((e) {
       //     e.time = DateTime.now();
@@ -44,21 +94,23 @@ class BookModelImpl extends BookModel {
 
   @override
   Future<List<BookVO>?> saveAllRecentBooks(List<BookVO> booksList) {
-    bookDao.saveRecentAllBooks(booksList);
+    mBookDao.saveRecentAllBooks(booksList);
     return Future.value(booksList);
   }
 
   @override
   Future<BookVO?> saveSingleBook(BookVO book) {
-    bookDao.saveSingleBook(book);
-    return Future.value(book);
+    return mDataAgent.getCategoriesList().then((categoriesList) {
+      mBookDao.saveSingleBook(book);
+      return Future.value(book);
+    });
   }
 
   @override
-  Future<OverviewVo?> getCategories() {
-    return mDataAgent.getCategories().then((value) {
+  Future<OverviewVo?> getOverview() {
+    return mDataAgent.getOverview().then((value) {
       value?.lists?.map((e) {
-        bookDao.saveAllBooks(e.books ?? []);
+        mBookDao.saveAllBooks(e.books ?? []);
       }).toList();
       return Future.value(value);
     });
@@ -68,7 +120,7 @@ class BookModelImpl extends BookModel {
   void getSearchBooks(String query) {
     mDataAgent.getSearchBooks(query).then((value) {
       if (value != null) {
-        bookDao.saveAllBooks(value);
+        mBookDao.saveAllBooks(value);
       }
     });
   }
@@ -81,33 +133,41 @@ class BookModelImpl extends BookModel {
   ///Database
   @override
   Stream<List<BookVO>?> getAllBooksFromDatabase() {
-    return bookDao
+    getBookListFromCategory();
+    return mBookDao
         .getAllBooksEventStream()
-        .startWith(bookDao.getBooksStream())
-        .map((event) => bookDao.getBooks());
+        .startWith(mBookDao.getBooksStream())
+        .map((event) => mBookDao.getBooks());
   }
 
   @override
   Future<BookVO?> getSingleBookFromDatabase(String bookTitle) {
-    return Future.value(bookDao.getBook(bookTitle));
+    return Future.value(mBookDao.getBook(bookTitle));
   }
 
   @override
   Stream<List<BookVO>?> getAllRecentBooksFromDatabase() {
-    return bookDao
+    return mBookDao
         .getAllRecentBooksEventStream()
-        .startWith(bookDao.getRecentBooksStream())
-        .map((event) => bookDao.getRecentBooks());
+        .startWith(mBookDao.getRecentBooksStream())
+        .map((event) => mBookDao.getRecentBooks());
   }
 
   @override
   Stream<List<BookVO>?> getSearchedBooksFromDatabase(String query) {
     getSearchBooks(query);
-    return bookDao
+    return mBookDao
         .getAllBooksEventStream()
-        .startWith(bookDao.getBooksStream())
-        .map((event) => bookDao.getBooks());
+        .startWith(mBookDao.getBooksStream())
+        .map((event) => mBookDao.getBooks());
   }
 
-
+  @override
+  Stream<List<CategoryVO>?> getCategoriesListFromDatabase() {
+    getCategoriesList();
+    return mCategoryDao
+        .getCategoryEventStream()
+        .startWith(mCategoryDao.getCategoryStream())
+        .map((event) => mCategoryDao.getCategories());
+  }
 }

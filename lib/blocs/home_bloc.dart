@@ -14,17 +14,21 @@ class HomeBloc extends ChangeNotifier {
   OverviewVo? overview;
   String? title;
   List<BookVO>? booksList;
+  List<BookVO>? allBooks;
 
   HomeBloc() {
     ///Api call
-    mBookModel.getCategories().then((overview) {
-      categoriesList = overview?.lists;
-      this.overview = overview;
+    mBookModel.getCategoriesListFromDatabase().listen((categoryList) {
+      categoriesList = categoryList;
       notifyListeners();
-    }).catchError((error) {
-      debugPrint("Error => ${error.toString()}");
     });
-
+    mBookModel.getAllBooksFromDatabase().listen((event) {
+      allBooks = event;
+      // List<BookVO?>? books=event?.map((e) {
+      //   print("book Category => ${e.category}");
+      // }).toList() ?? [];
+      notifyListeners();
+    });
     mBookModel.getAllRecentBooksFromDatabase().listen((books) {
       recentBooks = books;
       recentBooks?.sort((a, b) =>
