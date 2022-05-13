@@ -7,7 +7,9 @@ import 'package:json_annotation/json_annotation.dart';
 part 'google_search_vo.g.dart';
 
 @JsonSerializable()
-@HiveType(typeId: HIVE_TYPE_ID_GOOGLE_SEARCH_BOOK_VO,adapterName: 'GoogleSearchBookVOAdapter')
+@HiveType(
+    typeId: HIVE_TYPE_ID_GOOGLE_SEARCH_BOOK_VO,
+    adapterName: 'GoogleSearchBookVOAdapter')
 class GoogleSearchVO {
   @JsonKey(name: 'kind')
   @HiveField(0)
@@ -57,6 +59,7 @@ class GoogleSearchVO {
         null,
         null,
         DateTime.now(),
-        GoogleSearchVO(kind, id, etag, volumeInfo));
+        GoogleSearchVO(kind, id, etag, volumeInfo),
+        volumeInfo?.categories?.first);
   }
 }
