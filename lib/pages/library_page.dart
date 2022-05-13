@@ -88,7 +88,7 @@ class _LibraryPageState extends State<LibraryPage>
                   bloc.sortByView(value, context);
                 },
                 onSelected: (bool value) {
-                  bloc.selectOrUnselectBool(value);
+                  // bloc.selectOrUnselectBool(value);
                 },
                 onSelectCategory: (index) {
                   bloc.selectOrUnselectCategory(index);
@@ -511,7 +511,7 @@ class _CategoryItemState extends State<CategoryItem> {
         child: Chip(
           elevation: 0.4,
           backgroundColor:
-              (widget.isSelectedCategory) ? Colors.blue : Colors.white,
+              (widget.isSelectedCategory) ? Color.fromRGBO(3,121,201, 1.0) : Colors.white,
           shape: StadiumBorder(
             side: BorderSide(
               color: Color.fromRGBO(234, 234, 234, 1.0),
@@ -519,7 +519,7 @@ class _CategoryItemState extends State<CategoryItem> {
           ),
           label: Text(
             widget.categoriesStringList ?? "",
-            style: TextStyle(color: ICON_COLOR),
+            style: TextStyle(color: (widget.isSelectedCategory) ? Colors.white :ICON_COLOR),
           ),
         ),
       ),
