@@ -45,13 +45,14 @@ class BookVOAdapter extends TypeAdapter<BookVO> {
       fields[25] as DateTime?,
       fields[26] as GoogleSearchVO?,
       fields[27] as String?,
+      fields[28] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, BookVO obj) {
     writer
-      ..writeByte(28)
+      ..writeByte(29)
       ..writeByte(0)
       ..write(obj.ageGroup)
       ..writeByte(1)
@@ -107,7 +108,9 @@ class BookVOAdapter extends TypeAdapter<BookVO> {
       ..writeByte(26)
       ..write(obj.searchResults)
       ..writeByte(27)
-      ..write(obj.category);
+      ..write(obj.category)
+      ..writeByte(28)
+      ..write(obj.imageUrl);
   }
 
   @override
@@ -159,6 +162,7 @@ BookVO _$BookVOFromJson(Map<String, dynamic> json) => BookVO(
           : GoogleSearchVO.fromJson(
               json['searchResults'] as Map<String, dynamic>),
       json['category'] as String?,
+      json['imageUrl'] as String?,
     );
 
 Map<String, dynamic> _$BookVOToJson(BookVO instance) => <String, dynamic>{
@@ -190,4 +194,5 @@ Map<String, dynamic> _$BookVOToJson(BookVO instance) => <String, dynamic>{
       'time': instance.time?.toIso8601String(),
       'searchResults': instance.searchResults,
       'category': instance.category,
+      'imageUrl': instance.imageUrl,
     };

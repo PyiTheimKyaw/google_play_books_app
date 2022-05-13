@@ -23,8 +23,8 @@ class MoreViewPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => MoreViewBloc(list, index),
+    return ChangeNotifierProvider<MoreViewBloc>.value(
+      value:MoreViewBloc(list, index),
       child: Scaffold(
         appBar: AppBar(
           leadingWidth: 50,

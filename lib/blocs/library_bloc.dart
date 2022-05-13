@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_play_books_app/data/model/book_model.dart';
 import 'package:google_play_books_app/data/model/book_model_impl.dart';
 import 'package:google_play_books_app/data/vos/book_vo.dart';
+import 'package:google_play_books_app/data/vos/category_list_vo.dart';
 
 class LibraryBloc extends ChangeNotifier {
   String byType = "Author";
@@ -13,6 +14,7 @@ class LibraryBloc extends ChangeNotifier {
   List<BookVO>? selectedCategoriesBooksList;
   List<String?>? categoriesStringList;
   List<String> selectedCategoriesStringList = [];
+  List<BookVO> booksByCategory = [];
   bool isSelectedCategory = false;
 
   LibraryBloc() {
@@ -35,10 +37,16 @@ class LibraryBloc extends ChangeNotifier {
       byType = type;
       if (byType == "Author") {
         recentBooks?.sort((a, b) => (a.author ?? "").compareTo(b.author ?? ""));
+        booksByCategory
+            .sort((a, b) => (a.author ?? "").compareTo(b.author ?? ""));
       } else if (byType == "Title") {
         recentBooks?.sort((a, b) => (a.title ?? "").compareTo(b.title ?? ""));
+        booksByCategory
+            .sort((a, b) => (a.title ?? "").compareTo(b.title ?? ""));
       } else {
         recentBooks?.sort((a, b) =>
+            (b.time ?? DateTime.now()).compareTo(a.time ?? DateTime.now()));
+        booksByCategory.sort((a, b) =>
             (b.time ?? DateTime.now()).compareTo(a.time ?? DateTime.now()));
       }
       Navigator.pop(context);
@@ -54,20 +62,67 @@ class LibraryBloc extends ChangeNotifier {
     }
   }
 
-  void selectOrUnselectCategory(int index) {
-    isSelectedCategory = !isSelectedCategory;
-    if (isSelectedCategory) {
+  void clearCategories(){
+    selectedCategoriesStringList.clear();
+    isSelectedCategory=false;
+    mBookModel.getCategoriesStringList().then((value) {
+      categoriesStringList = value;
+      notifyListeners();
+    });
+    notifyListeners();
+  }
+  void unselectBool(bool isSelect) {
+    isSelectedCategory = isSelect;
+    notifyListeners();
+  }
+  void selectOrUnselectBool(bool isSelect) {
+    isSelectedCategory = true;
+    notifyListeners();
+  }
+  void unselectCategory(int index) {
+    isSelectedCategory=false;
+    List<BookVO>? books = recentBooks
+        ?.where((element) =>
+    (element.category) == (selectedCategoriesStringList[index]))
+        .map((book) {
+      return book;
+    }).toList() ??
+        [];
+
       print("book library => ${categoriesStringList?[index]}");
-      recentBooks = recentBooks
-          ?.where(
-              (element) => (element.category) == (categoriesStringList?[index]))
-          .toList();
+      categoriesStringList?.add(selectedCategoriesStringList[index]);
+      // selectedCategoriesStringList.removeAt(index);
+      booksByCategory.removeWhere(
+              (element) => (element.category) == (selectedCategoriesStringList[index]));
+      selectedCategoriesStringList.remove(selectedCategoriesStringList[index] ?? "");
+      notifyListeners();
+
+  }
+  void selectOrUnselectCategory(int index) {
+    List<BookVO>? books = recentBooks
+            ?.where((element) =>
+                (element.category) == (categoriesStringList?[index]))
+            .map((book) {
+          return book;
+        }).toList() ??
+        [];
+    // if (isSelectedCategory) {
+      print("book library => ${categoriesStringList?[index]}");
+
+      booksByCategory.addAll(books);
 
       selectedCategoriesStringList.add(categoriesStringList?[index] ?? "");
-      // categoriesStringList?.removeAt(index);
+      categoriesStringList?.removeAt(index);
 
       notifyListeners();
-    }
-    notifyListeners();
+
+    // else {
+    //   // selectedCategoriesStringList.removeAt(index);
+    //   booksByCategory.removeWhere(
+    //       (element) => (element.category) == (categoriesStringList?[index]));
+    //   selectedCategoriesStringList.remove(categoriesStringList?[index] ?? "");
+    //   notifyListeners();
+    // }
+    // notifyListeners();
   }
 }

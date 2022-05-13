@@ -120,9 +120,9 @@ class BookVO {
     this.buyLinks,
     this.time,
     this.searchResults,
-    this.category, {
+    this.category,
     this.imageUrl,
-  });
+  );
 
   factory BookVO.fromJson(Map<String, dynamic> json) => _$BookVOFromJson(json);
 

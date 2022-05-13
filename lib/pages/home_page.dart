@@ -65,8 +65,8 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => HomeBloc(),
+    return ChangeNotifierProvider<HomeBloc>.value(
+      value:HomeBloc(),
       child: Scaffold(
         body: Container(
           padding: EdgeInsets.only(top: MARGIN_MEDIUM_2),

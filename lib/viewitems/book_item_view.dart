@@ -115,9 +115,9 @@ class BookImageView extends StatelessWidget {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5),
           image: DecorationImage(
-            image: NetworkImage((!isViewMore)
-                ? book?.bookImage ?? ""
-                : "https://th.bing.com/th/id/OIP.T0yAGl5mXcZHC5Pt5Uc3igHaHa?pid=ImgDet&rs=1"),
+            image: NetworkImage(
+                book?.bookImage ?? ""
+                ),
             fit: BoxFit.cover,
           )),
     );

@@ -2,15 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_play_books_app/blocs/library_bloc.dart';
-import 'package:google_play_books_app/data/model/book_model.dart';
-import 'package:google_play_books_app/data/model/book_model_impl.dart';
 import 'package:google_play_books_app/data/vos/book_vo.dart';
-import 'package:google_play_books_app/data/vos/book_vo_test.dart';
-import 'package:google_play_books_app/data/vos/category_vo.dart';
-import 'package:google_play_books_app/data/vos/overview_vo.dart';
-import 'package:google_play_books_app/dummy/dummy_data.dart';
 import 'package:google_play_books_app/pages/add_new_shelf_page.dart';
-import 'package:google_play_books_app/pages/book_details.dart';
 import 'package:google_play_books_app/pages/review_shelf_page.dart';
 import 'package:google_play_books_app/resources/colors.dart';
 import 'package:google_play_books_app/resources/dimens.dart';
@@ -48,8 +41,8 @@ class _LibraryPageState extends State<LibraryPage>
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => LibraryBloc(),
+    return ChangeNotifierProvider<LibraryBloc>.value(
+      value: LibraryBloc(),
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
@@ -77,8 +70,11 @@ class _LibraryPageState extends State<LibraryPage>
           child: TabBarView(controller: tabController, children: [
             Consumer<LibraryBloc>(
               builder: (context, bloc, child) => YourBooksSectionView(
+                selectedCategoriesList: bloc.selectedCategoriesStringList,
                 categoriesStringList: bloc.categoriesStringList ?? [],
-                recentBooksList: bloc.recentBooks,
+                recentBooksList: (bloc.booksByCategory.isEmpty)
+                    ? (bloc.selectedCategoriesStringList.isNotEmpty)? null :bloc.recentBooks
+                    : bloc.booksByCategory,
                 byType: bloc.byType,
                 byView: bloc.byView,
                 onTapType: (value) {
@@ -89,11 +85,23 @@ class _LibraryPageState extends State<LibraryPage>
                   LibraryBloc bloc = Provider.of(context, listen: false);
                   bloc.sortByView(value, context);
                 },
-                onSelected: (index) {
-                  LibraryBloc bloc = Provider.of(context, listen: false);
-                  bloc.selectOrUnselectCategory(index);
+                onSelected: (bool value) {
+                  bloc.selectOrUnselectBool(value);
                 },
-                isSelected: bloc.isSelectedCategory,
+                onSelectCategory: (index) {
+                  bloc.selectOrUnselectCategory(index);
+                  print(
+                      "Book category => ${bloc.categoriesStringList?[index]}");
+                },
+                onSelectedCategoryList: (bool value){
+                // bloc.unselectBool(value);
+                  },
+                onSelectedCategory: (index){
+                  bloc.unselectCategory(index);
+                },
+                onTapClose: (){
+                  bloc.clearCategories();
+                },
               ),
             ),
 
@@ -123,8 +131,13 @@ class YourBooksSectionView extends StatelessWidget {
   final Function(String?) onTapType;
   final Function(String?) onTapView;
   final List<String?>? categoriesStringList;
-  final ValueChanged<int> onSelected;
-  final bool isSelected;
+  final List<String?>? selectedCategoriesList;
+  final ValueChanged<bool> onSelected;
+  final ValueChanged<bool> onSelectedCategoryList;
+  final Function(int) onSelectCategory;
+  final Function(int) onSelectedCategory;
+  final Function onTapClose;
+
   YourBooksSectionView({
     required this.byType,
     required this.byView,
@@ -133,7 +146,11 @@ class YourBooksSectionView extends StatelessWidget {
     required this.onTapView,
     required this.categoriesStringList,
     required this.onSelected,
-    required this.isSelected,
+    required this.onSelectedCategoryList,
+    required this.onSelectCategory,
+    required this.selectedCategoriesList,
+    required this.onSelectedCategory,
+    required this.onTapClose,
   });
 
   @override
@@ -144,11 +161,72 @@ class YourBooksSectionView extends StatelessWidget {
           color: Colors.black26,
           thickness: 1,
         ),
-        CategoriesView(
-          categoriesStringList: categoriesStringList,
-          onSelected: onSelected,
-          isSelected: isSelected,
+        Container(
+          height: 70,
+          width: double.infinity,
+          child: Row(
+            children: [
+              Flexible(
+                child: ListView(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    Row(
+                      children: [
+                        Visibility(
+                            visible: selectedCategoriesList?.isNotEmpty ?? false,
+                            child: GestureDetector(
+                                onTap: (){
+                                  onTapClose();
+                                },
+                                child: Icon(Icons.close))),
+                        ListView(
+                          scrollDirection: Axis.horizontal,
+                          shrinkWrap: true,
+                          children: [
+                            ...List.generate(
+                              selectedCategoriesList?.length ?? 0,
+                              (index) => CategoryItem(
+                                isSelectedCategory: true,
+                                  categoriesStringList:
+                                      selectedCategoriesList?[index],
+                                  onSelected: (isSelect) {
+                                  onSelectedCategoryList(isSelect);
+                                  onSelectedCategory(index);
+                                    // onSelected(isSelect);
+                                    // onSelectCategory(index);
+                                  }),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    ListView(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      children: [
+                        ...List.generate(
+                            categoriesStringList?.length ?? 0,
+                            (index) => CategoryItem(
+                                onSelected: (isSelect) {
+                                  onSelected(isSelect);
+                                  onSelectCategory(index);
+                                },
+                                categoriesStringList:
+                                    categoriesStringList?[index]))
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
+        // CategoriesView(
+        //   categoriesStringList: categoriesStringList,
+        //   onSelected: onSelected,
+        //   isSelected: isSelected,
+        // ),
         SizedBox(
           height: MARGIN_MEDIUM_2,
         ),
@@ -290,10 +368,59 @@ class YourBooksSectionView extends StatelessWidget {
   }
 }
 
+class CategoryItem extends StatefulWidget {
+  const CategoryItem({
+    Key? key,
+    required this.categoriesStringList,
+    required this.onSelected,
+    this.isSelectedCategory=false,
+  }) : super(key: key);
+
+  final String? categoriesStringList;
+  final ValueChanged<bool> onSelected;
+  final bool isSelectedCategory;
+
+  @override
+  State<CategoryItem> createState() => _CategoryItemState();
+}
+
+class _CategoryItemState extends State<CategoryItem> {
+  bool isSelected = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          isSelected = !isSelected;
+          widget.onSelected(isSelected);
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.all(MARGIN_MEDIUM),
+        child: Chip(
+          elevation: 0.4,
+          backgroundColor: (widget.isSelectedCategory) ? Colors.blue:Colors.white,
+          shape: StadiumBorder(
+            side: BorderSide(
+              color: Color.fromRGBO(234, 234, 234, 1.0),
+            ),
+          ),
+          label: Text(
+            widget.categoriesStringList ?? "",
+            style: TextStyle(color: ICON_COLOR),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class CategoriesView extends StatelessWidget {
   final List<String?>? categoriesStringList;
   final ValueChanged<int> onSelected;
   final bool isSelected;
+
   CategoriesView(
       {required this.categoriesStringList,
       required this.onSelected,
@@ -308,37 +435,56 @@ class CategoriesView extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           itemCount: categoriesStringList?.length ?? 0,
           itemBuilder: (context, index) {
-            return Row(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    onSelected(index);
-                  },
-                  child: AnimatedContainer(
-                    duration: Duration(milliseconds: 500),
-                    child: Chip(
-                      elevation: 0.4,
-                      backgroundColor:
-                          (isSelected == true) ? Colors.blue : Colors.white,
-                      shape: StadiumBorder(
-                        side: BorderSide(
-                          color: Color.fromRGBO(234, 234, 234, 1.0),
-                        ),
-                      ),
-                      label: Text(
-                        categoriesStringList?[index] ?? "",
-                        style: TextStyle(color: ICON_COLOR),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: MARGIN_MEDIUM,
-                ),
-              ],
+            return GestureDetector(
+              onTap: () {
+                onSelected(index);
+              },
+              child: CategoriesItemView(
+                isSelected: isSelected,
+                categoriesStringList: categoriesStringList?[index],
+                index: index,
+              ),
             );
           }),
     );
+  }
+}
+
+class CategoriesItemView extends StatelessWidget {
+  final bool isSelected;
+  final String? categoriesStringList;
+  final int index;
+
+  CategoriesItemView(
+      {required this.isSelected,
+      required this.categoriesStringList,
+      required this.index});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 200,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        border: (isSelected) ? Border.all(width: 2, color: Colors.black) : null,
+      ),
+      child: Text(
+        categoriesStringList ?? "",
+      ),
+    );
+    //   Chip(
+    //   elevation: 0.4,
+    //   backgroundColor: (isSelected == true) ? Colors.blue : Colors.white,
+    //   shape: StadiumBorder(
+    //     side: BorderSide(
+    //       color: Color.fromRGBO(234, 234, 234, 1.0),
+    //     ),
+    //   ),
+    //   label: Text(
+    //     categoriesStringList ?? "",
+    //     style: TextStyle(color: ICON_COLOR),
+    //   ),
+    // );
   }
 }
 

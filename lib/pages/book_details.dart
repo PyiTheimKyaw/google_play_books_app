@@ -71,8 +71,8 @@ class BookDetails extends StatelessWidget {
     }
 
     List<double> ratings = [0.1, 0.3, 0.5, 0.7, 0.9];
-    return ChangeNotifierProvider(
-      create: (context) => BookDetailsBloc(book!),
+    return ChangeNotifierProvider<BookDetailsBloc>.value(
+      value: BookDetailsBloc(book!),
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
