@@ -51,8 +51,9 @@ class BookTitleAndActionsSectionView extends StatelessWidget {
         // mainAxisAlignment: MainAxisAlignment.spaceEvenly,s
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          BookAAndTitleRowView(book: bookList?[index],),
-          Spacer(),
+
+          Expanded(child: BookAAndTitleRowView(book: bookList?[index],)),
+          
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             // crossAxisAlignment: CrossAxisAlignment.,

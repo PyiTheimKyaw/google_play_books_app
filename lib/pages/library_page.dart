@@ -73,7 +73,9 @@ class _LibraryPageState extends State<LibraryPage>
                 selectedCategoriesList: bloc.selectedCategoriesStringList,
                 categoriesStringList: bloc.categoriesStringList ?? [],
                 recentBooksList: (bloc.booksByCategory.isEmpty)
-                    ? (bloc.selectedCategoriesStringList.isNotEmpty)? null :bloc.recentBooks
+                    ? (bloc.selectedCategoriesStringList.isNotEmpty)
+                        ? null
+                        : bloc.recentBooks
                     : bloc.booksByCategory,
                 byType: bloc.byType,
                 byView: bloc.byView,
@@ -90,16 +92,14 @@ class _LibraryPageState extends State<LibraryPage>
                 },
                 onSelectCategory: (index) {
                   bloc.selectOrUnselectCategory(index);
-                  print(
-                      "Book category => ${bloc.categoriesStringList?[index]}");
                 },
-                onSelectedCategoryList: (bool value){
-                // bloc.unselectBool(value);
-                  },
-                onSelectedCategory: (index){
+                onSelectedCategoryList: (bool value) {
+                  // bloc.unselectBool(value);
+                },
+                onSelectedCategory: (index) {
                   bloc.unselectCategory(index);
                 },
-                onTapClose: (){
+                onTapClose: () {
                   bloc.clearCategories();
                 },
               ),
@@ -161,72 +161,14 @@ class YourBooksSectionView extends StatelessWidget {
           color: Colors.black26,
           thickness: 1,
         ),
-        Container(
-          height: 70,
-          width: double.infinity,
-          child: Row(
-            children: [
-              Flexible(
-                child: ListView(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    Row(
-                      children: [
-                        Visibility(
-                            visible: selectedCategoriesList?.isNotEmpty ?? false,
-                            child: GestureDetector(
-                                onTap: (){
-                                  onTapClose();
-                                },
-                                child: Icon(Icons.close))),
-                        ListView(
-                          scrollDirection: Axis.horizontal,
-                          shrinkWrap: true,
-                          children: [
-                            ...List.generate(
-                              selectedCategoriesList?.length ?? 0,
-                              (index) => CategoryItem(
-                                isSelectedCategory: true,
-                                  categoriesStringList:
-                                      selectedCategoriesList?[index],
-                                  onSelected: (isSelect) {
-                                  onSelectedCategoryList(isSelect);
-                                  onSelectedCategory(index);
-                                    // onSelected(isSelect);
-                                    // onSelectCategory(index);
-                                  }),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    ListView(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      children: [
-                        ...List.generate(
-                            categoriesStringList?.length ?? 0,
-                            (index) => CategoryItem(
-                                onSelected: (isSelect) {
-                                  onSelected(isSelect);
-                                  onSelectCategory(index);
-                                },
-                                categoriesStringList:
-                                    categoriesStringList?[index]))
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        // CategoriesView(
-        //   categoriesStringList: categoriesStringList,
-        //   onSelected: onSelected,
-        //   isSelected: isSelected,
-        // ),
+        CategoriesItemSectionView(
+            selectedCategoriesList: selectedCategoriesList,
+            onTapClose: onTapClose,
+            onSelectedCategoryList: onSelectedCategoryList,
+            onSelectedCategory: onSelectedCategory,
+            categoriesStringList: categoriesStringList,
+            onSelected: onSelected,
+            onSelectCategory: onSelectCategory),
         SizedBox(
           height: MARGIN_MEDIUM_2,
         ),
@@ -368,12 +310,180 @@ class YourBooksSectionView extends StatelessWidget {
   }
 }
 
+class CategoriesItemSectionView extends StatelessWidget {
+  const CategoriesItemSectionView({
+    Key? key,
+    required this.selectedCategoriesList,
+    required this.onTapClose,
+    required this.onSelectedCategoryList,
+    required this.onSelectedCategory,
+    required this.categoriesStringList,
+    required this.onSelected,
+    required this.onSelectCategory,
+  }) : super(key: key);
+
+  final List<String?>? selectedCategoriesList;
+  final Function onTapClose;
+  final ValueChanged<bool> onSelectedCategoryList;
+  final Function(int p1) onSelectedCategory;
+  final List<String?>? categoriesStringList;
+  final ValueChanged<bool> onSelected;
+  final Function(int p1) onSelectCategory;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 70,
+      width: double.infinity,
+      child: Row(
+        children: [
+          Flexible(
+            child: ListView(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              scrollDirection: Axis.horizontal,
+              children: [
+                ClearButtonAndSelectedCategoriesSectionView(
+                    selectedCategoriesList: selectedCategoriesList,
+                    onTapClose: onTapClose,
+                    onSelectedCategoryList: onSelectedCategoryList,
+                    onSelectedCategory: onSelectedCategory),
+                AllCategoriesListView(
+                    categoriesStringList: categoriesStringList,
+                    onSelected: onSelected,
+                    onSelectCategory: onSelectCategory),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ClearButtonAndSelectedCategoriesSectionView extends StatelessWidget {
+  const ClearButtonAndSelectedCategoriesSectionView({
+    Key? key,
+    required this.selectedCategoriesList,
+    required this.onTapClose,
+    required this.onSelectedCategoryList,
+    required this.onSelectedCategory,
+  }) : super(key: key);
+
+  final List<String?>? selectedCategoriesList;
+  final Function onTapClose;
+  final ValueChanged<bool> onSelectedCategoryList;
+  final Function(int p1) onSelectedCategory;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        ClearCategoriesView(
+            selectedCategoriesList: selectedCategoriesList,
+            onTapClose: onTapClose),
+        SelectedCategoriesListView(
+            selectedCategoriesList: selectedCategoriesList,
+            onSelectedCategoryList: onSelectedCategoryList,
+            onSelectedCategory: onSelectedCategory),
+      ],
+    );
+  }
+}
+
+class AllCategoriesListView extends StatelessWidget {
+  const AllCategoriesListView({
+    Key? key,
+    required this.categoriesStringList,
+    required this.onSelected,
+    required this.onSelectCategory,
+  }) : super(key: key);
+
+  final List<String?>? categoriesStringList;
+  final ValueChanged<bool> onSelected;
+  final Function(int p1) onSelectCategory;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      shrinkWrap: true,
+      scrollDirection: Axis.horizontal,
+      children: [
+        ...List.generate(
+            categoriesStringList?.length ?? 0,
+            (index) => CategoryItem(
+                onSelected: (isSelect) {
+                  onSelected(isSelect);
+                  onSelectCategory(index);
+                },
+                categoriesStringList: categoriesStringList?[index]))
+      ],
+    );
+  }
+}
+
+class SelectedCategoriesListView extends StatelessWidget {
+  const SelectedCategoriesListView({
+    Key? key,
+    required this.selectedCategoriesList,
+    required this.onSelectedCategoryList,
+    required this.onSelectedCategory,
+  }) : super(key: key);
+
+  final List<String?>? selectedCategoriesList;
+  final ValueChanged<bool> onSelectedCategoryList;
+  final Function(int p1) onSelectedCategory;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      scrollDirection: Axis.horizontal,
+      shrinkWrap: true,
+      children: [
+        ...List.generate(
+          selectedCategoriesList?.length ?? 0,
+          (index) => CategoryItem(
+              isSelectedCategory: true,
+              categoriesStringList: selectedCategoriesList?[index],
+              onSelected: (isSelect) {
+                onSelectedCategoryList(isSelect);
+                onSelectedCategory(index);
+                // onSelected(isSelect);
+                // onSelectCategory(index);
+              }),
+        ),
+      ],
+    );
+  }
+}
+
+class ClearCategoriesView extends StatelessWidget {
+  const ClearCategoriesView({
+    Key? key,
+    required this.selectedCategoriesList,
+    required this.onTapClose,
+  }) : super(key: key);
+
+  final List<String?>? selectedCategoriesList;
+  final Function onTapClose;
+
+  @override
+  Widget build(BuildContext context) {
+    return Visibility(
+        visible: selectedCategoriesList?.isNotEmpty ?? false,
+        child: GestureDetector(
+            onTap: () {
+              onTapClose();
+            },
+            child: Icon(Icons.close)));
+  }
+}
+
 class CategoryItem extends StatefulWidget {
   const CategoryItem({
     Key? key,
     required this.categoriesStringList,
     required this.onSelected,
-    this.isSelectedCategory=false,
+    this.isSelectedCategory = false,
   }) : super(key: key);
 
   final String? categoriesStringList;
@@ -400,7 +510,8 @@ class _CategoryItemState extends State<CategoryItem> {
         padding: const EdgeInsets.all(MARGIN_MEDIUM),
         child: Chip(
           elevation: 0.4,
-          backgroundColor: (widget.isSelectedCategory) ? Colors.blue:Colors.white,
+          backgroundColor:
+              (widget.isSelectedCategory) ? Colors.blue : Colors.white,
           shape: StadiumBorder(
             side: BorderSide(
               color: Color.fromRGBO(234, 234, 234, 1.0),
@@ -413,78 +524,6 @@ class _CategoryItemState extends State<CategoryItem> {
         ),
       ),
     );
-  }
-}
-
-class CategoriesView extends StatelessWidget {
-  final List<String?>? categoriesStringList;
-  final ValueChanged<int> onSelected;
-  final bool isSelected;
-
-  CategoriesView(
-      {required this.categoriesStringList,
-      required this.onSelected,
-      required this.isSelected});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 50,
-      child: ListView.builder(
-          padding: EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
-          scrollDirection: Axis.horizontal,
-          itemCount: categoriesStringList?.length ?? 0,
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () {
-                onSelected(index);
-              },
-              child: CategoriesItemView(
-                isSelected: isSelected,
-                categoriesStringList: categoriesStringList?[index],
-                index: index,
-              ),
-            );
-          }),
-    );
-  }
-}
-
-class CategoriesItemView extends StatelessWidget {
-  final bool isSelected;
-  final String? categoriesStringList;
-  final int index;
-
-  CategoriesItemView(
-      {required this.isSelected,
-      required this.categoriesStringList,
-      required this.index});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 200,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        border: (isSelected) ? Border.all(width: 2, color: Colors.black) : null,
-      ),
-      child: Text(
-        categoriesStringList ?? "",
-      ),
-    );
-    //   Chip(
-    //   elevation: 0.4,
-    //   backgroundColor: (isSelected == true) ? Colors.blue : Colors.white,
-    //   shape: StadiumBorder(
-    //     side: BorderSide(
-    //       color: Color.fromRGBO(234, 234, 234, 1.0),
-    //     ),
-    //   ),
-    //   label: Text(
-    //     categoriesStringList ?? "",
-    //     style: TextStyle(color: ICON_COLOR),
-    //   ),
-    // );
   }
 }
 

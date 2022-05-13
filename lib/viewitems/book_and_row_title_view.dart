@@ -18,7 +18,7 @@ class BookAAndTitleRowView extends StatelessWidget {
         SizedBox(
           width: 16,
         ),
-        BookTitleAndAuthorView(book: book),
+        Expanded(child: BookTitleAndAuthorView(book: book)),
       ],
     );
   }

@@ -50,7 +50,7 @@ class BookModelImpl extends BookModel {
       List<CategoryVO>? category = categoryList?.map((e) {
             List<BookVO>? books = e.books?.map((book) {
                   book.category = e.listName;
-                  book.imageUrl = book.bookImage;
+                  // book.imageUrl = book.bookImage;
                   return book;
                 }).toList() ??
                 [];
@@ -70,7 +70,7 @@ class BookModelImpl extends BookModel {
       List<CategoryVO>? category = value?.map((e) {
             List<BookVO>? books = e.books?.map((book) {
                   book.category = e.listName ?? "";
-                  book.imageUrl = book.bookImage ?? "";
+                  // book.imageUrl = book.bookImage ?? "";
                   return book;
                 }).toList() ??
                 [];
