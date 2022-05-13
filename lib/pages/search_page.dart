@@ -101,12 +101,7 @@ class SearchPage extends StatelessWidget {
                   },
                 ),
               )
-                  : Row(
-                children: [
-                  Icon(Icons.timelapse),
-                  // Text(showSuggestion.reversed.take(4).toString()),
-                ],
-              ),
+                  : Container(),
             ),
           ],
         ),

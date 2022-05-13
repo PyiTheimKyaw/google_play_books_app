@@ -87,14 +87,8 @@ class _LibraryPageState extends State<LibraryPage>
                   LibraryBloc bloc = Provider.of(context, listen: false);
                   bloc.sortByView(value, context);
                 },
-                onSelected: (bool value) {
-                  // bloc.selectOrUnselectBool(value);
-                },
                 onSelectCategory: (index) {
                   bloc.selectOrUnselectCategory(index);
-                },
-                onSelectedCategoryList: (bool value) {
-                  // bloc.unselectBool(value);
                 },
                 onSelectedCategory: (index) {
                   bloc.unselectCategory(index);
@@ -132,8 +126,6 @@ class YourBooksSectionView extends StatelessWidget {
   final Function(String?) onTapView;
   final List<String?>? categoriesStringList;
   final List<String?>? selectedCategoriesList;
-  final ValueChanged<bool> onSelected;
-  final ValueChanged<bool> onSelectedCategoryList;
   final Function(int) onSelectCategory;
   final Function(int) onSelectedCategory;
   final Function onTapClose;
@@ -145,8 +137,6 @@ class YourBooksSectionView extends StatelessWidget {
     required this.onTapType,
     required this.onTapView,
     required this.categoriesStringList,
-    required this.onSelected,
-    required this.onSelectedCategoryList,
     required this.onSelectCategory,
     required this.selectedCategoriesList,
     required this.onSelectedCategory,
@@ -164,10 +154,10 @@ class YourBooksSectionView extends StatelessWidget {
         CategoriesItemSectionView(
             selectedCategoriesList: selectedCategoriesList,
             onTapClose: onTapClose,
-            onSelectedCategoryList: onSelectedCategoryList,
+
             onSelectedCategory: onSelectedCategory,
             categoriesStringList: categoriesStringList,
-            onSelected: onSelected,
+
             onSelectCategory: onSelectCategory),
         SizedBox(
           height: MARGIN_MEDIUM_2,
@@ -315,19 +305,19 @@ class CategoriesItemSectionView extends StatelessWidget {
     Key? key,
     required this.selectedCategoriesList,
     required this.onTapClose,
-    required this.onSelectedCategoryList,
+
     required this.onSelectedCategory,
     required this.categoriesStringList,
-    required this.onSelected,
+
     required this.onSelectCategory,
   }) : super(key: key);
 
   final List<String?>? selectedCategoriesList;
   final Function onTapClose;
-  final ValueChanged<bool> onSelectedCategoryList;
+
   final Function(int p1) onSelectedCategory;
   final List<String?>? categoriesStringList;
-  final ValueChanged<bool> onSelected;
+
   final Function(int p1) onSelectCategory;
 
   @override
@@ -345,11 +335,11 @@ class CategoriesItemSectionView extends StatelessWidget {
                 ClearButtonAndSelectedCategoriesSectionView(
                     selectedCategoriesList: selectedCategoriesList,
                     onTapClose: onTapClose,
-                    onSelectedCategoryList: onSelectedCategoryList,
+
                     onSelectedCategory: onSelectedCategory),
                 AllCategoriesListView(
                     categoriesStringList: categoriesStringList,
-                    onSelected: onSelected,
+
                     onSelectCategory: onSelectCategory),
               ],
             ),
@@ -365,13 +355,11 @@ class ClearButtonAndSelectedCategoriesSectionView extends StatelessWidget {
     Key? key,
     required this.selectedCategoriesList,
     required this.onTapClose,
-    required this.onSelectedCategoryList,
     required this.onSelectedCategory,
   }) : super(key: key);
 
   final List<String?>? selectedCategoriesList;
   final Function onTapClose;
-  final ValueChanged<bool> onSelectedCategoryList;
   final Function(int p1) onSelectedCategory;
 
   @override
@@ -383,7 +371,6 @@ class ClearButtonAndSelectedCategoriesSectionView extends StatelessWidget {
             onTapClose: onTapClose),
         SelectedCategoriesListView(
             selectedCategoriesList: selectedCategoriesList,
-            onSelectedCategoryList: onSelectedCategoryList,
             onSelectedCategory: onSelectedCategory),
       ],
     );
@@ -394,12 +381,11 @@ class AllCategoriesListView extends StatelessWidget {
   const AllCategoriesListView({
     Key? key,
     required this.categoriesStringList,
-    required this.onSelected,
+
     required this.onSelectCategory,
   }) : super(key: key);
 
   final List<String?>? categoriesStringList;
-  final ValueChanged<bool> onSelected;
   final Function(int p1) onSelectCategory;
 
   @override
@@ -411,10 +397,8 @@ class AllCategoriesListView extends StatelessWidget {
         ...List.generate(
             categoriesStringList?.length ?? 0,
             (index) => CategoryItem(
-                onSelected: (isSelect) {
-                  onSelected(isSelect);
-                  onSelectCategory(index);
-                },
+              index: index,
+                onTap: onSelectCategory,
                 categoriesStringList: categoriesStringList?[index]))
       ],
     );
@@ -425,12 +409,11 @@ class SelectedCategoriesListView extends StatelessWidget {
   const SelectedCategoriesListView({
     Key? key,
     required this.selectedCategoriesList,
-    required this.onSelectedCategoryList,
     required this.onSelectedCategory,
   }) : super(key: key);
 
   final List<String?>? selectedCategoriesList;
-  final ValueChanged<bool> onSelectedCategoryList;
+
   final Function(int p1) onSelectedCategory;
 
   @override
@@ -442,14 +425,11 @@ class SelectedCategoriesListView extends StatelessWidget {
         ...List.generate(
           selectedCategoriesList?.length ?? 0,
           (index) => CategoryItem(
-              isSelectedCategory: true,
-              categoriesStringList: selectedCategoriesList?[index],
-              onSelected: (isSelect) {
-                onSelectedCategoryList(isSelect);
-                onSelectedCategory(index);
-                // onSelected(isSelect);
-                // onSelectCategory(index);
-              }),
+            isSelectedCategory: true,
+            categoriesStringList: selectedCategoriesList?[index],
+            onTap: onSelectedCategory,
+            index: index,
+          ),
         ),
       ],
     );
@@ -478,48 +458,42 @@ class ClearCategoriesView extends StatelessWidget {
   }
 }
 
-class CategoryItem extends StatefulWidget {
+class CategoryItem extends StatelessWidget {
   const CategoryItem({
     Key? key,
     required this.categoriesStringList,
-    required this.onSelected,
     this.isSelectedCategory = false,
+    required this.onTap,
+    required this.index,
   }) : super(key: key);
 
   final String? categoriesStringList;
-  final ValueChanged<bool> onSelected;
+  final Function(int) onTap;
   final bool isSelectedCategory;
-
-  @override
-  State<CategoryItem> createState() => _CategoryItemState();
-}
-
-class _CategoryItemState extends State<CategoryItem> {
-  bool isSelected = false;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        setState(() {
-          isSelected = !isSelected;
-          widget.onSelected(isSelected);
-        });
+        onTap(index);
       },
       child: Container(
         padding: const EdgeInsets.all(MARGIN_MEDIUM),
         child: Chip(
           elevation: 0.4,
-          backgroundColor:
-              (widget.isSelectedCategory) ? Color.fromRGBO(3,121,201, 1.0) : Colors.white,
+          backgroundColor: (isSelectedCategory)
+              ? Color.fromRGBO(3, 121, 201, 1.0)
+              : Colors.white,
           shape: StadiumBorder(
             side: BorderSide(
               color: Color.fromRGBO(234, 234, 234, 1.0),
             ),
           ),
           label: Text(
-            widget.categoriesStringList ?? "",
-            style: TextStyle(color: (widget.isSelectedCategory) ? Colors.white :ICON_COLOR),
+            categoriesStringList ?? "",
+            style: TextStyle(
+                color: (isSelectedCategory) ? Colors.white : ICON_COLOR),
           ),
         ),
       ),

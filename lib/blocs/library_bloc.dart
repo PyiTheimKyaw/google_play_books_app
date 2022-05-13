@@ -62,42 +62,37 @@ class LibraryBloc extends ChangeNotifier {
     }
   }
 
-  void clearCategories(){
+  void clearCategories() {
     selectedCategoriesStringList.clear();
-    isSelectedCategory=false;
+    booksByCategory.clear();
+    isSelectedCategory = false;
     mBookModel.getCategoriesStringList().then((value) {
       categoriesStringList = value;
       notifyListeners();
     });
     notifyListeners();
   }
-  void unselectBool(bool isSelect) {
-    isSelectedCategory = isSelect;
-    notifyListeners();
-  }
-  void selectOrUnselectBool(bool isSelect) {
-    isSelectedCategory = true;
-    notifyListeners();
-  }
+
   void unselectCategory(int index) {
-    isSelectedCategory=false;
+    isSelectedCategory = false;
     List<BookVO>? books = recentBooks
-        ?.where((element) =>
-    (element.category) == (selectedCategoriesStringList[index]))
-        .map((book) {
-      return book;
-    }).toList() ??
+            ?.where((element) =>
+                (element.category) == (selectedCategoriesStringList[index]))
+            .map((book) {
+          return book;
+        }).toList() ??
         [];
 
-      print("book library => ${categoriesStringList?[index]}");
-      categoriesStringList?.add(selectedCategoriesStringList[index]);
-      // selectedCategoriesStringList.removeAt(index);
-      booksByCategory.removeWhere(
-              (element) => (element.category) == (selectedCategoriesStringList[index]));
-      selectedCategoriesStringList.remove(selectedCategoriesStringList[index] ?? "");
-      notifyListeners();
-
+    print("book library => ${categoriesStringList?[index]}");
+    categoriesStringList?.add(selectedCategoriesStringList[index]);
+    // selectedCategoriesStringList.removeAt(index);
+    booksByCategory.removeWhere((element) =>
+        (element.category) == (selectedCategoriesStringList[index]));
+    selectedCategoriesStringList
+        .remove(selectedCategoriesStringList[index] ?? "");
+    notifyListeners();
   }
+
   void selectOrUnselectCategory(int index) {
     List<BookVO>? books = recentBooks
             ?.where((element) =>
@@ -107,14 +102,14 @@ class LibraryBloc extends ChangeNotifier {
         }).toList() ??
         [];
     // if (isSelectedCategory) {
-      print("book library => ${categoriesStringList?[index]}");
+    print("book library => ${categoriesStringList?[index]}");
 
-      booksByCategory.addAll(books);
+    booksByCategory.addAll(books);
 
-      selectedCategoriesStringList.add(categoriesStringList?[index] ?? "");
-      categoriesStringList?.removeAt(index);
+    selectedCategoriesStringList.add(categoriesStringList?[index] ?? "");
+    categoriesStringList?.removeAt(index);
 
-      notifyListeners();
+    notifyListeners();
 
     // else {
     //   // selectedCategoriesStringList.removeAt(index);
