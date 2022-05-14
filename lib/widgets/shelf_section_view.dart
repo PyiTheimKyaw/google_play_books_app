@@ -16,8 +16,7 @@ class ShelvesSectionView extends StatelessWidget {
     required this.onPressedCreate,
     required this.booksList,
     required this.shelfList,
-    required this.onDeleteShelf,
-    required this.editShelf,
+
     this.addToShelf,
     this.toViewShelfDetails = true,
   }) : super(key: key);
@@ -27,8 +26,6 @@ class ShelvesSectionView extends StatelessWidget {
   final int bookCount;
   final TextEditingController editShelfName;
   final Function(String) onPressedCreate;
-  final Function(String, String, int) editShelf;
-  final Function(int) onDeleteShelf;
   final List<BookVO> booksList;
   final bool toViewShelfDetails;
   final Function(String,int)? addToShelf;
@@ -71,18 +68,10 @@ class ShelvesSectionView extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) => ReviewShelfPage(
+                              index:index,
                                   booksList: shelfList?[index].books ?? [],
                                   shelfName: shelfList?[index].shelfName ?? "",
                                   editShelfName: editShelfName,
-                                  editShelf: () {
-                                    editShelf(shelfList?[index].shelfName ?? "",
-                                        editShelfName.text, index);
-                                    // widget.shelfList?[index].shelfName =
-                                    //     widget.editShelfName.text;
-                                  },
-                                  deleteShelf: () {
-                                    onDeleteShelf(index);
-                                  },
                                 )))
                     : addToShelf!((shelfList?[index].shelfName ?? ""),index);
               },

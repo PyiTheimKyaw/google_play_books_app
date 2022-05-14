@@ -112,13 +112,7 @@ class _LibraryPageState extends State<LibraryPage>
                   bloc.addNewShelf(shelfName);
                   // print("First index of shelf => ${shelfList.first.shelfName}");
                 },
-                onDeleteShelf: (index) {
-                  bloc.deleteShelf(index);
-                  Navigator.pop(context);
-                },
-                editShelf: (shelfName, forEditName, index) {
-                  bloc.editShelf(shelfName, forEditName, index);
-                },
+
                 shelfList: bloc.shelfList,
               ),
             ),

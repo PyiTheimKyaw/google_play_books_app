@@ -39,13 +39,6 @@ class AddBookToShelfPage extends StatelessWidget {
             onPressedCreate: (shelfName) {
               bloc.addNewShelf(shelfName);
             },
-            onDeleteShelf: (index) {
-              bloc.deleteShelf(index);
-              Navigator.pop(context);
-            },
-            editShelf: (shelfName, forEditName, index) {
-              bloc.editShelf(shelfName, forEditName, index);
-            },
             addToShelf: (shelfName,index){
               bloc.addToShelf(book, shelfName, index);
               Navigator.pop(context);

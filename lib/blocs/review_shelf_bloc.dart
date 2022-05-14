@@ -18,9 +18,14 @@ class ReviewShelfBloc extends ChangeNotifier{
   List<ShelfVO>? shelfList;
   bool isSelectedCategory = false;
   List<BookVO> addBooks=[];
+  int? index;
+  bool isRename=false;
+  String? shelfName;
 
-  ReviewShelfBloc(List<BookVO> bookList){
+  ReviewShelfBloc(List<BookVO> bookList,int shelfIndex,String name){
     reviewShelfBooks=bookList;
+    index=shelfIndex;
+    shelfName=name;
     notifyListeners();
 
     mBookModel.getCategoriesStringList().then((value) {
@@ -115,5 +120,30 @@ class ReviewShelfBloc extends ChangeNotifier{
     //   notifyListeners();
     // }
     // notifyListeners();
+  }
+  void boolIsRename(){
+    isRename=true;
+    notifyListeners();
+  }
+  void editShelf(String shelfName, String editShelfName) {
+    isRename=false;
+    notifyListeners();
+    print("Before edit shelf name => ${shelfName}");
+    ShelfVO shelf = ShelfVO(shelfName: editShelfName,books: reviewShelfBooks);
+    print("after add to shelf=>${shelf.shelfName.toString()}");
+    mBookModel.getSingleShelf(shelfName).then((value) {
+      value?.shelfName = editShelfName;
+
+      mBookModel.editShelf(index ?? 0, shelf);
+      shelfName=editShelfName;
+      notifyListeners();
+    });
+    // mBookModel.editShelf(index, shelf);
+
+  }
+
+  void deleteShelf() {
+    mBookModel.deleteShelf(index ?? 0);
+    notifyListeners();
   }
 }
