@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_play_books_app/data/vos/book_vo.dart';
+import 'package:google_play_books_app/pages/add_book_to_shelf_page.dart';
 import 'package:google_play_books_app/resources/colors.dart';
 import 'package:google_play_books_app/resources/dimens.dart';
 import 'package:google_play_books_app/viewitems/book_and_row_title_view.dart';
@@ -82,9 +83,14 @@ class MoreButtonView extends StatelessWidget {
                       SizedBox(
                         height: MARGIN_MEDIUM_2,
                       ),
-                      IconListTileView(
-                        icon: _icon(Icons.add),
-                        text: text("Add to shelf"),
+                      GestureDetector(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>AddBookToShelfPage(book: book,)));
+                        },
+                        child: IconListTileView(
+                          icon: _icon(Icons.add),
+                          text: text("Add to shelf"),
+                        ),
                       ),
                       SizedBox(
                         height: MARGIN_MEDIUM_2,

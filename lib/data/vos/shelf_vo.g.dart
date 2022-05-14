@@ -17,7 +17,7 @@ class ShelfVOAdapter extends TypeAdapter<ShelfVO> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return ShelfVO(
-      fields[0] as String?,
+      shelfName: fields[0] as String?,
       books: (fields[1] as List?)?.cast<BookVO>(),
     );
   }

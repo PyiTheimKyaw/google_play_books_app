@@ -2,15 +2,19 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_play_books_app/blocs/review_shelf_bloc.dart';
 import 'package:google_play_books_app/data/vos/book_vo.dart';
 import 'package:google_play_books_app/data/vos/book_vo_test.dart';
 import 'package:google_play_books_app/pages/library_page.dart';
+import 'package:google_play_books_app/resources/colors.dart';
 import 'package:google_play_books_app/resources/dimens.dart';
 import 'package:google_play_books_app/viewitems/sorting_view.dart';
 import 'package:google_play_books_app/viewitems/view_list_view.dart';
 import 'package:google_play_books_app/widgets/your_books_by_grid_section_view.dart';
 import 'package:google_play_books_app/widgets/your_books_by_large_grid_section_view.dart';
 import 'package:google_play_books_app/widgets/your_books_by_list_section_view.dart';
+import 'package:google_play_books_app/widgets/your_books_section_view.dart';
+import 'package:provider/provider.dart';
 
 class ReviewShelfPage extends StatefulWidget {
   String shelfName;
@@ -18,6 +22,7 @@ class ReviewShelfPage extends StatefulWidget {
   Function() editShelf;
   Function deleteShelf;
   List<BookVO> booksList;
+
   ReviewShelfPage(
       {required this.shelfName,
       required this.editShelfName,
@@ -37,6 +42,7 @@ class _ReviewShelfPageState extends State<ReviewShelfPage> {
 
   bool isRename = false;
   String? name;
+
   _buildTabContext(IndexedWidgetBuilder itemBuilder, int itemCount) =>
       ListView.builder(
         // physics: const ClampingScrollPhysics(),
@@ -46,260 +52,150 @@ class _ReviewShelfPageState extends State<ReviewShelfPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 120,
-        elevation: 3,
-        iconTheme: IconThemeData(color: Colors.black),
-        backgroundColor: Colors.white,
-        leadingWidth: 200,
-        automaticallyImplyLeading: false,
-        leading: Padding(
-          padding:
-              const EdgeInsets.only(left: MARGIN_MEDIUM_2, top: MARGIN_SMALL),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              (!isRename)
-                  ? GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: Icon(Icons.arrow_back))
-                  : GestureDetector(
-                      onTap: () {
-                        widget.editShelf();
-                        setState(() {
-                          isRename = false;
-                        });
-                      },
-                      child: Icon(Icons.download_done_rounded),
-                    ),
-              SizedBox(
-                height: 20,
-              ),
-              (!isRename)
-                  ? Text(
-                      widget.shelfName,
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
-                    )
-                  : TextField(
-                      controller: widget.editShelfName,
-                      onChanged: (name) {
-                        setState(() {
-                          this.name = name;
-                        });
-                      },
-                      decoration: InputDecoration(
-                        hintText: widget.shelfName,
-                        hintStyle: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w600),
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue),
-                        ),
-                      )),
-              Visibility(
-                visible: !isRename,
-                child: Text(
-                  '1 book',
-                  style: TextStyle(color: Colors.black),
-                ),
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          Padding(
+    return ChangeNotifierProvider<ReviewShelfBloc>.value(
+      value: ReviewShelfBloc(widget.booksList),
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 120,
+          elevation: 3,
+          iconTheme: IconThemeData(color: Colors.black),
+          backgroundColor: Colors.white,
+          leadingWidth: 500,
+          automaticallyImplyLeading: false,
+          leading: Padding(
             padding:
-                const EdgeInsets.only(bottom: 58.0, right: MARGIN_MEDIUM_2),
-            child: Row(
+                const EdgeInsets.only(left: MARGIN_MEDIUM_2, top: MARGIN_SMALL),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.search),
-                SizedBox(
-                  width: 12,
-                ),
-                PopupMenuButton(
-                    icon: Icon(Icons.more_vert),
-                    itemBuilder: (context) => [
-                          PopupMenuItem(
-                            child: Text("Rename Shelf"),
-                            value: 1,
+                Row(
+                  children: [
+                    (!isRename)
+                        ? GestureDetector(
                             onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: Icon(Icons.arrow_back))
+                        : GestureDetector(
+                            onTap: () {
+                              widget.editShelf();
                               setState(() {
-                                isRename = true;
+                                isRename = false;
                               });
                             },
+                            child: Icon(Icons.download_done_rounded),
                           ),
-                          PopupMenuItem(
-                            child: Text("Delete Shelf"),
-                            value: 2,
-                            onTap: () {
-                              widget.deleteShelf();
-                            },
-                          )
-                        ])
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                (!isRename)
+                    ? Text(
+                        widget.shelfName,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 19,
+                            fontWeight: FontWeight.bold),
+                      )
+                    : TextField(
+                        controller: widget.editShelfName,
+                        onChanged: (name) {
+                          setState(() {
+                            this.name = name;
+                          });
+                        },
+                        decoration: InputDecoration(
+                          hintText: widget.shelfName,
+                          hintStyle: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.w600),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.blue),
+                          ),
+                        )),
+                Visibility(
+                  visible: !isRename,
+                  child: Text(
+                    '${widget.booksList.length} book',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
               ],
             ),
           ),
-        ],
-      ),
-      body: Container(
-        color: Colors.white,
-        height: MediaQuery.of(context).size.height,
-        padding: const EdgeInsets.symmetric(
-            horizontal: MARGIN_MEDIUM_2, vertical: MARGIN_MEDIUM_2),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                SortingSectionView(
-                  val: byType,
-                  onTap: () {
-                    buildShowModalBottomSheetForSorting(context);
-                  },
-                ),
-                Spacer(),
-                SortingViewListSectionView(
-                  view: byView,
-                  opTap: () {
-                    buildShowModalBottomSheetForSortingView(context);
-                  },
-                ),
-              ],
-            ),
-            SizedBox(
-              height: MARGIN_MEDIUM,
-            ),
-            Expanded(
-              child: (byView == "List")
-                  ? YourBooksByListSectionView(
-                      bookList: [],
-                    )
-                  : (byView == "Small Grid")
-                      ? YourBooksByGridSectionView(
-                          category: [],
-                          books: [],
-                        )
-                      : (byView == "Large Grid")
-                          ? YourBooksByLargeGridSectionView(
-                              books: widget.booksList)
-                          : Container(),
+          actions: [
+            Padding(
+              padding:
+                  const EdgeInsets.only(bottom: 58.0, right: MARGIN_MEDIUM_2),
+              child: Row(
+                children: [
+                  Icon(Icons.search),
+                  SizedBox(
+                    width: 12,
+                  ),
+                  PopupMenuButton(
+                      icon: Icon(Icons.more_vert),
+                      itemBuilder: (context) => [
+                            PopupMenuItem(
+                              child: Text("Rename Shelf"),
+                              value: 1,
+                              onTap: () {
+                                setState(() {
+                                  isRename = true;
+                                });
+                              },
+                            ),
+                            PopupMenuItem(
+                              child: Text("Delete Shelf"),
+                              value: 2,
+                              onTap: () {
+                                widget.deleteShelf();
+                              },
+                            )
+                          ])
+                ],
+              ),
             ),
           ],
         ),
+        body: Consumer<ReviewShelfBloc>(
+          builder: (context, bloc, child) => (bloc.reviewShelfBooks?.isEmpty ??
+                  false)
+              ? Center(
+                  child: Text(
+                      "Tap the menu icon on a book cover , then select 'Add to Shelf'",style: TextStyle(color: ICON_COLOR,fontSize: 14),),
+                )
+              : YourBooksSectionView(
+                  isLibrary: false,
+                  selectedCategoriesList: bloc.selectedCategoriesStringList,
+                  categoriesStringList: bloc.categoriesStringList ?? [],
+                  recentBooksList: (bloc.booksByCategory.isEmpty)
+                      ? (bloc.selectedCategoriesStringList.isNotEmpty)
+                          ? null
+                          : bloc.reviewShelfBooks
+                      : bloc.booksByCategory,
+                  byType: bloc.byType,
+                  byView: bloc.byView,
+                  onTapType: (value) {
+                    ReviewShelfBloc bloc = Provider.of(context, listen: false);
+                    bloc.sortByType(value, context);
+                  },
+                  onTapView: (value) {
+                    ReviewShelfBloc bloc = Provider.of(context, listen: false);
+                    bloc.sortByView(value, context);
+                  },
+                  onSelectCategory: (index) {
+                    bloc.selectOrUnselectCategory(index);
+                  },
+                  onSelectedCategory: (index) {
+                    bloc.unselectCategory(index);
+                  },
+                  onTapClose: () {
+                    bloc.clearCategories();
+                  },
+                ),
+        ),
       ),
     );
-  }
-
-  Future<dynamic> buildShowModalBottomSheetForSorting(BuildContext context) {
-    return showModalBottomSheet(
-        context: context,
-        builder: (context) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Container(
-                  padding: EdgeInsets.only(left: MARGIN_MEDIUM_2),
-                  height: 40,
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Sort By",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                  )),
-              Divider(
-                thickness: 1,
-              ),
-              RadioWithText(
-                  value: "Author",
-                  val: byType,
-                  onTap: (value) {
-                    setState(() {
-                      byType = value!;
-                    });
-                    Navigator.pop(context);
-                  }),
-              RadioWithText(
-                  value: "Recent",
-                  val: byType,
-                  onTap: (value) {
-                    setState(() {
-                      byType = value!;
-                    });
-                    Navigator.pop(context);
-                  }),
-              RadioWithText(
-                  value: "Title",
-                  val: byType,
-                  onTap: (value) {
-                    setState(() {
-                      byType = value!;
-                    });
-                    Navigator.pop(context);
-                  }),
-            ],
-          );
-        });
-  }
-
-  Future<dynamic> buildShowModalBottomSheetForSortingView(
-      BuildContext context) {
-    return showModalBottomSheet(
-        context: context,
-        builder: (context) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Container(
-                  padding: EdgeInsets.only(left: MARGIN_MEDIUM_2),
-                  height: 40,
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Sort By",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                  )),
-              Divider(
-                thickness: 1,
-              ),
-              RadioWithText(
-                  value: "List",
-                  val: byView,
-                  onTap: (value) {
-                    setState(() {
-                      byView = value!;
-                    });
-                    Navigator.pop(context);
-                  }),
-              RadioWithText(
-                  value: "Small Grid",
-                  val: byView,
-                  onTap: (value) {
-                    setState(() {
-                      byView = value!;
-                    });
-                    Navigator.pop(context);
-                  }),
-              RadioWithText(
-                  value: "Large Grid",
-                  val: byView,
-                  onTap: (value) {
-                    setState(() {
-                      byView = value!;
-                    });
-                    Navigator.pop(context);
-                  }),
-            ],
-          );
-        });
   }
 }

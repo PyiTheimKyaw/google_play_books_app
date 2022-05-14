@@ -18,6 +18,7 @@ class LibraryBloc extends ChangeNotifier {
   List<BookVO> booksByCategory = [];
   List<ShelfVO>? shelfList;
   bool isSelectedCategory = false;
+  List<BookVO> addBooks=[];
 
   LibraryBloc() {
     ///Get all categories list
@@ -130,7 +131,7 @@ class LibraryBloc extends ChangeNotifier {
   }
 
   void addNewShelf(String shelfName) {
-    ShelfVO shelf = ShelfVO(shelfName, books: []);
+    ShelfVO shelf = ShelfVO(shelfName: shelfName, books: []);
     List<ShelfVO>? shelves;
     // shelf?.shelfName=shelfName;
     // shelf?.books=[];
@@ -149,14 +150,43 @@ class LibraryBloc extends ChangeNotifier {
   void editShelf(String shelfName, String editShelfName, int index) {
     List<ShelfVO>? editShelf;
     print("Before edit shelf name => ${shelfName}");
-    ShelfVO shelf = ShelfVO(editShelfName);
+    ShelfVO shelf = ShelfVO(shelfName: editShelfName);
+    print("after add to shelf=>${shelf.shelfName.toString()}");
     mBookModel.getSingleShelf(shelfName).then((value) {
       value?.shelfName = editShelfName;
+
       mBookModel.editShelf(index, shelf);
       notifyListeners();
     });
     // mBookModel.editShelf(index, shelf);
-
     notifyListeners();
+  }
+
+  void addToShelf(BookVO? book, String shelfName, int index) {
+    print("Book from bookItemView => ${book.toString()}");
+
+
+
+      ShelfVO? shelf;
+      mBookModel.getSingleShelf(shelfName).then((value) {
+        value?.books?.add(book!);
+        mBookModel.editShelf(index, value!);
+        notifyListeners();
+      });
+
+
+
+      // List<BookVO> bookList=shelf?.books?.map((e) {
+      //   e.bookImage=book?.bookImage;
+      //   e.category=book?.category;
+      //   e.title=book?.title;
+      //   return e;
+      // }).toList() ?? [];
+      // addBooks.add(book!);
+      // ShelfVO addedBookToShelf=ShelfVO(shelfName: shelfName,books: addBooks);
+      // print("after add to shelf=>${addedBookToShelf.books.toString()}");
+      // mBookModel.editShelf(index, addedBookToShelf);
+      // notifyListeners();
+
   }
 }
