@@ -12,7 +12,7 @@ class ReviewShelfBloc extends ChangeNotifier{
   BookModel mBookModel = BookModelImpl();
   List<BookVO>? reviewShelfBooks;
   List<BookVO>? selectedCategoriesBooksList;
-  List<String?>? categoriesStringList;
+  List<String?> categoriesStringList=[];
   List<String> selectedCategoriesStringList = [];
   List<BookVO> booksByCategory = [];
   List<ShelfVO>? shelfList;
@@ -27,11 +27,20 @@ class ReviewShelfBloc extends ChangeNotifier{
     index=shelfIndex;
     shelfName=name;
     notifyListeners();
+    // categoriesStringList?.addAll(bookList[1].category);
+    // notifyListeners();
 
-    mBookModel.getCategoriesStringList().then((value) {
-      categoriesStringList = value;
+    List<BookVO> books=bookList.map((e) {
+      categoriesStringList.add(e.category);
+      List<String?> cate=categoriesStringList.toSet().toList();
+      categoriesStringList=cate;
       notifyListeners();
-    });
+      return e;
+    }).toList() ?? [];
+    // mBookModel.getCategoriesStringList().then((value) {
+    //   categoriesStringList = value;
+    //   notifyListeners();
+    // });
   }
   void sortByType(String? type, BuildContext context) {
     if (type != null) {
@@ -67,10 +76,17 @@ class ReviewShelfBloc extends ChangeNotifier{
     selectedCategoriesStringList.clear();
     booksByCategory.clear();
     isSelectedCategory = false;
-    mBookModel.getCategoriesStringList().then((value) {
-      categoriesStringList = value;
+    List<BookVO> books=reviewShelfBooks?.map((e) {
+      categoriesStringList.add(e.category);
+      List<String?> cate=categoriesStringList.toSet().toList();
+      categoriesStringList=cate;
       notifyListeners();
-    });
+      return e;
+    }).toList() ?? [];
+    // mBookModel.getCategoriesStringList().then((value) {
+    //   categoriesStringList = value;
+    //   notifyListeners();
+    // });
     notifyListeners();
   }
 
