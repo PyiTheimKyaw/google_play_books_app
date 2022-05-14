@@ -34,6 +34,7 @@ class BookModelImpl extends BookModel {
       List<CategoryVO>? category = value?.map((e) {
             List<BookVO>? books = e.books?.map((book) {
                   book.category = e.listName ?? "";
+                  book.imageLink = book.bookImage;
                   return book;
                 }).toList() ??
                 [];
@@ -53,7 +54,7 @@ class BookModelImpl extends BookModel {
       List<CategoryVO>? category = categoryList?.map((e) {
             List<BookVO>? books = e.books?.map((book) {
                   book.category = e.listName;
-                  // book.imageUrl = book.bookImage;
+                  book.imageLink = book.bookImage;
                   return book;
                 }).toList() ??
                 [];
@@ -65,15 +66,18 @@ class BookModelImpl extends BookModel {
   }
 
   @override
-  Future<List<CategoryVO>?> getBooksList(
+  Future<List<CategoryVO>?> getBooksListForViewMore(
       String list, String bestSellersDate, String publishedDate) {
     return mDataAgent
         .getBooksList(list, bestSellersDate, publishedDate)
         .then((value) {
+      if (value != null) {
+        mCategoryDao.saveAllCategories(value);
+      }
       List<CategoryVO>? category = value?.map((e) {
             List<BookVO>? books = e.books?.map((book) {
                   book.category = e.listName ?? "";
-                  // book.imageUrl = book.bookImage ?? "";
+                  book.imageLink = book.bookImage ?? "";
                   return book;
                 }).toList() ??
                 [];
@@ -81,16 +85,6 @@ class BookModelImpl extends BookModel {
             return e;
           }).toList() ??
           [];
-      // List<CategoryVO>? categoryList = value?.map((e) {
-      //   e.bookDetails?.map((e) {
-      //     e.time = DateTime.now();
-      //   });
-      //   return e;
-      // }).toList();
-      // categoryList?.map((e) {
-      //   bookDao.saveAllBooks(e.bookDetails ?? []);
-      // });
-      // value?.map((e) => {bookDao.saveAllBooks(e.bookDetails ?? [])}).toList();
       return Future.value(value);
     });
   }
@@ -121,7 +115,11 @@ class BookModelImpl extends BookModel {
 
   @override
   void getSearchBooks(String query) {
-    mDataAgent.getSearchBooks(query).then((value) {});
+    mDataAgent.getSearchBooks(query).then((value) {
+      if (value != null) {
+        mBookDao.saveAllBooks(value);
+      }
+    });
   }
 
   @override

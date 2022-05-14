@@ -19,7 +19,7 @@ class MoreViewBloc extends ChangeNotifier {
       categoryList = value?.lists;
       notifyListeners();
       mBookModel
-          .getBooksList(list, overview?.bestSellersDate ?? "",
+          .getBooksListForViewMore(list, overview?.bestSellersDate ?? "",
               overview?.publishedDate ?? "")
           .then((value) {
         viewMoreList = value;

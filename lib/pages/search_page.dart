@@ -21,8 +21,8 @@ import 'package:provider/provider.dart';
 class SearchPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<SearchBloc>.value(
-      value: SearchBloc(),
+    return ChangeNotifierProvider(
+      create:(context) => SearchBloc(),
       child: Scaffold(
         appBar: AppBar(
           titleSpacing: MARGIN_SMALL - 7,

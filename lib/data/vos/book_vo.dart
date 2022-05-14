@@ -90,6 +90,8 @@ class BookVO {
   GoogleSearchVO? searchResults;
   @HiveField(27)
   String? category;
+  @HiveField(28)
+  String? imageLink;
 
   BookVO(
     this.ageGroup,
@@ -120,7 +122,7 @@ class BookVO {
     this.time,
     this.searchResults,
     this.category,
-
+    this.imageLink,
   );
 
   factory BookVO.fromJson(Map<String, dynamic> json) => _$BookVOFromJson(json);

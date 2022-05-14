@@ -148,7 +148,7 @@ class SearchAndProfileSectionView extends StatelessWidget {
               ),
               Expanded(
                 child: TextField(
-                  showCursor: false,
+                  // showCursor: false,
                   // autofocus: true,
                   decoration: InputDecoration(
                     hintText: SEARCH_PLAY_BOOKS,
@@ -157,11 +157,11 @@ class SearchAndProfileSectionView extends StatelessWidget {
                     ),
                     border: InputBorder.none,
                   ),
-                  // onChanged: (String text) {
-                  //   debouncer.run(() {
-                  //     print(text);
-                  //   });
-                  // },
+                  onChanged: (String text) {
+                    debouncer.run(() {
+                      print(text);
+                    });
+                  },
                   onTap: () {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => SearchPage()));

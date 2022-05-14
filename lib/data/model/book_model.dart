@@ -7,7 +7,7 @@ abstract class BookModel {
   Future<OverviewVo?> getOverview();
   void getBookListFromCategory();
   void getCategoriesList();
-  Future<List<CategoryVO>?> getBooksList(
+  Future<List<CategoryVO>?> getBooksListForViewMore(
       String list, String bestSellersDate, String publishedDate);
   Future<List<BookVO>?> saveAllRecentBooks(List<BookVO> booksList);
   Future<BookVO?> saveSingleBook(BookVO book);

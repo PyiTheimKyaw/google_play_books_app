@@ -61,6 +61,7 @@ class GoogleSearchVO {
         DateTime.now(),
         GoogleSearchVO(kind, id, etag, volumeInfo),
         volumeInfo?.categories?.first,
+      "",
         );
   }
 }
