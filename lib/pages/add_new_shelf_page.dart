@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:google_play_books_app/resources/dimens.dart';
 
-class AddNewShelfPage extends StatelessWidget {
+class AddNewShelfPage extends StatefulWidget {
   List<String> shelfNameList;
   TextEditingController shelfName=TextEditingController();
-  Function onPressedCreate;
+  Function(String) onPressedCreate;
 
   AddNewShelfPage({required this.shelfNameList,required this.shelfName,required this.onPressedCreate});
 
   @override
+  State<AddNewShelfPage> createState() => _AddNewShelfPageState();
+}
+
+class _AddNewShelfPageState extends State<AddNewShelfPage> {
+  String? shelfListName;
+  @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 100,
@@ -21,7 +28,8 @@ class AddNewShelfPage extends StatelessWidget {
           children: [
             IconButton(
               onPressed: () {
-                onPressedCreate();
+                print("Shelf name when crete => ${shelfListName ?? ""}");
+                widget.onPressedCreate(shelfListName ?? "");
                 Navigator.pop(context);
               },
               icon: Icon(Icons.download_done_outlined),
@@ -30,7 +38,13 @@ class AddNewShelfPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: MARGIN_MEDIUM),
               child: TextField(
-                controller: shelfName,
+                controller: widget.shelfName,
+                  onChanged: (shelfName){
+                  setState(() {
+                    shelfListName=shelfName;
+                    print("Shelf name => ${shelfListName}");
+                  });
+                  },
                   decoration: InputDecoration(
                     hintText: "Shelf name",
                     hintStyle: TextStyle(fontSize: 20,fontWeight: FontWeight.w600),

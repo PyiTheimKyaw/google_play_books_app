@@ -7,6 +7,7 @@ import 'package:google_play_books_app/data/vos/google_book_vo.dart';
 import 'package:google_play_books_app/data/vos/google_search_vo.dart';
 import 'package:google_play_books_app/data/vos/image_link_vo.dart';
 import 'package:google_play_books_app/data/vos/overview_vo.dart';
+import 'package:google_play_books_app/data/vos/shelf_vo.dart';
 import 'package:google_play_books_app/network/dataagents/retrofit_data_agent_impl.dart';
 import 'package:google_play_books_app/pages/start_page.dart';
 import 'package:google_play_books_app/persistence/hive_constants.dart';
@@ -23,12 +24,14 @@ void main() async {
   Hive.registerAdapter(ImageLinkVOAdapter());
   Hive.registerAdapter(GoogleBookVOAdapter());
   Hive.registerAdapter(GoogleSearchBookVOAdapter());
+  Hive.registerAdapter(ShelfVOAdapter());
 
   await Hive.openBox<OverviewVo>(BOX_NAME_OVERVIEW_VO);
   await Hive.openBox<BookVO>(BOX_NAME_BOOK_VO);
   await Hive.openBox<CategoryVO>(BOX_NAME_CATEGORY_VO);
   await Hive.openBox<BookVO>(BOX_NAME_BOOK_VO_FOR_RECENT);
   await Hive.openBox<GoogleSearchVO>(BOX_NAME_GOOGLE_SEARCH_VO);
+  await Hive.openBox<ShelfVO>(BOX_NAME_SHELF_VO);
   runApp(MyApp());
 }
 

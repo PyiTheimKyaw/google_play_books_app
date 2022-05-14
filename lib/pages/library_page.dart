@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_play_books_app/blocs/library_bloc.dart';
 import 'package:google_play_books_app/data/vos/book_vo.dart';
+import 'package:google_play_books_app/data/vos/shelf_vo.dart';
 import 'package:google_play_books_app/pages/add_new_shelf_page.dart';
 import 'package:google_play_books_app/pages/review_shelf_page.dart';
 import 'package:google_play_books_app/resources/colors.dart';
@@ -65,51 +66,69 @@ class _LibraryPageState extends State<LibraryPage>
         ),
         body: Container(
           color: Colors.white,
-          height: MediaQuery.of(context).size.height,
+          height: MediaQuery
+              .of(context)
+              .size
+              .height,
           // padding: EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
           child: TabBarView(controller: tabController, children: [
             Consumer<LibraryBloc>(
-              builder: (context, bloc, child) => YourBooksSectionView(
-                selectedCategoriesList: bloc.selectedCategoriesStringList,
-                categoriesStringList: bloc.categoriesStringList ?? [],
-                recentBooksList: (bloc.booksByCategory.isEmpty)
-                    ? (bloc.selectedCategoriesStringList.isNotEmpty)
+              builder: (context, bloc, child) =>
+                  YourBooksSectionView(
+                    selectedCategoriesList: bloc.selectedCategoriesStringList,
+                    categoriesStringList: bloc.categoriesStringList ?? [],
+                    recentBooksList: (bloc.booksByCategory.isEmpty)
+                        ? (bloc.selectedCategoriesStringList.isNotEmpty)
                         ? null
                         : bloc.recentBooks
-                    : bloc.booksByCategory,
-                byType: bloc.byType,
-                byView: bloc.byView,
-                onTapType: (value) {
-                  LibraryBloc bloc = Provider.of(context, listen: false);
-                  bloc.sortByType(value, context);
-                },
-                onTapView: (value) {
-                  LibraryBloc bloc = Provider.of(context, listen: false);
-                  bloc.sortByView(value, context);
-                },
-                onSelectCategory: (index) {
-                  bloc.selectOrUnselectCategory(index);
-                },
-                onSelectedCategory: (index) {
-                  bloc.unselectCategory(index);
-                },
-                onTapClose: () {
-                  bloc.clearCategories();
-                },
-              ),
+                        : bloc.booksByCategory,
+                    byType: bloc.byType,
+                    byView: bloc.byView,
+                    onTapType: (value) {
+                      LibraryBloc bloc = Provider.of(context, listen: false);
+                      bloc.sortByType(value, context);
+                    },
+                    onTapView: (value) {
+                      LibraryBloc bloc = Provider.of(context, listen: false);
+                      bloc.sortByView(value, context);
+                    },
+                    onSelectCategory: (index) {
+                      bloc.selectOrUnselectCategory(index);
+                    },
+                    onSelectedCategory: (index) {
+                      bloc.unselectCategory(index);
+                    },
+                    onTapClose: () {
+                      bloc.clearCategories();
+                    },
+                  ),
             ),
 
             ///Shelves
             // Container(),
-            ShelvesSectionView(
-              booksList: recentBooks ?? [],
-              dummyShelf: dummyShelf ?? [],
-              shelfName: shelfName,
-              bookCount: bookCount,
-              editShelfName: editShelfName,
-              onPressedCreate: () {
-                dummyShelf?.add(shelfName.text);
-              },
+            Consumer<LibraryBloc>(
+              builder: (context, bloc, child) =>
+                  ShelvesSectionView(
+                    booksList: bloc.recentBooks ?? [],
+                    dummyShelf: dummyShelf ?? [],
+                    shelfName: shelfName,
+                    bookCount: bookCount,
+                    editShelfName: editShelfName,
+                    onPressedCreate: (shelfName) {
+                      print('Shelf name data pass => ${shelfName ?? ""}');
+                      // List<ShelfVO>? shelves;
+                      // List<ShelfVO> shelfList=shelves?.map((e) {
+                      //   e.shelfName=shelfName;
+                      //   e.books=[];
+                      //   return e;
+                      // }).toList() ?? [];
+
+                      bloc.addNewShelf(shelfName);
+                      // print("First index of shelf => ${shelfList.first.shelfName}");
+                    },
+                    shelfList: bloc.shelfList,
+                  ),
+
             ),
           ]),
         ),
@@ -190,21 +209,21 @@ class YourBooksSectionView extends StatelessWidget {
                 Expanded(
                   child: (byView == "List")
                       ? YourBooksByListSectionView(
-                          bookList: recentBooksList,
-                        )
+                    bookList: recentBooksList,
+                  )
                       : (byView == "Small Grid")
-                          ? Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 8),
-                              child: YourBooksByGridSectionView(
-                                category: [],
-                                isViewMore: false,
-                                books: recentBooksList,
-                              ),
-                            )
-                          : (byView == "Large Grid")
-                              ? YourBooksByLargeGridSectionView(
-                                  books: recentBooksList)
-                              : Container(),
+                      ? Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    child: YourBooksByGridSectionView(
+                      category: [],
+                      isViewMore: false,
+                      books: recentBooksList,
+                    ),
+                  )
+                      : (byView == "Large Grid")
+                      ? YourBooksByLargeGridSectionView(
+                      books: recentBooksList)
+                      : Container(),
                 ),
               ],
             ),
@@ -230,7 +249,7 @@ class YourBooksSectionView extends StatelessWidget {
                     child: Text(
                       "Sort By",
                       style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   )),
               Divider(
@@ -273,7 +292,7 @@ class YourBooksSectionView extends StatelessWidget {
                     child: Text(
                       "Sort By",
                       style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   )),
               Divider(
@@ -396,10 +415,11 @@ class AllCategoriesListView extends StatelessWidget {
       children: [
         ...List.generate(
             categoriesStringList?.length ?? 0,
-            (index) => CategoryItem(
-              index: index,
-                onTap: onSelectCategory,
-                categoriesStringList: categoriesStringList?[index]))
+                (index) =>
+                CategoryItem(
+                    index: index,
+                    onTap: onSelectCategory,
+                    categoriesStringList: categoriesStringList?[index]))
       ],
     );
   }
@@ -424,12 +444,13 @@ class SelectedCategoriesListView extends StatelessWidget {
       children: [
         ...List.generate(
           selectedCategoriesList?.length ?? 0,
-          (index) => CategoryItem(
-            isSelectedCategory: true,
-            categoriesStringList: selectedCategoriesList?[index],
-            onTap: onSelectedCategory,
-            index: index,
-          ),
+              (index) =>
+              CategoryItem(
+                isSelectedCategory: true,
+                categoriesStringList: selectedCategoriesList?[index],
+                onTap: onSelectedCategory,
+                index: index,
+              ),
         ),
       ],
     );
@@ -481,7 +502,7 @@ class CategoryItem extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(MARGIN_MEDIUM),
         child: Chip(
-          elevation: 0.4,
+          elevation: 0.6,
           backgroundColor: (isSelectedCategory)
               ? Color.fromRGBO(3, 121, 201, 1.0)
               : Colors.white,
@@ -523,7 +544,7 @@ class RadioWithText extends StatelessWidget {
       children: [
         Radio<String>(
           fillColor: MaterialStateColor.resolveWith(
-              (states) => Colors.lightBlueAccent),
+                  (states) => Colors.lightBlueAccent),
           autofocus: true,
           value: value,
           groupValue: val,
@@ -583,13 +604,15 @@ class ShelvesSectionView extends StatefulWidget {
     required this.editShelfName,
     required this.onPressedCreate,
     required this.booksList,
+    required this.shelfList,
   }) : super(key: key);
 
   final List<String> dummyShelf;
+  final List<ShelfVO>? shelfList;
   final TextEditingController shelfName;
   final int bookCount;
   final TextEditingController editShelfName;
-  final Function onPressedCreate;
+  final Function(String) onPressedCreate;
   final List<BookVO> booksList;
 
   @override
@@ -602,19 +625,23 @@ class _ShelvesSectionViewState extends State<ShelvesSectionView> {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Container(
-        width: MediaQuery.of(context).size.width / 3,
+        width: MediaQuery
+            .of(context)
+            .size
+            .width / 3,
         height: 50,
         child: FloatingActionButton(
           onPressed: () {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => AddNewShelfPage(
-                          shelfNameList: widget.dummyShelf,
-                          shelfName: widget.shelfName,
-                          onPressedCreate: () {
-                            widget.onPressedCreate();
-                          },
+                    builder: (context) =>
+                        AddNewShelfPage(
+                            shelfNameList: widget.dummyShelf,
+                            shelfName: widget.shelfName,
+                            onPressedCreate:
+                            widget.onPressedCreate,
+
                         )));
           },
           child: Row(
@@ -627,77 +654,77 @@ class _ShelvesSectionViewState extends State<ShelvesSectionView> {
         ),
       ),
       body: ListView.builder(
-        itemCount: widget.dummyShelf.length,
+        itemCount: widget.shelfList?.length ?? 0,
         itemBuilder: (BuildContext context, int index) {
-          return (widget.dummyShelf.isNotEmpty)
-              ? GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ReviewShelfPage(
-                                  booksList: widget.booksList,
-                                  shelfName: widget.dummyShelf[index],
-                                  editShelfName: widget.editShelfName,
-                                  editShelf: () {
-                                    setState(() {
-                                      widget.dummyShelf[index] =
-                                          widget.editShelfName.text;
-                                    });
-                                  },
-                                  deleteShelf: () {
-                                    setState(() {
-                                      widget.dummyShelf.removeAt(index);
-                                    });
-                                  },
-                                )));
-                  },
-                  child: Container(
-                    margin: EdgeInsets.only(top: 10),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(width: 1, color: Colors.white)),
-                    height: 100,
-                    child: Column(
+          return
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            ReviewShelfPage(
+                              booksList: widget.booksList,
+                              shelfName: widget.shelfList?[index].shelfName ?? "",
+                              editShelfName: widget.editShelfName,
+                              editShelf: () {
+                                setState(() {
+                                  widget.dummyShelf[index] =
+                                      widget.editShelfName.text;
+                                });
+                              },
+                              deleteShelf: () {
+                                setState(() {
+                                  widget.dummyShelf.removeAt(index);
+                                });
+                              },
+                            )));
+              },
+              child: Container(
+                margin: EdgeInsets.only(top: 10),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(width: 1, color: Colors.white)),
+                height: 100,
+                child: Column(
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 2),
+                          height: 67,
+                          width: 70,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: NetworkImage(
+                                    "https://th.bing.com/th/id/OIP.T0yAGl5mXcZHC5Pt5Uc3igHaHa?pid=ImgDet&rs=1"),
+                                fit: BoxFit.cover),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                        ),
+                        SizedBox(
+                          width: MARGIN_MEDIUM,
+                        ),
+                        Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 5, vertical: 2),
-                              height: 67,
-                              width: 70,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: NetworkImage(
-                                        "https://th.bing.com/th/id/OIP.T0yAGl5mXcZHC5Pt5Uc3igHaHa?pid=ImgDet&rs=1"),
-                                    fit: BoxFit.cover),
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                            ),
-                            SizedBox(
-                              width: MARGIN_MEDIUM,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(widget.dummyShelf[index]),
-                                Text("${widget.bookCount} book"),
-                              ],
-                            ),
-                            Spacer(),
-                            Icon(Icons.navigate_next),
+                            Text(widget.shelfList?[index].shelfName ?? ""),
+                            Text("${widget.bookCount} book"),
                           ],
                         ),
-                        Divider(
-                          color: Colors.black26,
-                        ),
+                        Spacer(),
+                        Icon(Icons.navigate_next),
                       ],
                     ),
-                  ),
-                )
-              : Container();
+                    Divider(
+                      color: Colors.black26,
+                    ),
+                  ],
+                ),
+              ),
+            );
         },
       ),
     );

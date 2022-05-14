@@ -2,11 +2,13 @@ import 'package:google_play_books_app/data/model/book_model.dart';
 import 'package:google_play_books_app/data/vos/book_vo.dart';
 import 'package:google_play_books_app/data/vos/category_vo.dart';
 import 'package:google_play_books_app/data/vos/overview_vo.dart';
+import 'package:google_play_books_app/data/vos/shelf_vo.dart';
 import 'package:google_play_books_app/network/dataagents/book_data_agent.dart';
 import 'package:google_play_books_app/network/dataagents/retrofit_data_agent_impl.dart';
 import 'package:google_play_books_app/persistence/daos/book_dao.dart';
 import 'package:google_play_books_app/persistence/daos/category_dao.dart';
 import 'package:google_play_books_app/persistence/daos/google_search_book_dao.dart';
+import 'package:google_play_books_app/persistence/daos/shelf_dao.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 class BookModelImpl extends BookModel {
@@ -20,10 +22,11 @@ class BookModelImpl extends BookModel {
 
   BookDataAgent mDataAgent = RetrofitDataAgentImpl();
 
+  ///Daos
   BookDao mBookDao = BookDao();
   CategoryDao mCategoryDao = CategoryDao();
-
   GoogleSearchBookDao searchDao = GoogleSearchBookDao();
+  ShelfDao mShelfDao = ShelfDao();
 
   @override
   void getBookListFromCategory() {
@@ -130,6 +133,19 @@ class BookModelImpl extends BookModel {
     return Future.value(mDataAgent.categoriesString());
   }
 
+  @override
+  Future<List<ShelfVO>?> saveAllShelves(List<ShelfVO> shelfList) {
+    mShelfDao.saveAllShelves(shelfList);
+    return Future.value(shelfList);
+  }
+  @override
+  Future<ShelfVO?> saveSingleShelf(ShelfVO? shelf) {
+    if(shelf!=null){
+      mShelfDao.saveSingleShelf(shelf);
+    }
+    return Future.value(shelf);
+  }
+
   ///Database
   @override
   Stream<List<BookVO>?> getAllBooksFromDatabase() {
@@ -170,4 +186,14 @@ class BookModelImpl extends BookModel {
         .startWith(mCategoryDao.getCategoryStream())
         .map((event) => mCategoryDao.getCategories());
   }
+
+  @override
+  Stream<List<ShelfVO>?> getAllShelvesFromDatabase() {
+    return mShelfDao
+        .getShelfEventStream()
+        .startWith(mShelfDao.getShelvesStream())
+        .map((event) => mShelfDao.getShelves());
+  }
+
+
 }

@@ -4,6 +4,7 @@ import 'package:google_play_books_app/data/model/book_model.dart';
 import 'package:google_play_books_app/data/model/book_model_impl.dart';
 import 'package:google_play_books_app/data/vos/book_vo.dart';
 import 'package:google_play_books_app/data/vos/category_list_vo.dart';
+import 'package:google_play_books_app/data/vos/shelf_vo.dart';
 
 class LibraryBloc extends ChangeNotifier {
   String byType = "Author";
@@ -15,6 +16,7 @@ class LibraryBloc extends ChangeNotifier {
   List<String?>? categoriesStringList;
   List<String> selectedCategoriesStringList = [];
   List<BookVO> booksByCategory = [];
+  List<ShelfVO>? shelfList;
   bool isSelectedCategory = false;
 
   LibraryBloc() {
@@ -30,6 +32,13 @@ class LibraryBloc extends ChangeNotifier {
       notifyListeners();
       recentBooks?.sort((a, b) => (a.author ?? "").compareTo(b.author ?? ""));
     });
+
+    mBookModel.getAllShelvesFromDatabase().listen((shelves) {
+      shelfList=shelves;
+      notifyListeners();
+      print("Get shelves from database => ${shelves.toString()}");
+    });
+
   }
 
   void sortByType(String? type, BuildContext context) {
@@ -119,5 +128,18 @@ class LibraryBloc extends ChangeNotifier {
     //   notifyListeners();
     // }
     // notifyListeners();
+  }
+  void addNewShelf(String shelfName){
+
+    ShelfVO shelf=ShelfVO(shelfName, []);
+    List<ShelfVO>? shelves;
+    // shelf?.shelfName=shelfName;
+    // shelf?.books=[];
+    mBookModel.saveSingleShelf(shelf).then((value) {
+      shelves?.add(value!);
+      mBookModel.saveAllShelves(shelves ?? []);
+      notifyListeners();
+    });
+
   }
 }
