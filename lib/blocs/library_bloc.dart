@@ -142,4 +142,8 @@ class LibraryBloc extends ChangeNotifier {
     });
 
   }
+  void deleteShelf(int index){
+    mBookModel.deleteShelf(index);
+    notifyListeners();
+  }
 }

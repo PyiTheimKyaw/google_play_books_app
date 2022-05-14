@@ -15,6 +15,7 @@ abstract class BookModel {
   Future<List<String?>?> getCategoriesStringList();
   Future<List<ShelfVO>?> saveAllShelves(List<ShelfVO> shelfList);
    Future<ShelfVO?> saveSingleShelf(ShelfVO? shelf);
+   void deleteShelf(int index);
 
   ///Database
   Stream<List<CategoryVO>?> getCategoriesListFromDatabase();

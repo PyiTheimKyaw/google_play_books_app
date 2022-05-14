@@ -110,7 +110,6 @@ class _LibraryPageState extends State<LibraryPage>
               builder: (context, bloc, child) =>
                   ShelvesSectionView(
                     booksList: bloc.recentBooks ?? [],
-                    dummyShelf: dummyShelf ?? [],
                     shelfName: shelfName,
                     bookCount: bookCount,
                     editShelfName: editShelfName,
@@ -125,6 +124,10 @@ class _LibraryPageState extends State<LibraryPage>
 
                       bloc.addNewShelf(shelfName);
                       // print("First index of shelf => ${shelfList.first.shelfName}");
+                    },
+                    onDeleteShelf: (index){
+                      bloc.deleteShelf(index);
+                      Navigator.pop(context);
                     },
                     shelfList: bloc.shelfList,
                   ),
@@ -598,21 +601,22 @@ class SortingSectionView extends StatelessWidget {
 class ShelvesSectionView extends StatefulWidget {
   const ShelvesSectionView({
     Key? key,
-    required this.dummyShelf,
     required this.shelfName,
     required this.bookCount,
     required this.editShelfName,
     required this.onPressedCreate,
     required this.booksList,
     required this.shelfList,
+    required this.onDeleteShelf,
   }) : super(key: key);
 
-  final List<String> dummyShelf;
+
   final List<ShelfVO>? shelfList;
   final TextEditingController shelfName;
   final int bookCount;
   final TextEditingController editShelfName;
   final Function(String) onPressedCreate;
+  final Function(int) onDeleteShelf;
   final List<BookVO> booksList;
 
   @override
@@ -637,7 +641,7 @@ class _ShelvesSectionViewState extends State<ShelvesSectionView> {
                 MaterialPageRoute(
                     builder: (context) =>
                         AddNewShelfPage(
-                            shelfNameList: widget.dummyShelf,
+
                             shelfName: widget.shelfName,
                             onPressedCreate:
                             widget.onPressedCreate,
@@ -669,14 +673,12 @@ class _ShelvesSectionViewState extends State<ShelvesSectionView> {
                               editShelfName: widget.editShelfName,
                               editShelf: () {
                                 setState(() {
-                                  widget.dummyShelf[index] =
+                                  widget.shelfList?[index].shelfName =
                                       widget.editShelfName.text;
                                 });
                               },
-                              deleteShelf: () {
-                                setState(() {
-                                  widget.dummyShelf.removeAt(index);
-                                });
+                              deleteShelf: (){
+                                widget.onDeleteShelf(index);
                               },
                             )));
               },

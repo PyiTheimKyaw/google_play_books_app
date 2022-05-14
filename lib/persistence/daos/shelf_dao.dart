@@ -10,6 +10,9 @@ class ShelfDao{
   void saveSingleShelf(ShelfVO shelf)async{
     await getShelBox().put(shelf.shelfName, shelf);
   }
+  void deleteShelf(int index)async{
+    await getShelBox().deleteAt(index);
+  }
   List<ShelfVO> getAllShelves(){
     return getShelBox().values.toList();
   }

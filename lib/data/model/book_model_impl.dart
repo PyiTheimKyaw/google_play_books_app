@@ -138,12 +138,18 @@ class BookModelImpl extends BookModel {
     mShelfDao.saveAllShelves(shelfList);
     return Future.value(shelfList);
   }
+
   @override
   Future<ShelfVO?> saveSingleShelf(ShelfVO? shelf) {
-    if(shelf!=null){
+    if (shelf != null) {
       mShelfDao.saveSingleShelf(shelf);
     }
     return Future.value(shelf);
+  }
+
+  @override
+  void deleteShelf(int index) {
+    mShelfDao.deleteShelf(index);
   }
 
   ///Database
@@ -194,6 +200,4 @@ class BookModelImpl extends BookModel {
         .startWith(mShelfDao.getShelvesStream())
         .map((event) => mShelfDao.getShelves());
   }
-
-
 }

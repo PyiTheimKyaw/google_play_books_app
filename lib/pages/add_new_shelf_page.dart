@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_play_books_app/resources/dimens.dart';
 
 class AddNewShelfPage extends StatefulWidget {
-  List<String> shelfNameList;
+
   TextEditingController shelfName=TextEditingController();
   Function(String) onPressedCreate;
 
-  AddNewShelfPage({required this.shelfNameList,required this.shelfName,required this.onPressedCreate});
+  AddNewShelfPage({required this.shelfName,required this.onPressedCreate});
 
   @override
   State<AddNewShelfPage> createState() => _AddNewShelfPageState();
@@ -38,7 +38,6 @@ class _AddNewShelfPageState extends State<AddNewShelfPage> {
             Padding(
               padding: const EdgeInsets.only(left: MARGIN_MEDIUM),
               child: TextField(
-                controller: widget.shelfName,
                   onChanged: (shelfName){
                   setState(() {
                     shelfListName=shelfName;

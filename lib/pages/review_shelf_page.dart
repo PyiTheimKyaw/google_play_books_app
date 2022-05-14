@@ -134,7 +134,6 @@ class _ReviewShelfPageState extends State<ReviewShelfPage> {
                             value: 2,
                             onTap: () {
                               widget.deleteShelf();
-                              Navigator.pop(context);
                             },
                           )
                         ])
