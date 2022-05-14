@@ -15,7 +15,7 @@ import 'package:google_play_books_app/widgets/your_books_by_list_section_view.da
 class ReviewShelfPage extends StatefulWidget {
   String shelfName;
   TextEditingController editShelfName = TextEditingController();
-  Function editShelf;
+  Function() editShelf;
   Function deleteShelf;
   List<BookVO> booksList;
   ReviewShelfPage(
@@ -36,7 +36,7 @@ class _ReviewShelfPageState extends State<ReviewShelfPage> {
   String byView = "List";
 
   bool isRename = false;
-
+  String? name;
   _buildTabContext(IndexedWidgetBuilder itemBuilder, int itemCount) =>
       ListView.builder(
         // physics: const ClampingScrollPhysics(),
@@ -68,9 +68,8 @@ class _ReviewShelfPageState extends State<ReviewShelfPage> {
                       child: Icon(Icons.arrow_back))
                   : GestureDetector(
                       onTap: () {
+                        widget.editShelf();
                         setState(() {
-                          widget.editShelf();
-                          widget.shelfName = widget.editShelfName.text;
                           isRename = false;
                         });
                       },
@@ -89,8 +88,13 @@ class _ReviewShelfPageState extends State<ReviewShelfPage> {
                     )
                   : TextField(
                       controller: widget.editShelfName,
+                      onChanged: (name) {
+                        setState(() {
+                          this.name = name;
+                        });
+                      },
                       decoration: InputDecoration(
-                        hintText: "Shelf name",
+                        hintText: widget.shelfName,
                         hintStyle: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.w600),
                         enabledBorder: UnderlineInputBorder(

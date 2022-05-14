@@ -121,11 +121,7 @@ class BookModelImpl extends BookModel {
 
   @override
   void getSearchBooks(String query) {
-    mDataAgent.getSearchBooks(query).then((value) {
-      if (value != null) {
-        mBookDao.saveAllBooks(value);
-      }
-    });
+    mDataAgent.getSearchBooks(query).then((value) {});
   }
 
   @override
@@ -150,6 +146,16 @@ class BookModelImpl extends BookModel {
   @override
   void deleteShelf(int index) {
     mShelfDao.deleteShelf(index);
+  }
+
+  @override
+  Future<ShelfVO?> getSingleShelf(String shelfName) {
+    return Future.value(mShelfDao.getSingleShelf(shelfName));
+  }
+
+  @override
+  void editShelf(int index, ShelfVO shelf) {
+    mShelfDao.editShelf(index, shelf);
   }
 
   ///Database

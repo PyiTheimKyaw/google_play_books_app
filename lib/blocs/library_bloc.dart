@@ -34,11 +34,10 @@ class LibraryBloc extends ChangeNotifier {
     });
 
     mBookModel.getAllShelvesFromDatabase().listen((shelves) {
-      shelfList=shelves;
+      shelfList = shelves;
       notifyListeners();
       print("Get shelves from database => ${shelves.toString()}");
     });
-
   }
 
   void sortByType(String? type, BuildContext context) {
@@ -129,9 +128,9 @@ class LibraryBloc extends ChangeNotifier {
     // }
     // notifyListeners();
   }
-  void addNewShelf(String shelfName){
 
-    ShelfVO shelf=ShelfVO(shelfName, []);
+  void addNewShelf(String shelfName) {
+    ShelfVO shelf = ShelfVO(shelfName, books: []);
     List<ShelfVO>? shelves;
     // shelf?.shelfName=shelfName;
     // shelf?.books=[];
@@ -140,10 +139,24 @@ class LibraryBloc extends ChangeNotifier {
       mBookModel.saveAllShelves(shelves ?? []);
       notifyListeners();
     });
-
   }
-  void deleteShelf(int index){
+
+  void deleteShelf(int index) {
     mBookModel.deleteShelf(index);
+    notifyListeners();
+  }
+
+  void editShelf(String shelfName, String editShelfName, int index) {
+    List<ShelfVO>? editShelf;
+    print("Before edit shelf name => ${shelfName}");
+    ShelfVO shelf = ShelfVO(editShelfName);
+    mBookModel.getSingleShelf(shelfName).then((value) {
+      value?.shelfName = editShelfName;
+      mBookModel.editShelf(index, shelf);
+      notifyListeners();
+    });
+    // mBookModel.editShelf(index, shelf);
+
     notifyListeners();
   }
 }

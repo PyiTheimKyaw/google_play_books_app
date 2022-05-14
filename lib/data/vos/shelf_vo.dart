@@ -9,7 +9,7 @@ class ShelfVO{
   @HiveField(1)
   List<BookVO>? books;
 
-  ShelfVO(this.shelfName, this.books);
+  ShelfVO(this.shelfName, {this.books});
 
   @override
   bool operator ==(Object other) =>

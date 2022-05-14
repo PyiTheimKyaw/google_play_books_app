@@ -14,8 +14,10 @@ abstract class BookModel {
   void getSearchBooks(String query);
   Future<List<String?>?> getCategoriesStringList();
   Future<List<ShelfVO>?> saveAllShelves(List<ShelfVO> shelfList);
-   Future<ShelfVO?> saveSingleShelf(ShelfVO? shelf);
-   void deleteShelf(int index);
+  Future<ShelfVO?> saveSingleShelf(ShelfVO? shelf);
+  void deleteShelf(int index);
+  Future<ShelfVO?> getSingleShelf(String shelfName);
+  void editShelf(int index, ShelfVO shelf);
 
   ///Database
   Stream<List<CategoryVO>?> getCategoriesListFromDatabase();

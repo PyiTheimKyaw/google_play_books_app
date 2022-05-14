@@ -18,7 +18,7 @@ class ShelfVOAdapter extends TypeAdapter<ShelfVO> {
     };
     return ShelfVO(
       fields[0] as String?,
-      (fields[1] as List?)?.cast<BookVO>(),
+      books: (fields[1] as List?)?.cast<BookVO>(),
     );
   }
 
