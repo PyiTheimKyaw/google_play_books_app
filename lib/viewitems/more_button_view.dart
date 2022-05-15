@@ -9,7 +9,7 @@ class MoreButtonView extends StatelessWidget {
   bool isLibrary;
   BookVO? book;
 
-  MoreButtonView({this.isLibrary=false,required this.book});
+  MoreButtonView({this.isLibrary = false, required this.book});
 
   Text text(String text) {
     return Text(
@@ -27,6 +27,7 @@ class MoreButtonView extends StatelessWidget {
       size: 25,
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -43,10 +44,12 @@ class MoreButtonView extends StatelessWidget {
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.only(
-                          // left: MARGIN_MEDIUM_2,
+                            // left: MARGIN_MEDIUM_2,
                             top: MARGIN_MEDIUM_3,
                             bottom: MARGIN_MEDIUM_2),
-                        child: BookAAndTitleRowView(book: book,),
+                        child: BookAAndTitleRowView(
+                          book: book,
+                        ),
                       ),
                       Divider(
                         thickness: 1,
@@ -84,8 +87,14 @@ class MoreButtonView extends StatelessWidget {
                         height: MARGIN_MEDIUM_2,
                       ),
                       GestureDetector(
-                        onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>AddBookToShelfPage(book: book,)));
+                        onTap: () {
+                          Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => AddBookToShelfPage(
+                                            book: book,
+                                          )))
+                              .then((value) => Navigator.pop(context));
                         },
                         child: IconListTileView(
                           icon: _icon(Icons.add),
@@ -106,7 +115,7 @@ class MoreButtonView extends StatelessWidget {
         },
         child: Icon(
           Icons.more_horiz,
-          color:(!isLibrary)? Colors.white: ICON_COLOR,
+          color: (!isLibrary) ? Colors.white : ICON_COLOR,
         ));
   }
 }

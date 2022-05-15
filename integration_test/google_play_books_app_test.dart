@@ -14,35 +14,42 @@ import 'package:google_play_books_app/persistence/hive_constants.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:integration_test/integration_test.dart';
 
+import 'operations_in_shelves.dart';
+import 'opertionsInYourBooks.dart';
 import 'test_add_book_to_library.dart';
 import 'test_data/test_data.dart';
 
-void main()async{
-   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-   await Hive.initFlutter();
-   Hive.registerAdapter(OverviewVOAdapter());
-   Hive.registerAdapter(CategoryVoAdapter());
-   Hive.registerAdapter(BookVOAdapter());
-   Hive.registerAdapter(BuyLinksVOAdapter());
-   Hive.registerAdapter(ImageLinkVOAdapter());
-   Hive.registerAdapter(GoogleBookVOAdapter());
-   Hive.registerAdapter(GoogleSearchBookVOAdapter());
-   Hive.registerAdapter(ShelfVOAdapter());
+void main() async {
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  Hive.registerAdapter(OverviewVOAdapter());
+  Hive.registerAdapter(CategoryVoAdapter());
+  Hive.registerAdapter(BookVOAdapter());
+  Hive.registerAdapter(BuyLinksVOAdapter());
+  Hive.registerAdapter(ImageLinkVOAdapter());
+  Hive.registerAdapter(GoogleBookVOAdapter());
+  Hive.registerAdapter(GoogleSearchBookVOAdapter());
+  Hive.registerAdapter(ShelfVOAdapter());
 
-   await Hive.openBox<OverviewVo>(BOX_NAME_OVERVIEW_VO);
-   await Hive.openBox<BookVO>(BOX_NAME_BOOK_VO);
-   await Hive.openBox<CategoryVO>(BOX_NAME_CATEGORY_VO);
-   await Hive.openBox<BookVO>(BOX_NAME_BOOK_VO_FOR_RECENT);
-   await Hive.openBox<GoogleSearchVO>(BOX_NAME_GOOGLE_SEARCH_VO);
-   await Hive.openBox<ShelfVO>(BOX_NAME_SHELF_VO);
+  await Hive.openBox<OverviewVo>(BOX_NAME_OVERVIEW_VO);
+  await Hive.openBox<BookVO>(BOX_NAME_BOOK_VO);
+  await Hive.openBox<CategoryVO>(BOX_NAME_CATEGORY_VO);
+  await Hive.openBox<BookVO>(BOX_NAME_BOOK_VO_FOR_RECENT);
+  await Hive.openBox<GoogleSearchVO>(BOX_NAME_GOOGLE_SEARCH_VO);
+  await Hive.openBox<ShelfVO>(BOX_NAME_SHELF_VO);
 
-   testWidgets("Tap book item and Navigate to details", (WidgetTester tester)async{
-     await tester.pumpWidget(MyApp());
-     await Future.delayed(Duration(seconds: 5));
-     await tester.pumpAndSettle(Duration(seconds: 10));
+  testWidgets("Tap book item and Navigate to details",
+      (WidgetTester tester) async {
+    await tester.pumpWidget(MyApp());
+    await Future.delayed(Duration(seconds: 5));
+    await tester.pumpAndSettle(Duration(seconds: 10));
 
-     expect(find.byType(StartPage), findsOneWidget);
+    expect(find.byType(StartPage), findsOneWidget);
 
-     await testAddBooksToLibrary(tester);
-   });
+    await testAddBooksToLibrary(tester);
+
+    await operationsInYourBooks(tester);
+
+    await operationsInShelves(tester);
+  });
 }

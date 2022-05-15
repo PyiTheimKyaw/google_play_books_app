@@ -18,7 +18,7 @@ class LibraryBloc extends ChangeNotifier {
   List<BookVO> booksByCategory = [];
   List<ShelfVO>? shelfList;
   bool isSelectedCategory = false;
-  List<BookVO> addBooks=[];
+  List<BookVO> addBooks = [];
 
   LibraryBloc() {
     ///Get all categories list
@@ -114,27 +114,14 @@ class LibraryBloc extends ChangeNotifier {
     print("book library => ${categoriesStringList?[index]}");
 
     booksByCategory.addAll(books);
-
     selectedCategoriesStringList.add(categoriesStringList?[index] ?? "");
     categoriesStringList?.removeAt(index);
-
     notifyListeners();
-
-    // else {
-    //   // selectedCategoriesStringList.removeAt(index);
-    //   booksByCategory.removeWhere(
-    //       (element) => (element.category) == (categoriesStringList?[index]));
-    //   selectedCategoriesStringList.remove(categoriesStringList?[index] ?? "");
-    //   notifyListeners();
-    // }
-    // notifyListeners();
   }
 
   void addNewShelf(String shelfName) {
     ShelfVO shelf = ShelfVO(shelfName: shelfName, books: []);
     List<ShelfVO>? shelves;
-    // shelf?.shelfName=shelfName;
-    // shelf?.books=[];
     mBookModel.saveSingleShelf(shelf).then((value) {
       shelves?.add(value!);
       mBookModel.saveAllShelves(shelves ?? []);
@@ -165,28 +152,10 @@ class LibraryBloc extends ChangeNotifier {
   void addToShelf(BookVO? book, String shelfName, int index) {
     print("Book from bookItemView => ${book.toString()}");
 
-
-
-      ShelfVO? shelf;
-      mBookModel.getSingleShelf(shelfName).then((value) {
-        value?.books?.add(book!);
-        mBookModel.editShelf(index, value!);
-        notifyListeners();
-      });
-
-
-
-      // List<BookVO> bookList=shelf?.books?.map((e) {
-      //   e.bookImage=book?.bookImage;
-      //   e.category=book?.category;
-      //   e.title=book?.title;
-      //   return e;
-      // }).toList() ?? [];
-      // addBooks.add(book!);
-      // ShelfVO addedBookToShelf=ShelfVO(shelfName: shelfName,books: addBooks);
-      // print("after add to shelf=>${addedBookToShelf.books.toString()}");
-      // mBookModel.editShelf(index, addedBookToShelf);
-      // notifyListeners();
-
+    mBookModel.getSingleShelf(shelfName).then((value) {
+      value?.books?.add(book!);
+      mBookModel.editShelf(index, value!);
+      notifyListeners();
+    });
   }
 }

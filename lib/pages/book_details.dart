@@ -357,12 +357,14 @@ class AboutTheAuthorSectionView extends StatelessWidget {
             booksCategoriesLabel: "About the author",
             category: category,
           ),
-          Text(
-            "Project Hail Mary is a 2021 science fiction novel by American novelist Andy Weir. Set in "
-            "the near future, the novel centers on junior high (middle) school-teacher-turned-astronaut "
-            "Ryland Grace, who wakes up from a coma afflicted with amnesia. He gradually remembers that he was sent "
-            "to the Tau ",
-            style: TextStyle(letterSpacing: 0.5),
+          Expanded(
+            child: Text(
+              "Project Hail Mary is a 2021 science fiction novel by American novelist Andy Weir. Set in "
+              "the near future, the novel centers on junior high (middle) school-teacher-turned-astronaut "
+              "Ryland Grace, who wakes up from a coma afflicted with amnesia. He gradually remembers that he was sent "
+              "to the Tau ",
+              style: TextStyle(letterSpacing: 0.5),
+            ),
           ),
         ],
       ),

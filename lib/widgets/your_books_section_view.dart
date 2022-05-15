@@ -34,7 +34,7 @@ class YourBooksSectionView extends StatelessWidget {
     required this.selectedCategoriesList,
     required this.onSelectedCategory,
     required this.onTapClose,
-    this.isLibrary=true,
+    this.isLibrary = true,
   });
 
   @override
@@ -85,21 +85,21 @@ class YourBooksSectionView extends StatelessWidget {
                 Expanded(
                   child: (byView == "List")
                       ? YourBooksByListSectionView(
-                    bookList: recentBooksList,
-                  )
+                          bookList: recentBooksList,
+                        )
                       : (byView == "Small Grid")
-                      ? Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8),
-                    child: YourBooksByGridSectionView(
-                      category: [],
-                      isViewMore: false,
-                      books: recentBooksList,
-                    ),
-                  )
-                      : (byView == "Large Grid")
-                      ? YourBooksByLargeGridSectionView(
-                      books: recentBooksList)
-                      : Container(),
+                          ? Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 8),
+                              child: YourBooksByGridSectionView(
+                                category: [],
+                                isViewMore: false,
+                                books: recentBooksList,
+                              ),
+                            )
+                          : (byView == "Large Grid")
+                              ? YourBooksByLargeGridSectionView(
+                                  books: recentBooksList)
+                              : Container(),
                 ),
               ],
             ),
@@ -125,7 +125,7 @@ class YourBooksSectionView extends StatelessWidget {
                     child: Text(
                       "Sort By",
                       style:
-                      TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   )),
               Divider(
@@ -168,7 +168,7 @@ class YourBooksSectionView extends StatelessWidget {
                     child: Text(
                       "Sort By",
                       style:
-                      TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   )),
               Divider(
@@ -194,6 +194,7 @@ class YourBooksSectionView extends StatelessWidget {
         });
   }
 }
+
 class CategoriesItemSectionView extends StatelessWidget {
   const CategoriesItemSectionView({
     Key? key,
@@ -239,6 +240,7 @@ class CategoriesItemSectionView extends StatelessWidget {
     );
   }
 }
+
 class ClearButtonAndSelectedCategoriesSectionView extends StatelessWidget {
   const ClearButtonAndSelectedCategoriesSectionView({
     Key? key,
@@ -284,7 +286,7 @@ class AllCategoriesListView extends StatelessWidget {
       children: [
         ...List.generate(
             categoriesStringList?.length ?? 0,
-                (index) => CategoryItem(
+            (index) => CategoryItem(
                 index: index,
                 onTap: onSelectCategory,
                 categoriesStringList: categoriesStringList?[index]))
@@ -312,7 +314,7 @@ class SelectedCategoriesListView extends StatelessWidget {
       children: [
         ...List.generate(
           selectedCategoriesList?.length ?? 0,
-              (index) => CategoryItem(
+          (index) => CategoryItem(
             isSelectedCategory: true,
             categoriesStringList: selectedCategoriesList?[index],
             onTap: onSelectedCategory,
@@ -367,6 +369,7 @@ class CategoryItem extends StatelessWidget {
         onTap(index);
       },
       child: Container(
+        key: Key("$index"),
         padding: const EdgeInsets.all(4),
         child: Chip(
           elevation: 0.6,
@@ -410,8 +413,9 @@ class RadioWithText extends StatelessWidget {
     return Row(
       children: [
         Radio<String>(
+          key: Key(value),
           fillColor: MaterialStateColor.resolveWith(
-                  (states) => Colors.lightBlueAccent),
+              (states) => Colors.lightBlueAccent),
           autofocus: true,
           value: value,
           groupValue: val,

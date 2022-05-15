@@ -1,1 +1,12 @@
-const String THE_INVESTIGATOR_BOOK_NAME="THE INVESTIGATOR";
+const String THE_INVESTIGATOR_BOOK_NAME = "THE INVESTIGATOR";
+const String CATEGORY_HARDCOVER_FICTION = "Hardcover Fiction";
+const String CATEGORY_HARDCOVER_NON_FICTION = "Hardcover Nonfiction";
+const String CATEGORY_COMBINED_PRINT_AND_E_BOOK_FICTION = "0";
+const String SORT_BY_AUTHOR = "Author";
+const String SORT_BY_RECENT = "Recent";
+const String SORT_BY_TITLE = "Title";
+const String LIST = "List";
+const String SMALL_GRID = "Small Grid";
+const String LARGE_GRID = "Large Grid";
+const String CREATE_SHELF_NAME = "TESTING";
+const String RENAME_SHELF_NAME = "Renamed";
