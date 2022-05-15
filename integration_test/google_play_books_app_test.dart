@@ -14,6 +14,7 @@ import 'package:google_play_books_app/persistence/hive_constants.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:integration_test/integration_test.dart';
 
+import 'test_add_book_to_library.dart';
 import 'test_data/test_data.dart';
 
 void main()async{
@@ -41,6 +42,7 @@ void main()async{
      await tester.pumpAndSettle(Duration(seconds: 10));
 
      expect(find.byType(StartPage), findsOneWidget);
-     expect(find.text(THE_INVESTIGATOR_BOOK_NAME), findsOneWidget);
+
+     await testAddBooksToLibrary(tester);
    });
 }
