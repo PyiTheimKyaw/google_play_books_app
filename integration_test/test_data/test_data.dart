@@ -1,4 +1,6 @@
 const String THE_INVESTIGATOR_BOOK_NAME = "THE INVESTIGATOR";
+const String THE_INVESTIGATOR_AUTHOR_NAME="John Sandford";
+const String FREEZING_ORDER_BOOK_NAME="FREEZING ORDER";
 const String CATEGORY_HARDCOVER_FICTION = "Hardcover Fiction";
 const String CATEGORY_HARDCOVER_NON_FICTION = "Hardcover Nonfiction";
 const String CATEGORY_COMBINED_PRINT_AND_E_BOOK_FICTION = "0";
@@ -10,3 +12,5 @@ const String SMALL_GRID = "Small Grid";
 const String LARGE_GRID = "Large Grid";
 const String CREATE_SHELF_NAME = "TESTING";
 const String RENAME_SHELF_NAME = "Renamed";
+const String TWOX_GRID="2x grid";
+const String THREEX_GRID="3x grid";

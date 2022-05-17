@@ -1,4 +1,5 @@
 // @dart=2.9
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_play_books_app/data/vos/book_vo.dart';
 import 'package:google_play_books_app/data/vos/buy_links_vo.dart';
@@ -46,10 +47,11 @@ void main() async {
 
     expect(find.byType(StartPage), findsOneWidget);
 
+    
     await testAddBooksToLibrary(tester);
 
     await operationsInYourBooks(tester);
 
-    await operationsInShelves(tester);
+    // await operationsInShelves(tester);
   });
 }

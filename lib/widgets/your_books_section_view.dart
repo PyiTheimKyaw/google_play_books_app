@@ -226,6 +226,7 @@ class CategoriesItemSectionView extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               children: [
                 ClearButtonAndSelectedCategoriesSectionView(
+                  key: Key("Clear"),
                     selectedCategoriesList: selectedCategoriesList,
                     onTapClose: onTapClose,
                     onSelectedCategory: onSelectedCategory),
@@ -370,7 +371,7 @@ class CategoryItem extends StatelessWidget {
       },
       child: Container(
         key: Key("$index"),
-        padding: const EdgeInsets.all(4),
+        padding: const EdgeInsets.all(2),
         child: Chip(
           elevation: 0.6,
           backgroundColor: (isSelectedCategory)

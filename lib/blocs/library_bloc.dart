@@ -154,8 +154,10 @@ class LibraryBloc extends ChangeNotifier {
 
     mBookModel.getSingleShelf(shelfName).then((value) {
       value?.books?.add(book!);
-      mBookModel.editShelf(index, value!);
-      notifyListeners();
+      if(value!=null) {
+        mBookModel.editShelf(index, value);
+        notifyListeners();
+      }
     });
   }
 }

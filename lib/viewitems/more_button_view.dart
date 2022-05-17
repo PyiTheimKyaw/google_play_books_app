@@ -33,6 +33,7 @@ class MoreButtonView extends StatelessWidget {
     return GestureDetector(
         onTap: () {
           showModalBottomSheet(
+            isDismissible: true,
               context: context,
               builder: (context) {
                 return Padding(
@@ -93,8 +94,7 @@ class MoreButtonView extends StatelessWidget {
                                   MaterialPageRoute(
                                       builder: (context) => AddBookToShelfPage(
                                             book: book,
-                                          )))
-                              .then((value) => Navigator.pop(context));
+                                          ))).then((value) => Navigator.pop(context));
                         },
                         child: IconListTileView(
                           icon: _icon(Icons.add),

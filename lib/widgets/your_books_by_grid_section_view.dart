@@ -18,6 +18,7 @@ class YourBooksByGridSectionView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
+      key: Key("2x grid"),
       itemCount: (isViewMore) ? (category?.length ?? 0) : (books?.length ?? 0),
       // physics: NeverScrollableScrollPhysics(),
       shrinkWrap: true,
