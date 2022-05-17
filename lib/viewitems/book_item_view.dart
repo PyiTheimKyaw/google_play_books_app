@@ -69,6 +69,7 @@ class MoreButtonAndDownloadOrReadButtonSectionView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             MoreButtonView(
+              index: 1,
               book: book,
             ),
             Spacer(),

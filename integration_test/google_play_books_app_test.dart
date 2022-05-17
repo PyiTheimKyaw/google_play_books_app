@@ -17,6 +17,7 @@ import 'package:integration_test/integration_test.dart';
 
 import 'operations_in_shelves.dart';
 import 'opertionsInYourBooks.dart';
+import 'search_operations_test.dart';
 import 'test_add_book_to_library.dart';
 import 'test_data/test_data.dart';
 
@@ -52,5 +53,7 @@ void main() async {
     await operationsInYourBooks(tester);
 
     await operationsInShelves(tester);
+
+    await searchOperations(tester);
   });
 }

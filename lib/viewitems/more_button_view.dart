@@ -117,7 +117,7 @@ class MoreButtonView extends StatelessWidget {
         },
         child: Icon(
           Icons.more_horiz,
-          key: Key("$index"),
+          key: Key("1"),
           color: (!isLibrary) ? Colors.white : ICON_COLOR,
         ));
   }

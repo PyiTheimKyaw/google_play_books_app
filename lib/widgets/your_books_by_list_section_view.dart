@@ -67,6 +67,7 @@ class BookTitleAndActionsSectionView extends StatelessWidget {
                 width: 12,
               ),
               MoreButtonView(
+                index: index,
                 isLibrary: true,
                 book: bookList?[index],
               ),
