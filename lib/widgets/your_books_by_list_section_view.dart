@@ -8,9 +8,7 @@ import 'package:google_play_books_app/viewitems/book_and_row_title_view.dart';
 import 'package:google_play_books_app/viewitems/more_button_view.dart';
 
 class YourBooksByListSectionView extends StatelessWidget {
-
   List<BookVO>? bookList;
-
 
   YourBooksByListSectionView({required this.bookList});
 
@@ -24,11 +22,13 @@ class YourBooksByListSectionView extends StatelessWidget {
             SizedBox(
               height: MARGIN_MEDIUM,
             ),
-            BookTitleAndActionsSectionView(bookList: bookList,index: index,),
+            BookTitleAndActionsSectionView(
+              bookList: bookList,
+              index: index,
+            ),
           ],
         );
       },
-
     );
   }
 }
@@ -51,18 +51,25 @@ class BookTitleAndActionsSectionView extends StatelessWidget {
         // mainAxisAlignment: MainAxisAlignment.spaceEvenly,s
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
-          Expanded(child: BookAAndTitleRowView(book: bookList?[index],)),
-          
+          Expanded(
+              child: BookAAndTitleRowView(
+            book: bookList?[index],
+          )),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             // crossAxisAlignment: CrossAxisAlignment.,
             children: [
-              Icon(Icons.download_outlined,color: ICON_COLOR,),
+              Icon(
+                Icons.download_outlined,
+                color: ICON_COLOR,
+              ),
               SizedBox(
                 width: 12,
               ),
-              MoreButtonView(isLibrary: true,book: bookList?[index],),
+              MoreButtonView(
+                isLibrary: true,
+                book: bookList?[index],
+              ),
             ],
           ),
         ],

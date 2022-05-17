@@ -47,11 +47,10 @@ void main() async {
 
     expect(find.byType(StartPage), findsOneWidget);
 
-    
     await testAddBooksToLibrary(tester);
 
     await operationsInYourBooks(tester);
 
-    // await operationsInShelves(tester);
+    await operationsInShelves(tester);
   });
 }

@@ -8,8 +8,9 @@ import 'package:google_play_books_app/viewitems/book_and_row_title_view.dart';
 class MoreButtonView extends StatelessWidget {
   bool isLibrary;
   BookVO? book;
+  int index;
 
-  MoreButtonView({this.isLibrary = false, required this.book});
+  MoreButtonView({this.isLibrary = false, required this.book, this.index = 0});
 
   Text text(String text) {
     return Text(
@@ -33,7 +34,7 @@ class MoreButtonView extends StatelessWidget {
     return GestureDetector(
         onTap: () {
           showModalBottomSheet(
-            isDismissible: true,
+              isDismissible: true,
               context: context,
               builder: (context) {
                 return Padding(
@@ -94,7 +95,8 @@ class MoreButtonView extends StatelessWidget {
                                   MaterialPageRoute(
                                       builder: (context) => AddBookToShelfPage(
                                             book: book,
-                                          ))).then((value) => Navigator.pop(context));
+                                          )))
+                              .then((value) => Navigator.pop(context));
                         },
                         child: IconListTileView(
                           icon: _icon(Icons.add),
@@ -115,6 +117,7 @@ class MoreButtonView extends StatelessWidget {
         },
         child: Icon(
           Icons.more_horiz,
+          key: Key("$index"),
           color: (!isLibrary) ? Colors.white : ICON_COLOR,
         ));
   }
