@@ -1,31 +1,36 @@
 import 'package:google_play_books_app/data/vos/category_vo.dart';
+import 'package:google_play_books_app/persistence/daos/category_dao.dart';
 import 'package:google_play_books_app/persistence/hive_constants.dart';
 import 'package:hive/hive.dart';
 
-class CategoryDao {
-  static final CategoryDao _singleton = CategoryDao._internal();
+class CategoryDaoImpl extends CategoryDao {
+  static final CategoryDaoImpl _singleton = CategoryDaoImpl._internal();
 
-  factory CategoryDao() {
+  factory CategoryDaoImpl() {
     return _singleton;
   }
 
-  CategoryDao._internal();
+  CategoryDaoImpl._internal();
 
+  @override
   void saveAllCategories(List<CategoryVO> categoryList) async {
     Map<int, CategoryVO> categoryMap = Map.fromIterable(categoryList,
         key: (category) => category.listId, value: (category) => category);
     await getCategoryBox().putAll(categoryMap);
   }
 
+  @override
   List<CategoryVO> getAllCategories() {
     return getCategoryBox().values.toList();
   }
 
   ///Reactive Stream
+  @override
   Stream<void> getCategoryEventStream() {
     return getCategoryBox().watch();
   }
 
+  @override
   List<CategoryVO>? getCategories() {
     if (getAllCategories() != null && getAllCategories().isNotEmpty ?? false) {
       return getAllCategories();
@@ -34,6 +39,7 @@ class CategoryDao {
     }
   }
 
+  @override
   Stream<List<CategoryVO>?> getCategoryStream() {
     return Stream.value(getAllCategories());
   }

@@ -6,10 +6,13 @@ import 'package:google_play_books_app/data/vos/shelf_vo.dart';
 import 'package:google_play_books_app/network/dataagents/book_data_agent.dart';
 import 'package:google_play_books_app/network/dataagents/retrofit_data_agent_impl.dart';
 import 'package:google_play_books_app/persistence/daos/book_dao.dart';
+import 'package:google_play_books_app/persistence/daos/category_dao.dart';
+import 'package:google_play_books_app/persistence/daos/google_search_book_dao.dart';
 import 'package:google_play_books_app/persistence/daos/impls/book_dao_impl.dart';
 import 'package:google_play_books_app/persistence/daos/impls/category_dao_impl.dart';
 import 'package:google_play_books_app/persistence/daos/impls/google_search_book_dao_impl.dart';
 import 'package:google_play_books_app/persistence/daos/impls/shelf_dao_impl.dart';
+import 'package:google_play_books_app/persistence/daos/shelf_dao.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 class BookModelImpl extends BookModel {
@@ -25,9 +28,9 @@ class BookModelImpl extends BookModel {
 
   ///Daos
   BookDao mBookDao = BookDaoImpl();
-  CategoryDao mCategoryDao = CategoryDao();
-  GoogleSearchBookDao searchDao = GoogleSearchBookDao();
-  ShelfDao mShelfDao = ShelfDao();
+  CategoryDao mCategoryDao = CategoryDaoImpl();
+  GoogleSearchBookDao searchDao = GoogleSearchBookDaoImpl();
+  ShelfDao mShelfDao = ShelfDaoImpl();
 
   @override
   void getBookListFromCategory() {

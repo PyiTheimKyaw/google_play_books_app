@@ -39,14 +39,17 @@ class BookDaoImpl extends BookDao {
   }
 
   ///Reactive Programming
+  @override
   Stream<void> getAllBooksEventStream() {
     return getBookBox().watch();
   }
 
+  @override
   Stream<void> getAllRecentBooksEventStream() {
     return getBookBoxForRecent().watch();
   }
 
+  @override
   List<BookVO> getBooks() {
     if (getAllBooks() != null && getAllBooks().isNotEmpty ?? false) {
       return getAllBooks();
@@ -55,6 +58,7 @@ class BookDaoImpl extends BookDao {
     }
   }
 
+  @override
   List<BookVO> getRecentBooks() {
     if (getAllRecentBooks() != null && getAllRecentBooks().isNotEmpty ??
         false) {
@@ -64,18 +68,23 @@ class BookDaoImpl extends BookDao {
     }
   }
 
+  ///Reactive Programming
+  @override
   Stream<List<BookVO>> getBooksStream() {
     return Stream.value(getAllBooks());
   }
 
+  @override
   Stream<List<BookVO>> getRecentBooksStream() {
     return Stream.value(getAllRecentBooks());
   }
 
+  @override
   Box<BookVO> getBookBox() {
     return Hive.box<BookVO>(BOX_NAME_BOOK_VO);
   }
 
+  @override
   Box<BookVO> getBookBoxForRecent() {
     return Hive.box<BookVO>(BOX_NAME_BOOK_VO_FOR_RECENT);
   }
