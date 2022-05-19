@@ -99,7 +99,6 @@ class _HomePageState extends State<HomePage>
                           bloc.booksList,
                         );
                       },
-                      allBooks: bloc.allBooks,
                     ),
                   ),
                   Consumer<HomeBloc>(

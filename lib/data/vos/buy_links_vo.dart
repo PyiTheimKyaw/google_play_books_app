@@ -18,4 +18,15 @@ class BuyLinksVO {
       _$BuyLinksVOFromJson(json);
 
   Map<String, dynamic> toJson() => _$BuyLinksVOToJson(this);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BuyLinksVO &&
+          runtimeType == other.runtimeType &&
+          name == other.name &&
+          url == other.url;
+
+  @override
+  int get hashCode => name.hashCode ^ url.hashCode;
 }

@@ -17,4 +17,15 @@ class ImageLinkVO{
 
   factory ImageLinkVO.fromJson(Map<String,dynamic> json) => _$ImageLinkVOFromJson(json);
   Map<String,dynamic> toJson() => _$ImageLinkVOToJson(this);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ImageLinkVO &&
+          runtimeType == other.runtimeType &&
+          smallThumbnail == other.smallThumbnail &&
+          thumbnail == other.thumbnail;
+
+  @override
+  int get hashCode => smallThumbnail.hashCode ^ thumbnail.hashCode;
 }

@@ -5,7 +5,6 @@ import 'package:google_play_books_app/data/model/book_model.dart';
 import 'package:google_play_books_app/data/model/book_model_impl.dart';
 import 'package:google_play_books_app/data/vos/book_vo.dart';
 import 'package:google_play_books_app/data/vos/category_vo.dart';
-import 'package:google_play_books_app/pages/book_details.dart';
 
 class SearchBloc extends ChangeNotifier {
   String? query;
@@ -18,9 +17,14 @@ class SearchBloc extends ChangeNotifier {
 
   BookModel mBookModel = BookModelImpl();
 
-  SearchBloc();
+  SearchBloc([BookModel? bookModel]){
+    if(bookModel!=null){
+      mBookModel=bookModel;
+    }
+  }
 
   void searchBook(String query) {
+
     mBookModel.getSearchedBooksFromDatabase(query).listen((searchedBooksList) {
       isOnTapSubmitted = false;
       this.query = query;

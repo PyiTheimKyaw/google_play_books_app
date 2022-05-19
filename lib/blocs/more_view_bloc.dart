@@ -13,10 +13,13 @@ class MoreViewBloc extends ChangeNotifier {
   OverviewVo? overview;
   List<BookVO>? viewMoreBooks;
 
-  MoreViewBloc(String list, int index) {
-    mBookModel.getOverview().then((value) {
-      overview = value;
-      categoryList = value?.lists;
+  MoreViewBloc(String list, int index,[BookModel? bookModel]) {
+    if(bookModel!=null){
+      mBookModel=bookModel;
+    }
+    mBookModel.getOverview().then((category) {
+      overview = category;
+      categoryList = category?.lists;
       notifyListeners();
       mBookModel
           .getBooksListForViewMore(list, overview?.bestSellersDate ?? "",

@@ -43,5 +43,28 @@ class GoogleBooksVO {
 
   Map<String, dynamic> toJson() => _$GoogleBooksVOToJson(this);
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is GoogleBooksVO &&
+          runtimeType == other.runtimeType &&
+          title == other.title &&
+          author == other.author &&
+          publisher == other.publisher &&
+          publishedDate == other.publishedDate &&
+          description == other.description &&
+          industryIdentifiers == other.industryIdentifiers &&
+          imageLinks == other.imageLinks &&
+          categories == other.categories;
 
+  @override
+  int get hashCode =>
+      title.hashCode ^
+      author.hashCode ^
+      publisher.hashCode ^
+      publishedDate.hashCode ^
+      description.hashCode ^
+      industryIdentifiers.hashCode ^
+      imageLinks.hashCode ^
+      categories.hashCode;
 }

@@ -12,7 +12,10 @@ class BookDetailsBloc extends ChangeNotifier {
   OverviewVo? overview;
   List<CategoryVO>? categoriesList;
   List<BookVO>? recentList;
-  BookDetailsBloc(BookVO book) {
+  BookDetailsBloc([BookVO? book,BookModel? bookModel]) {
+    if(bookModel!=null){
+      mBookModel=bookModel;
+    }
     if (book != null) {
       mBookModel.saveSingleBook(book).then((value) {
         print("Book => ${value.toString()}");
@@ -26,7 +29,7 @@ class BookDetailsBloc extends ChangeNotifier {
     }
     mBookModel.getOverview().then((overview) {
       categoriesList = overview?.lists;
-      overview = overview;
+      this.overview = overview;
       notifyListeners();
     });
   }

@@ -1,8 +1,10 @@
 import 'package:google_play_books_app/data/model/book_model.dart';
-import 'package:google_play_books_app/data/vos/shelf_vo.dart';
-import 'package:google_play_books_app/data/vos/overview_vo.dart';
-import 'package:google_play_books_app/data/vos/category_vo.dart';
 import 'package:google_play_books_app/data/vos/book_vo.dart';
+import 'package:google_play_books_app/data/vos/category_vo.dart';
+import 'package:google_play_books_app/data/vos/overview_vo.dart';
+import 'package:google_play_books_app/data/vos/shelf_vo.dart';
+
+import '../mock_data/mock_data.dart';
 
 class BookModelImplMock extends BookModel {
   @override
@@ -17,20 +19,17 @@ class BookModelImplMock extends BookModel {
 
   @override
   Stream<List<BookVO>?> getAllBooksFromDatabase() {
-    // TODO: implement getAllBooksFromDatabase
-    throw UnimplementedError();
+    return Stream.value(getMockBook());
   }
 
   @override
   Stream<List<BookVO>?> getAllRecentBooksFromDatabase() {
-    // TODO: implement getAllRecentBooksFromDatabase
-    throw UnimplementedError();
+    return Stream.value(getMockBook());
   }
 
   @override
   Stream<List<ShelfVO>?> getAllShelvesFromDatabase() {
-    // TODO: implement getAllShelvesFromDatabase
-    throw UnimplementedError();
+    return Stream.value(getMockShelves());
   }
 
   @override
@@ -41,8 +40,7 @@ class BookModelImplMock extends BookModel {
   @override
   Future<List<CategoryVO>?> getBooksListForViewMore(
       String list, String bestSellersDate, String publishedDate) {
-    // TODO: implement getBooksListForViewMore
-    throw UnimplementedError();
+    return Future.value(getMockBookListForViewMore());
   }
 
   @override
@@ -52,20 +50,17 @@ class BookModelImplMock extends BookModel {
 
   @override
   Stream<List<CategoryVO>?> getCategoriesListFromDatabase() {
-    // TODO: implement getCategoriesListFromDatabase
-    throw UnimplementedError();
+    return Stream.value(getMockBookListForViewMore());
   }
 
   @override
   Future<List<String?>?> getCategoriesStringList() {
-    // TODO: implement getCategoriesStringList
-    throw UnimplementedError();
+    return Future.value(getMockCategoriesString());
   }
 
   @override
   Future<OverviewVo?> getOverview() {
-    // TODO: implement getOverview
-    throw UnimplementedError();
+    return Future.value(getMockOverview());
   }
 
   @override
@@ -75,43 +70,36 @@ class BookModelImplMock extends BookModel {
 
   @override
   Stream<List<BookVO>?> getSearchedBooksFromDatabase(String query) {
-    // TODO: implement getSearchedBooksFromDatabase
-    throw UnimplementedError();
+    return Stream.value(getMockBook());
   }
 
   @override
   Future<BookVO?> getSingleBookFromDatabase(String bookTitle) {
-    // TODO: implement getSingleBookFromDatabase
-    throw UnimplementedError();
+    return Future.value(getMockBook().first);
   }
 
   @override
   Future<ShelfVO?> getSingleShelf(String shelfName) {
-    // TODO: implement getSingleShelf
-    throw UnimplementedError();
+    return Future.value(getMockShelves().first);
   }
 
   @override
   Future<List<BookVO>?> saveAllRecentBooks(List<BookVO> booksList) {
-    // TODO: implement saveAllRecentBooks
-    throw UnimplementedError();
+    return Future.value(getMockBook());
   }
 
   @override
   Future<List<ShelfVO>?> saveAllShelves(List<ShelfVO> shelfList) {
-    // TODO: implement saveAllShelves
-    throw UnimplementedError();
+    return Future.value(getMockShelves());
   }
 
   @override
   Future<BookVO?> saveSingleBook(BookVO book) {
-    // TODO: implement saveSingleBook
-    throw UnimplementedError();
+    return Future.value(getMockBook().first);
   }
 
   @override
   Future<ShelfVO?> saveSingleShelf(ShelfVO? shelf) {
-    // TODO: implement saveSingleShelf
-    throw UnimplementedError();
+    return Future.value(getMockShelves().first);
   }
 }

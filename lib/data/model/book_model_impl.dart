@@ -32,6 +32,19 @@ class BookModelImpl extends BookModel {
   GoogleSearchBookDao searchDao = GoogleSearchBookDaoImpl();
   ShelfDao mShelfDao = ShelfDaoImpl();
 
+  void setDaosAndDataAgents(
+      BookDao bookDao,
+      CategoryDao categoryDao,
+      GoogleSearchBookDao googleSearchBookDao,
+      ShelfDao shelfDao,
+      BookDataAgent dataAgent) {
+    mBookDao = bookDao;
+    mCategoryDao = categoryDao;
+    searchDao = googleSearchBookDao;
+    mShelfDao = shelfDao;
+    mDataAgent = dataAgent;
+  }
+
   @override
   void getBookListFromCategory() {
     mDataAgent.getCategoriesList().then((value) {
@@ -78,17 +91,26 @@ class BookModelImpl extends BookModel {
       if (value != null) {
         mCategoryDao.saveAllCategories(value);
       }
-      List<CategoryVO>? category = value?.map((e) {
-            List<BookVO>? books = e.books?.map((book) {
-                  book.category = e.listName ?? "";
-                  book.imageLink = book.bookImage ?? "";
-                  return book;
-                }).toList() ??
-                [];
-            mBookDao.saveAllBooks(books);
-            return e;
-          }).toList() ??
-          [];
+      getAllBooksFromDatabase().listen((books) {
+        books?.forEach((bookFromDatabase) {
+          value?.forEach((element2) {
+            element2.bookDetails?.where((book3) => book3.title==bookFromDatabase.title).forEach((book2) {
+              book2.bookImage=bookFromDatabase.bookImage;
+            });
+          });
+        });
+      });
+      // mDataAgent.getCategoriesList().then((cate) {
+      //   cate?.forEach((element) {
+      //     element.books?.forEach((book1) {
+      //       value?.forEach((element2) {
+      //         element2.bookDetails?.where((book3) => book3.title==book1.title).forEach((book2) {
+      //           book2.bookImage=book1.bookImage;
+      //         });
+      //       });
+      //     });
+      //   });
+      // });
       return Future.value(value);
     });
   }

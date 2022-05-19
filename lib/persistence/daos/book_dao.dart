@@ -10,11 +10,15 @@ abstract class BookDao {
   BookVO? getBook(String bookTitle);
 
   List<BookVO> getAllBooks();
+
   List<BookVO> getBooks();
+
   List<BookVO> getRecentBooks();
 
   List<BookVO> getAllRecentBooks();
+
   Stream<void> getAllBooksEventStream();
+
   Stream<void> getAllRecentBooksEventStream();
 
   Stream<List<BookVO>> getBooksStream();

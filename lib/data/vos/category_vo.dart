@@ -92,4 +92,14 @@ class CategoryVO {
 
   factory CategoryVO.fromJson(Map<String,dynamic> json) => _$CategoryVOFromJson(json);
   Map<String,dynamic> toJson() => _$CategoryVOToJson(this);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CategoryVO &&
+          runtimeType == other.runtimeType &&
+          listId == other.listId;
+
+  @override
+  int get hashCode => listId.hashCode;
 }

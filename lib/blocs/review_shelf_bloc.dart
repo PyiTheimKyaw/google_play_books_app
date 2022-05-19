@@ -5,52 +5,54 @@ import 'package:google_play_books_app/data/model/book_model_impl.dart';
 import 'package:google_play_books_app/data/vos/book_vo.dart';
 import 'package:google_play_books_app/data/vos/shelf_vo.dart';
 
-class ReviewShelfBloc extends ChangeNotifier{
+class ReviewShelfBloc extends ChangeNotifier {
   String byType = "Author";
 
   String byView = "List";
   BookModel mBookModel = BookModelImpl();
   List<BookVO>? reviewShelfBooks;
   List<BookVO>? selectedCategoriesBooksList;
-  List<String?> categoriesStringList=[];
+  List<String?> categoriesStringList = [];
   List<String> selectedCategoriesStringList = [];
   List<BookVO> booksByCategory = [];
   List<ShelfVO>? shelfList;
   bool isSelectedCategory = false;
-  List<BookVO> addBooks=[];
+  List<BookVO> addBooks = [];
   int? index;
-  bool isRename=false;
+  bool isRename = false;
   String? shelfName;
 
-  ReviewShelfBloc(List<BookVO> bookList,int shelfIndex,String name){
-    reviewShelfBooks=bookList;
-    index=shelfIndex;
-    shelfName=name;
+  ReviewShelfBloc(List<BookVO> bookList, int shelfIndex, String name,
+      [BookModel? bookModel]) {
+    if (bookModel != null) {
+      mBookModel = bookModel;
+    }
+    reviewShelfBooks = bookList;
+    index = shelfIndex;
+    shelfName = name;
     notifyListeners();
-    // categoriesStringList?.addAll(bookList[1].category);
-    // notifyListeners();
 
-    List<BookVO> books=bookList.map((e) {
-      categoriesStringList.add(e.category);
-      List<String?> cate=categoriesStringList.toSet().toList();
-      categoriesStringList=cate;
-      notifyListeners();
-      return e;
-    }).toList() ?? [];
-    // mBookModel.getCategoriesStringList().then((value) {
-    //   categoriesStringList = value;
-    //   notifyListeners();
-    // });
+    List<BookVO> books = bookList.map((e) {
+          categoriesStringList.add(e.category);
+          List<String?> cate = categoriesStringList.toSet().toList();
+          categoriesStringList = cate;
+          notifyListeners();
+          return e;
+        }).toList() ??
+        [];
   }
+
   void sortByType(String? type, BuildContext context) {
     if (type != null) {
       byType = type;
       if (byType == "Author") {
-        reviewShelfBooks?.sort((a, b) => (a.author ?? "").compareTo(b.author ?? ""));
+        reviewShelfBooks
+            ?.sort((a, b) => (a.author ?? "").compareTo(b.author ?? ""));
         booksByCategory
             .sort((a, b) => (a.author ?? "").compareTo(b.author ?? ""));
       } else if (byType == "Title") {
-        reviewShelfBooks?.sort((a, b) => (a.title ?? "").compareTo(b.title ?? ""));
+        reviewShelfBooks
+            ?.sort((a, b) => (a.title ?? "").compareTo(b.title ?? ""));
         booksByCategory
             .sort((a, b) => (a.title ?? "").compareTo(b.title ?? ""));
       } else {
@@ -76,35 +78,33 @@ class ReviewShelfBloc extends ChangeNotifier{
     selectedCategoriesStringList.clear();
     booksByCategory.clear();
     isSelectedCategory = false;
-    List<BookVO> books=reviewShelfBooks?.map((e) {
-      categoriesStringList.add(e.category);
-      List<String?> cate=categoriesStringList.toSet().toList();
-      categoriesStringList=cate;
-      notifyListeners();
-      return e;
-    }).toList() ?? [];
-    // mBookModel.getCategoriesStringList().then((value) {
-    //   categoriesStringList = value;
-    //   notifyListeners();
-    // });
+    List<BookVO> books = reviewShelfBooks?.map((e) {
+          categoriesStringList.add(e.category);
+          List<String?> cate = categoriesStringList.toSet().toList();
+          categoriesStringList = cate;
+          notifyListeners();
+          return e;
+        }).toList() ??
+        [];
+
     notifyListeners();
   }
 
   void unselectCategory(int index) {
     isSelectedCategory = false;
     List<BookVO>? books = reviewShelfBooks
-        ?.where((element) =>
-    (element.category) == (selectedCategoriesStringList[index]))
-        .map((book) {
-      return book;
-    }).toList() ??
+            ?.where((element) =>
+                (element.category) == (selectedCategoriesStringList[index]))
+            .map((book) {
+          return book;
+        }).toList() ??
         [];
 
-    print("book library => ${categoriesStringList?[index]}");
-    categoriesStringList?.add(selectedCategoriesStringList[index]);
+    print("book library => ${categoriesStringList[index]}");
+    categoriesStringList.add(selectedCategoriesStringList[index]);
     // selectedCategoriesStringList.removeAt(index);
     booksByCategory.removeWhere((element) =>
-    (element.category) == (selectedCategoriesStringList[index]));
+        (element.category) == (selectedCategoriesStringList[index]));
     selectedCategoriesStringList
         .remove(selectedCategoriesStringList[index] ?? "");
     notifyListeners();
@@ -112,50 +112,41 @@ class ReviewShelfBloc extends ChangeNotifier{
 
   void selectOrUnselectCategory(int index) {
     List<BookVO>? books = reviewShelfBooks
-        ?.where((element) =>
-    (element.category) == (categoriesStringList?[index]))
-        .map((book) {
-      return book;
-    }).toList() ??
+            ?.where((element) =>
+                (element.category) == (categoriesStringList[index]))
+            .map((book) {
+          return book;
+        }).toList() ??
         [];
     // if (isSelectedCategory) {
-    print("book library => ${categoriesStringList?[index]}");
+    print("book library => ${categoriesStringList[index]}");
 
     booksByCategory.addAll(books);
 
-    selectedCategoriesStringList.add(categoriesStringList?[index] ?? "");
-    categoriesStringList?.removeAt(index);
+    selectedCategoriesStringList.add(categoriesStringList[index] ?? "");
+    categoriesStringList.removeAt(index);
 
     notifyListeners();
-
-    // else {
-    //   // selectedCategoriesStringList.removeAt(index);
-    //   booksByCategory.removeWhere(
-    //       (element) => (element.category) == (categoriesStringList?[index]));
-    //   selectedCategoriesStringList.remove(categoriesStringList?[index] ?? "");
-    //   notifyListeners();
-    // }
-    // notifyListeners();
   }
-  void boolIsRename(){
-    isRename=true;
+
+  void boolIsRename() {
+    isRename = true;
     notifyListeners();
   }
+
   void editShelf(String shelfName, String editShelfName) {
-    isRename=false;
+    isRename = false;
     notifyListeners();
     print("Before edit shelf name => ${shelfName}");
-    ShelfVO shelf = ShelfVO(shelfName: editShelfName,books: reviewShelfBooks);
+    ShelfVO shelf = ShelfVO(shelfName: editShelfName, books: reviewShelfBooks);
     print("after add to shelf=>${shelf.shelfName.toString()}");
     mBookModel.getSingleShelf(shelfName).then((value) {
       value?.shelfName = editShelfName;
 
       mBookModel.editShelf(index ?? 0, shelf);
-      shelfName=editShelfName;
+      shelfName = editShelfName;
       notifyListeners();
     });
-    // mBookModel.editShelf(index, shelf);
-
   }
 
   void deleteShelf() {

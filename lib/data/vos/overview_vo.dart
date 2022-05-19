@@ -44,4 +44,14 @@ class OverviewVo {
   String toString() {
     return 'OverviewVo{bestSellersDate: $bestSellersDate, publishedDate: $publishedDate, publishedDateDescription: $publishedDateDescription, previousPublishedDate: $previousPublishedDate, nextPublishedDate: $nextPublishedDate, lists: $lists}';
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is OverviewVo &&
+          runtimeType == other.runtimeType &&
+          nextPublishedDate == other.nextPublishedDate;
+
+  @override
+  int get hashCode => nextPublishedDate.hashCode;
 }

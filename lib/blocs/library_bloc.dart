@@ -12,7 +12,6 @@ class LibraryBloc extends ChangeNotifier {
   String byView = "List";
   BookModel mBookModel = BookModelImpl();
   List<BookVO>? recentBooks;
-  List<BookVO>? selectedCategoriesBooksList;
   List<String?>? categoriesStringList;
   List<String> selectedCategoriesStringList = [];
   List<BookVO> booksByCategory = [];
@@ -20,7 +19,10 @@ class LibraryBloc extends ChangeNotifier {
   bool isSelectedCategory = false;
   List<BookVO> addBooks = [];
 
-  LibraryBloc() {
+  LibraryBloc([BookModel? bookModel]) {
+    if(bookModel!=null) {
+      mBookModel = bookModel;
+    }
     ///Get all categories list
     mBookModel.getCategoriesStringList().then((value) {
       categoriesStringList = value;

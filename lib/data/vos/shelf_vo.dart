@@ -16,9 +16,8 @@ class ShelfVO{
       identical(this, other) ||
       other is ShelfVO &&
           runtimeType == other.runtimeType &&
-          shelfName == other.shelfName &&
-          books == other.books;
+          shelfName == other.shelfName;
 
   @override
-  int get hashCode => shelfName.hashCode ^ books.hashCode;
+  int get hashCode => shelfName.hashCode;
 }

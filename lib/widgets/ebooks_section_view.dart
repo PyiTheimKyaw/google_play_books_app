@@ -6,10 +6,10 @@ import 'package:google_play_books_app/widgets/title_and_horizontal_books_list_vi
 class EbooksSectionView extends StatelessWidget {
   final Function(int?, int?) navigatePage;
   List<CategoryVO>? category;
-  List<BookVO>? allBooks;
+
 
   EbooksSectionView(
-      {required this.navigatePage, required this.category, this.allBooks});
+      {required this.navigatePage, required this.category});
 
   @override
   Widget build(BuildContext context) {

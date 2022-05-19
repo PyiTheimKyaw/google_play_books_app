@@ -116,9 +116,9 @@ class BookImageView extends StatelessWidget {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5),
           image: DecorationImage(
-            image: NetworkImage(
+            image: NetworkImage((book?.bookImage!=null) ?
                 book?.bookImage ?? ""
-                ),
+                :"https://code-artisan.io/wp-content/uploads/2020/12/default_book_cover_2015.jpg"),
             fit: BoxFit.cover,
           )),
     );

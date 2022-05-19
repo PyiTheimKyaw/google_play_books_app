@@ -11,22 +11,20 @@ class HomeBloc extends ChangeNotifier {
   BookModel mBookModel = BookModelImpl();
   List<CategoryVO>? categoriesList;
   List<BookVO>? recentBooks;
-  OverviewVo? overview;
   String? title;
   List<BookVO>? booksList;
-  List<BookVO>? allBooks;
 
-  HomeBloc() {
+  HomeBloc([BookModel? bookModel]) {
+    if (bookModel != null) {
+      mBookModel = bookModel;
+    }
     ///Api call
     mBookModel.getCategoriesListFromDatabase().listen((categoryList) {
       categoriesList = categoryList;
       notifyListeners();
     });
     mBookModel.getAllBooksFromDatabase().listen((event) {
-      allBooks = event;
-      // List<BookVO?>? books=event?.map((e) {
-      //   print("book Category => ${e.category}");
-      // }).toList() ?? [];
+      booksList = event;
       notifyListeners();
     });
     mBookModel.getAllRecentBooksFromDatabase().listen((books) {

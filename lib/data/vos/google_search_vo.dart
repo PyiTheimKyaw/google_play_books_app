@@ -64,4 +64,18 @@ class GoogleSearchVO {
       "",
         );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is GoogleSearchVO &&
+          runtimeType == other.runtimeType &&
+          kind == other.kind &&
+          id == other.id &&
+          etag == other.etag &&
+          volumeInfo == other.volumeInfo;
+
+  @override
+  int get hashCode =>
+      kind.hashCode ^ id.hashCode ^ etag.hashCode ^ volumeInfo.hashCode;
 }

@@ -3,7 +3,43 @@ import 'package:google_play_books_app/data/vos/category_vo.dart';
 import 'package:google_play_books_app/data/vos/google_book_vo.dart';
 import 'package:google_play_books_app/data/vos/google_search_vo.dart';
 import 'package:google_play_books_app/data/vos/overview_vo.dart';
+import 'package:google_play_books_app/data/vos/shelf_vo.dart';
 
+List<BookVO> getMockBook(){
+  return[
+    BookVO(
+      "",
+      null,
+      null,
+      "Bill Browder",
+      null,
+      null,
+      null,
+      null,
+      null,
+      "",
+      null,
+      "The author of “Red Notice” tells his story of becoming Vladimir Putin’s enemy by uncovering a \$230 million tax refund scheme.",
+      null,
+      "0.00",
+      "1982153288",
+      "9781982153281",
+      null,
+      "Simon & Schuster",
+      null,
+      null,
+      null,
+      "FREEZING ORDER",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+    ),
+  ];
+}
 List<String> getMockCategoriesString() {
   return [
     "Hardcover Fiction",
@@ -13,12 +49,18 @@ List<String> getMockCategoriesString() {
   ];
 }
 
+List<ShelfVO> getMockShelves(){
+  return[
+    ShelfVO(shelfName: "Testing",books: []),
+  ];
+}
+
 List<CategoryVO> getMockBookListForViewMore() {
   return [
     CategoryVO(
-        null,
+        704,
         "Hardcover Nonfiction",
-        "",
+        null,
         "Hardcover Nonfiction",
         null,
         null,
@@ -68,59 +110,59 @@ List<CategoryVO> getMockBookListForViewMore() {
           )
         ],
         null),
-    CategoryVO(
-        null,
-        "Hardcover Nonfiction",
-        "",
-        "Hardcover Nonfiction",
-        null,
-        null,
-        null,
-        null,
-        null,
-        "2022-04-16",
-        "2022-05-01",
-        2,
-        0,
-        1,
-        0,
-        0,
-        "https://www.amazon.com/dp/0063056232?tag=NYTBSREV-20",
-        null,
-        [
-          BookVO(
-            "",
-            null,
-            null,
-            "Molly Shannon with Sean Wilsey",
-            null,
-            null,
-            null,
-            null,
-            "by Molly Shannon with Sean Wilsey",
-            "",
-            null,
-            "The comedic actor shares stories of family tragedy and her years as a star of “Saturday Night Live.”",
-            null,
-            "0.00",
-            "0063056232",
-            "9780063056237",
-            null,
-            "Ecco",
-            null,
-            null,
-            null,
-            "HELLO, MOLLY!",
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-          )
-        ],
-        null),
+    // CategoryVO(
+    //     708,
+    //     "Hardcover Nonfiction",
+    //     "",
+    //     "Hardcover Nonfiction",
+    //     null,
+    //     null,
+    //     null,
+    //     null,
+    //     null,
+    //     "2022-04-16",
+    //     "2022-05-01",
+    //     2,
+    //     0,
+    //     1,
+    //     0,
+    //     0,
+    //     "https://www.amazon.com/dp/0063056232?tag=NYTBSREV-20",
+    //     null,
+    //     [
+    //       BookVO(
+    //         "",
+    //         null,
+    //         null,
+    //         "Molly Shannon with Sean Wilsey",
+    //         null,
+    //         null,
+    //         null,
+    //         null,
+    //         "by Molly Shannon with Sean Wilsey",
+    //         "",
+    //         null,
+    //         "The comedic actor shares stories of family tragedy and her years as a star of “Saturday Night Live.”",
+    //         null,
+    //         "0.00",
+    //         "0063056232",
+    //         "9780063056237",
+    //         null,
+    //         "Ecco",
+    //         null,
+    //         null,
+    //         null,
+    //         "HELLO, MOLLY!",
+    //         null,
+    //         null,
+    //         null,
+    //         null,
+    //         null,
+    //         null,
+    //         null,
+    //       )
+    //     ],
+    //     null),
   ];
 }
 

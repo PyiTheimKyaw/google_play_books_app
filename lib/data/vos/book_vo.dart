@@ -128,4 +128,14 @@ class BookVO {
   factory BookVO.fromJson(Map<String, dynamic> json) => _$BookVOFromJson(json);
 
   Map<String, dynamic> toJson() => _$BookVOToJson(this);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BookVO &&
+          runtimeType == other.runtimeType &&
+          title == other.title;
+
+  @override
+  int get hashCode => title.hashCode;
 }

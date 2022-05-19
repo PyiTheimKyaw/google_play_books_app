@@ -25,7 +25,7 @@ class YourBooksByGridSectionView extends StatelessWidget {
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         childAspectRatio: 3 / 4.9,
-        crossAxisSpacing: 40,
+        crossAxisSpacing: 20,
       ),
       itemBuilder: (context, index) {
         return GestureDetector(

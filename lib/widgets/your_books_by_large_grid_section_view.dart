@@ -20,7 +20,7 @@ class YourBooksByLargeGridSectionView extends StatelessWidget {
       shrinkWrap: true,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        childAspectRatio: 0.43,
+        childAspectRatio: 0.4,
       ),
       itemBuilder: (context, index) {
         return Padding(
