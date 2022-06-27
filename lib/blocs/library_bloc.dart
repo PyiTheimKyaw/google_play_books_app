@@ -20,9 +20,10 @@ class LibraryBloc extends ChangeNotifier {
   List<BookVO> addBooks = [];
 
   LibraryBloc([BookModel? bookModel]) {
-    if(bookModel!=null) {
+    if (bookModel != null) {
       mBookModel = bookModel;
     }
+
     ///Get all categories list
     mBookModel.getCategoriesStringList().then((value) {
       categoriesStringList = value;
@@ -112,7 +113,7 @@ class LibraryBloc extends ChangeNotifier {
           return book;
         }).toList() ??
         [];
-    // if (isSelectedCategory) {
+
     print("book library => ${categoriesStringList?[index]}");
 
     booksByCategory.addAll(books);
@@ -156,7 +157,7 @@ class LibraryBloc extends ChangeNotifier {
 
     mBookModel.getSingleShelf(shelfName).then((value) {
       value?.books?.add(book!);
-      if(value!=null) {
+      if (value != null) {
         mBookModel.editShelf(index, value);
         notifyListeners();
       }
